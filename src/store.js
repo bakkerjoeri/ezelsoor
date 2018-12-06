@@ -4,6 +4,17 @@ import uuid from './utility/uuid';
 
 Vue.use(Vuex)
 
+export const DEFAULT_BOOKMARK_PROPERTIES = {
+    url: '',
+    title: '',
+    summary: '',
+    tagIds: [],
+    isFavorite: false,
+    isArchived: false,
+    isToRead: false,
+    dateRead: null,
+};
+
 export default new Vuex.Store({
     state: {
         bookmarks: {
@@ -19,6 +30,14 @@ export default new Vuex.Store({
                 isToRead: true,
                 tagIds: ['1'],
             }),
+            '2': createBookmark({
+                id: '2',
+                url: 'https://www.youtube.com/watch?v=5y_IAdOwaYs',
+                title: 'Nethack: Text Tourist Mode',
+                isToRead: true,
+                isFavorite: true,
+                tagIds: ['0', '2'],
+            }),
         },
         tags: {
             '0': {
@@ -28,6 +47,10 @@ export default new Vuex.Store({
             '1': {
                 id: '1',
                 name: 'development'
+            },
+            '2': {
+                id: '2',
+                name: 'gamedevelopment'
             }
         }
     },
@@ -48,9 +71,6 @@ export default new Vuex.Store({
         setBookmarkIsArchived(state, payload) {
             Vue.set(state.bookmarks[payload.id], 'isArchived', payload.isArchived);
         },
-    },
-    actions: {
-
     },
     getters: {
         allBookmarks: state => {
@@ -103,22 +123,15 @@ export default new Vuex.Store({
             });
         },
     },
-})
+});
 
-function createBookmark(properties) {
-    const DEFAULT_BOOKMARK_PROPERTIES = {
-        title: '',
-        url: '',
-        tagIds: [],
-        isFavorite: false,
-        isArchived: false,
-        isToRead: false,
-        dateCreated: new Date().valueOf(),
-        dateRead: null,
-    }
-    
+function createBookmark(properties = {}) {
     if (!properties.id) {
         properties.id = uuid();
+    }
+    
+    if (!properties.dateCreated) {
+        properties.dateCreated = new Date().valueOf();
     }
 
     return {

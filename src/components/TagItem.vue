@@ -13,8 +13,9 @@
 </script>
 
 <style lang="scss">
+    @import './../styles/settings';
     .tag {
-        line-height: 24px;
+        line-height: $base-line-height;
         font-size: 13px;
         color: #000;
     }

@@ -1,38 +1,44 @@
 <template>
     <div class="bookmark">
-        <div class="bookmark__title-row">
-            <button
-                class="button button--favorite"
-                :class="{ 'is-favorite': bookmark.isFavorite }"
-                v-on:click="setBookmarkIsFavorite(bookmark.id, !bookmark.isFavorite)"
-            >
-                ★
-            </button>
-            <div class="bookmark__title">
-                <a class="bookmark__link" v-if="bookmark.url" :href="bookmark.url">
-                    {{ bookmark.title || bookmark.url }}
-                </a>
-                <span v-else>
-                    {{ bookmark.title || bookmark.url }}
-                </span>
+        <bookmark-form v-if="isEditing" :initialBookmark="bookmark" :onSubmit="handleSubmitBookmarkForm"></bookmark-form>
+        <template v-else>
+            <div class="bookmark__title-row">
+                <button
+                    class="button button--favorite"
+                    :class="{ 'is-favorite': bookmark.isFavorite }"
+                    v-on:click="setBookmarkIsFavorite(bookmark.id, !bookmark.isFavorite)"
+                >
+                    ★
+                </button>
+                <div class="bookmark__title">
+                    <a class="bookmark__link" v-if="bookmark.url" :href="bookmark.url" target="_blank">
+                        {{ bookmark.title || bookmark.url }}
+                    </a>
+                    <span v-else>
+                        {{ bookmark.title || bookmark.url }}
+                    </span>
+                </div>
+                <div class="bookmark__actions">
+                    <button class="button" v-on:click="startEditing">edit</button>
+                    <button class="button" v-if="bookmark.isToRead" v-on:click="setBookmarkIsToRead(bookmark.id, false)">mark as read</button>
+                    <button class="button" v-if="!bookmark.isArchived" v-on:click="setBookmarkIsArchived(bookmark.id, true)">archive</button>
+                    <button class="button" v-if="bookmark.isArchived" v-on:click="setBookmarkIsArchived(bookmark.id, false)">unarchive</button>
+                    <button class="button" v-on:click="deleteBookmark(bookmark.id)">delete</button>
+                </div>
             </div>
-            <div class="bookmark__actions">
-                <button class="button" v-if="bookmark.isToRead" v-on:click="setBookmarkIsToRead(bookmark.id, false)">mark as read</button>
-                <button class="button" v-if="!bookmark.isArchived" v-on:click="setBookmarkIsArchived(bookmark.id, true)">archive</button>
-                <button class="button" v-if="bookmark.isArchived" v-on:click="setBookmarkIsArchived(bookmark.id, false)">unarchive</button>
-                <button class="button" v-on:click="deleteBookmark(bookmark.id)">delete</button>
-            </div>
-        </div>
-        <tag-list class="bookmark__tags" :tags="tags"></tag-list>    
+            <tag-list class="bookmark__tags" :tags="tags"></tag-list>
+        </template>
     </div>
 </template>
 
 <script>
+    import BookmarkForm from './BookmarkForm';
     import TagList from './TagList';
     
     export default {
         props: ['bookmark'],
         components: {
+            BookmarkForm,
             TagList,
         },
         data: () => {
@@ -52,8 +58,7 @@
             startEditing() {
                 this.$data.isEditing = true;
             },
-            handleSubmitBookmarkForm(event) {
-                event.preventDefault();
+            handleSubmitBookmarkForm() {
                 this.$data.isEditing = false;
             },
             setBookmarkIsToRead(bookmarkId, isToRead) {
@@ -84,9 +89,10 @@
 </script>
 
 <style lang="scss">
+    @import './../styles/settings';
+    
     .bookmark {
-        max-width: 500px;
-        margin-bottom: 24px;
+        margin-bottom: $base-line-height;
     }
     
     .bookmark__title-row {
@@ -96,7 +102,7 @@
     
     .bookmark__title {
         flex: 0 1 auto;
-        line-height: 24px;
+        line-height: $base-line-height;
     }
     
     .bookmark__link {
@@ -111,14 +117,14 @@
     
     .bookmark__tags {
         flex: 0 1 100%;
-        margin-left: 26px;
+        margin-left: 25px;
     }
     
     .button {
         display: block;
         padding-right: 5px;
         padding-left: 5px;
-        line-height: 24px;
+        line-height: $base-line-height;
         
         background-color: transparent;
         white-space: nowrap;

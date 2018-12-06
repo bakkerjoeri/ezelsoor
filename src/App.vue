@@ -3,6 +3,9 @@
         <aside class="sidebar">
             <main-menu></main-menu>
         </aside>
+        <div class="top-bar">
+            <bookmark-url-form :onSubmit="addNewBookmark"></bookmark-url-form>
+        </div>
         <div class="main">
             <router-view></router-view>
         </div>
@@ -11,18 +14,25 @@
 
 <script>
     import MainMenu from './components/MainMenu';
-    import BookmarkForm from './components/BookmarkForm';
+    import BookmarkUrlForm from './components/BookmarkUrlForm';
 
     export default {
         name: 'app',
+        methods: {
+            addNewBookmark(newBookmark) {
+                this.$store.commit('addBookmark', newBookmark);
+            },
+        },
         components: {
             MainMenu,
-            BookmarkForm,
+            BookmarkUrlForm,
         },
     }
 </script>
 
 <style lang="scss">
+    @import './styles/settings';
+    
     * {
         box-sizing: border-box;
         padding: 0;
@@ -30,17 +40,28 @@
     }
     
     body {
+        font-size: $base-font-size;
         font-family: sans-serif;
     }
     
     h2 {
-        line-height: 48px;
+        line-height: 2 * $base-line-height;
     }
     
     .app {
+        max-width: 960px;
+        padding-top: $base-line-height;
+        margin: 0 auto;
         display: grid;
         grid-template-columns: 150px 1fr;
-        grid-template-rows: 48px 1fr;
+        grid-template-rows: 2 * $base-line-height 1fr;
+    }
+    
+    .top-bar {
+        grid-column: 2 / span 1;
+        grid-row: 1 / span 1;
+        padding-left: 10px;
+        padding-right: 10px;
     }
     
     .sidebar {
@@ -52,7 +73,7 @@
     
     .main {
         grid-column: span 1 / -1;
-        grid-row: 1 / -1;
+        grid-row: 2 / -1;
         padding-left: 10px;
         padding-right: 10px;
     }

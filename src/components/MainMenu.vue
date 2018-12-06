@@ -18,8 +18,14 @@
 </template>
 
 <style lang="scss">
+    @import './../styles/settings';
+    
+    .navigation__list {
+        list-style: none;
+    }
+    
     .navigation__item {
-        line-height: 24px;
+        line-height: $base-line-height;
     }
     
     .navigation__link {

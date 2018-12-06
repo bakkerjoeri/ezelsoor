@@ -9,7 +9,6 @@
     import BookmarkList from './BookmarkList';
     
     export default {
-      name: 'app',
       props: ['tagName'],
       components: {
           BookmarkList,
