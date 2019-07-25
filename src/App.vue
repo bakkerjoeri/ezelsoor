@@ -31,6 +31,7 @@
 </script>
 
 <style lang="scss">
+    @import './styles/debug-baseline';
     @import './styles/settings';
     
     * {
@@ -40,6 +41,7 @@
     }
     
     body {
+        @include debug-baseline($base-line-height);
         font-size: $base-font-size;
         font-family: sans-serif;
     }

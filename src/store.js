@@ -62,6 +62,12 @@ export default new Vuex.Store({
         deleteBookmark(state, payload) {
             Vue.delete(state.bookmarks, payload.id);
         },
+        updateBookmark(state, payload) {
+            state.bookmarks[payload.id] = {
+                ...state.bookmarks[payload.id],
+                ...payload,
+            };
+        },
         setBookmarkIsToRead(state, payload) {
             Vue.set(state.bookmarks[payload.id], 'isToRead', payload.isToRead);
         },

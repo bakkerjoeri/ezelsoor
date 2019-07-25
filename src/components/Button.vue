@@ -1,8 +1,10 @@
 <template>
-    <button class="button" :type="type" v-on:click="onClick">
-        <slot>
-            
-        </slot>
+    <button
+        class="button"
+        @click="$emit('click', $event)"
+        :type="type"
+    >
+        <slot></slot>
     </button>
 </template>
 
@@ -11,11 +13,7 @@
         props: {
             type: {
                 type: String,
-                default: 'button',
-            },
-            onClick: {
-                type: Function,
-                default: () => {},
+                default: () => 'button',
             },
         },
     }
@@ -23,7 +21,7 @@
 
 <style lang="scss">
     @import './../styles/settings';
-
+    
     .button {
         display: block;
         padding-right: 5px;

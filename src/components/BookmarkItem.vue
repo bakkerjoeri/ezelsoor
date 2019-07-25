@@ -1,17 +1,28 @@
 <template>
     <div class="bookmark">
-        <bookmark-form v-if="isEditing" :initialBookmark="bookmark" :onSubmit="handleSubmitBookmarkForm"></bookmark-form>
+        <bookmark-form
+            v-if="isEditing"
+            :initialBookmark="bookmark"
+            @submit="handleSubmitBookmarkForm"
+            @delete="deleteBookmark(bookmark.id)"
+            @cancel="isEditing = !isEditing"
+        />
         <template v-else>
             <div class="bookmark__title-row">
-                <button
-                    class="button button--favorite"
+                <Button
+                    class="bookmark__favorite"
                     :class="{ 'is-favorite': bookmark.isFavorite }"
-                    v-on:click="setBookmarkIsFavorite(bookmark.id, !bookmark.isFavorite)"
+                    @click="setBookmarkIsFavorite(bookmark.id, !bookmark.isFavorite)"
                 >
                     ★
-                </button>
+                </Button>
                 <div class="bookmark__title">
-                    <a class="bookmark__link" v-if="bookmark.url" :href="bookmark.url" target="_blank">
+                    <a
+                        v-if="bookmark.url"
+                        :href="bookmark.url"
+                        target="_blank"
+                        class="bookmark__link"
+                    >
                         {{ bookmark.title || bookmark.url }}
                     </a>
                     <span v-else>
@@ -19,19 +30,39 @@
                     </span>
                 </div>
                 <div class="bookmark__actions">
-                    <button class="button" v-on:click="startEditing">edit</button>
-                    <button class="button" v-if="bookmark.isToRead" v-on:click="setBookmarkIsToRead(bookmark.id, false)">mark as read</button>
-                    <button class="button" v-if="!bookmark.isArchived" v-on:click="setBookmarkIsArchived(bookmark.id, true)">archive</button>
-                    <button class="button" v-if="bookmark.isArchived" v-on:click="setBookmarkIsArchived(bookmark.id, false)">unarchive</button>
-                    <button class="button" v-on:click="deleteBookmark(bookmark.id)">delete</button>
+                    <Button @click="startEditing">
+                        edit
+                    </Button>
+                    <Button
+                        v-if="bookmark.isToRead"
+                        @click="setBookmarkIsToRead(bookmark.id, false)"
+                    >
+                        mark as read
+                    </Button>
+                    <Button
+                        v-if="!bookmark.isArchived"
+                        @click="setBookmarkIsArchived(bookmark.id, true)"
+                    >
+                        archive
+                    </Button>
+                    <Button
+                        v-if="bookmark.isArchived"
+                        @click="setBookmarkIsArchived(bookmark.id, false)"
+                    >    
+                        unarchive
+                    </Button>
                 </div>
             </div>
-            <tag-list class="bookmark__tags" :tags="tags"></tag-list>
+            <tag-list
+                class="bookmark__tags"
+                :tags="tags"
+            />
         </template>
     </div>
 </template>
 
 <script>
+    import Button from './Button';
     import BookmarkForm from './BookmarkForm';
     import TagList from './TagList';
     
@@ -40,6 +71,7 @@
         components: {
             BookmarkForm,
             TagList,
+            Button,
         },
         data: () => {
             return {
@@ -51,15 +83,16 @@
                 return this.$store.getters.tagsOfBookmarkWithId(this.$props.bookmark.id);
             },
             bookmarkSource() {
-                return new URL(this.$props.bookmark.url).hostname;
+                return new URL(this.bookmark.url).hostname;
             }
         },
         methods: {
             startEditing() {
-                this.$data.isEditing = true;
+                this.isEditing = true;
             },
-            handleSubmitBookmarkForm() {
-                this.$data.isEditing = false;
+            handleSubmitBookmarkForm(bookmark) {
+                this.$store.commit('updateBookmark', bookmark);
+                this.isEditing = false;
             },
             setBookmarkIsToRead(bookmarkId, isToRead) {
                 this.$store.commit('setBookmarkIsToRead', {
@@ -120,21 +153,7 @@
         margin-left: 25px;
     }
     
-    .button {
-        display: block;
-        padding-right: 5px;
-        padding-left: 5px;
-        line-height: $base-line-height;
-        
-        background-color: transparent;
-        white-space: nowrap;
-        border: none;
-        outline: none;
-        
-        cursor: pointer;
-    }
-    
-    .button--favorite {
+    .bookmark__favorite {
         color: #ccc;
         font-size: 17px;
         

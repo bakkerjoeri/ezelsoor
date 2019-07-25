@@ -1,0 +1,17 @@
+@mixin debug-baseline($baseline) {
+	position: relative;
+
+	&::after {
+		pointer-events: none;
+		background: linear-gradient(to bottom, hsla(0, 41%, 45%, 0.22), hsla(0, 41%, 45%, 0.22) 1px, transparent 1px, transparent);
+		background-size: 100% $baseline;
+		bottom: 0;
+		content: "";
+		display: block;
+		left: 0;
+		position: absolute;
+		right: 0;
+		top: 0;
+		z-index: 9999;
+	}
+}
