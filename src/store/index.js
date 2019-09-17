@@ -17,28 +17,7 @@ export const DEFAULT_BOOKMARK_PROPERTIES = {
 
 export default new Vuex.Store({
 	state: {
-		bookmarks: {
-			'0': createBookmark({
-				id: '0',
-				url: 'https://www.youtube.com/watch?v=fgQWnglnGeU',
-				title: 'Hexagonal architecture',
-				tags: ['talk', 'development'],
-			}),
-			'1': createBookmark({
-				id: '1',
-				title: 'Procedural Generation in Game Design',
-				isToRead: true,
-				tags: ['development'],
-			}),
-			'2': createBookmark({
-				id: '2',
-				url: 'https://www.youtube.com/watch?v=5y_IAdOwaYs',
-				title: 'Nethack: Text Tourist Mode',
-				isToRead: true,
-				isFavorite: true,
-				tags: ['talk', 'gamedevelopment'],
-			}),
-		},
+		bookmarks: {},
 	},
 	mutations: {
 		fetch(state) {
