@@ -17,10 +17,10 @@
 		</ul>
 
 		<h2 class="Navigation__sectionHeader">Tags</h2>
-		<ul class="Navigation__list" v-if="allTags.length">
+		<ul class="Navigation__list" v-if="Object.keys(tagCount).length">
 			<li
 				class="Navigation__item"
-				v-for="(tag, index) in allTags"
+				v-for="([tag, amount], index) in Object.entries(tagCount)"
 				:key="index"
 			>
 				<router-link
@@ -32,6 +32,7 @@
 				>
 					{{ tag }}
 				</router-link>
+				<span class="TagCount">&middot; {{ amount }}</span>
 			</li>
 
 		</ul>
@@ -41,8 +42,8 @@
 <script>
 	export default {
 		computed: {
-			allTags() {
-				return this.$store.getters.allTags;
+			tagCount() {
+				return this.$store.getters.tagCount;
 			},
 		},
 	}
@@ -71,5 +72,9 @@
 		&:focus {
 			text-decoration: underline;
 		}
+	}
+
+	.TagCount {
+		color: lightgray;
 	}
 </style>

@@ -98,19 +98,22 @@ export default new Vuex.Store({
 				return bookmark.isToRead;
 			});
 		},
-		allTags: (state, getters) => {
+		tagCount: (state, getters) => {
 			return getters.allBookmarks.reduce((tags, bookmark) => {
 				return bookmark.tags.reduce((tags, tag) => {
-					if (tags.includes(tag)) {
-						return tags;
+					if (tags.hasOwnProperty(tag)) {
+						return {
+							...tags,
+							[tag]: tags[tag] + 1,
+						};
 					}
 
-					return [
+					return {
 						...tags,
-						tag,
-					];
+						[tag]: 1,
+					};
 				}, tags);
-			}, []);
+			}, {});
 		},
 		tagsOfBookmarkWithId: (state, getters) => bookmarkId => {
 			return getters.bookmarkWithId(bookmarkId).tags;

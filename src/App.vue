@@ -60,7 +60,7 @@
 		max-width: 800px;
 		padding: var(--baseline);
 		margin: 0 auto;
-		grid-template-columns: 160px 1fr;
+		grid-template-columns: max-content 1fr;
 		grid-template-rows: calc(2 * var(--baseline)) 1fr;
 		grid-gap: var(--baseline);
 	}
