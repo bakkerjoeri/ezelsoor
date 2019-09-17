@@ -8,7 +8,7 @@
 			type="checkbox"
 			:id="_uid"
 			:checked="value"
-			@input="$emit('input', $event.target.value)"
+			@change="$emit('change', $event.target.checked)"
 		/>
 		<label
 			:for="_uid"
@@ -23,6 +23,10 @@
 	import FormItem from './FormItem.vue';
 
 	export default {
+		model: {
+			prop: 'value',
+			event: 'change',
+		},
 		components: {
 			FormItem,
 		},

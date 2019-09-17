@@ -90,6 +90,6 @@
 
 	.Button--size-small {
 		--padding-button: 5px;
-		--font-size-button: 15px;
+		--font-size-button: 14px;
 	}
 </style>

@@ -8,7 +8,7 @@ export const DEFAULT_BOOKMARK_PROPERTIES = {
 	url: '',
 	title: '',
 	summary: '',
-	tagIds: [],
+	tags: [],
 	isFavorite: false,
 	isArchived: false,
 	isToRead: false,
@@ -41,6 +41,13 @@ export default new Vuex.Store({
 		},
 	},
 	mutations: {
+		fetch(state) {
+			if (localStorage.getItem('state')) {
+				this.replaceState(
+					Object.assign(state, JSON.parse(localStorage.getItem('state')))
+				);
+			}
+		},
 		addBookmark(state, payload) {
 			let newBookmark = createBookmark(payload);
 			Vue.set(state.bookmarks, newBookmark.id, newBookmark);
@@ -91,26 +98,27 @@ export default new Vuex.Store({
 				return bookmark.isToRead;
 			});
 		},
+		allTags: (state, getters) => {
+			return getters.allBookmarks.reduce((tags, bookmark) => {
+				return bookmark.tags.reduce((tags, tag) => {
+					if (tags.includes(tag)) {
+						return tags;
+					}
+
+					return [
+						...tags,
+						tag,
+					];
+				}, tags);
+			}, []);
+		},
 		tagsOfBookmarkWithId: (state, getters) => bookmarkId => {
-			return getters.bookmarkWithId(bookmarkId).tagIds.map((tagId) => {
-				return getters.tagWithId(tagId);
-			});
+			return getters.bookmarkWithId(bookmarkId).tags;
 		},
-		allTags: state => {
-			return Object.values(state.tags);
-		},
-		tagWithId: (state) => (tagId) => {
-			return state.tags[tagId];
-		},
-		tagWithName: (state, getters) => name => {
-			return getters.allTags.find((tag) => {
-				return tag.name === name;
-			});
-		},
-		bookmarksWithTagIds: (state, getters) => tagIds => {
+		bookmarksWithTags: (state, getters) => tags => {
 			return getters.allBookmarks.filter((bookmark) => {
-				return tagIds.every((tagId) => {
-					return bookmark.tagIds.includes(tagId);
+				return tags.every((tag) => {
+					return bookmark.tags.includes(tag);
 				});
 			});
 		},

@@ -30,7 +30,7 @@
 				type: String,
 			},
 			labelFor: {
-				type: String,
+				type: [String, Number],
 			},
 			description: {
 				type: String,

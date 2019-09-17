@@ -7,6 +7,7 @@
 	>
 		<input
 			class="FormInput__input"
+			:placeholder="placeholder"
 			:type="type"
 			:id="_uid"
 			:value="value"
@@ -26,6 +27,9 @@
 				type: String,
 			},
 			label: {
+				type: String,
+			},
+			placeholder: {
 				type: String,
 			},
 			type: {

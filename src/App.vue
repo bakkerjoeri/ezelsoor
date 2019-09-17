@@ -24,6 +24,13 @@
 			Navigation,
 			BookmarkUrlForm,
 		},
+		beforeCreate() {
+			this.$store.subscribe((mutation, state) => {
+				localStorage.setItem('state', JSON.stringify(state));
+			});
+
+			this.$store.commit('fetch');
+		}
 	}
 </script>
 
@@ -49,12 +56,13 @@
 	}
 
 	.App {
-		max-width: 960px;
-		padding-top: var(--baseline);
-		margin: 0 auto;
 		display: grid;
-		grid-template-columns: 150px 1fr;
+		max-width: 800px;
+		padding: var(--baseline);
+		margin: 0 auto;
+		grid-template-columns: 160px 1fr;
 		grid-template-rows: calc(2 * var(--baseline)) 1fr;
+		grid-gap: var(--baseline);
 	}
 
 	.App__menubar {

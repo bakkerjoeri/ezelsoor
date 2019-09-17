@@ -1,9 +1,10 @@
 <template>
 	<router-link
-		class="tag"
-		:to="{ name: 'tag', params: { tagName: tag.name } }"
+		class="TagItem"
+		:to="{ name: 'tag', params: { tagName: tag } }"
 	>
-		{{ tag.name }}</router-link>
+		{{ tag }}
+	</router-link>
 </template>
 
 <script>
@@ -13,9 +14,9 @@
 </script>
 
 <style lang="scss">
-	.tag {
+	.TagItem {
 		line-height: var(--baseline);
-		font-size: 13px;
+		font-size: 14px;
 		color: #000;
 	}
 </style>

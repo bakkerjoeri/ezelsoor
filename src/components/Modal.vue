@@ -1,21 +1,15 @@
 <template>
-	<transition name="modal">
-		<div class="modal__mask">
-			<div class="modal">
-				<div class="modal__header">
-					<slot name="header">
-						
-					</slot>
+	<transition name="Modal">
+		<div class="Modal__mask">
+			<div class="Modal">
+				<div class="Modal__header" v-if="$slots.header">
+					<slot name="header"/>
 				</div>
-				<div class="modal__body">
-					<slot name="body">
-						
-					</slot>
+				<div class="Modal__body" v-if="$slots.default">
+					<slot/>
 				</div>
-				<div class="modal__footer">
-					<slot name="footer">
-						
-					</slot>
+				<div class="Modal__footer" v-if="$slots.footer">
+					<slot name="footer"/>
 				</div>
 			</div>
 		</div>
@@ -23,7 +17,7 @@
 </template>
 
 <style lang="scss">
-	.modal__mask {
+	.Modal__mask {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -35,16 +29,19 @@
 		background-color: rgba(0, 0, 0, .5);
 		transition: opacity .2s;
 	}
-	
-	.modal {
-		width: 100%;
-		max-width: 360px;
+
+	.Modal {
+		overflow-y: scroll;
+		width: 480px;
+		max-width: 100%;
+		max-height: calc(100vh - 40px);
+		margin: 20px;
 		background-color: #fff;
 	}
-	
-	.modal__header,
-	.modal__body,
-	.modal__footer {
+
+	.Modal__header,
+	.Modal__body,
+	.Modal__footer {
 		padding: 20px;
 	}
 </style>

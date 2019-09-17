@@ -1,97 +1,98 @@
 <template>
 	<li class="BookmarkItem">
-		<BookmarkForm
-			v-if="isEditing"
-			:initialBookmark="bookmark"
-			@submit="handleSubmitBookmarkForm"
-			@delete="deleteBookmark(bookmark.id)"
-			@cancel="isEditing = !isEditing"
-		/>
-		<template v-else>
-			<div class="BookmarkItem__title-row">
-				<Button
-					class="BookmarkItem__favorite"
-					:class="{ 'is-favorite': bookmark.isFavorite }"
-					variant="filled"
-					color="transparent"
-					size="small"
-					@click="setBookmarkIsFavorite(bookmark.id, !bookmark.isFavorite)"
-				>
-					★
-				</Button>
-				<div class="BookmarkItem__title">
-					<a
-						v-if="bookmark.url"
-						:href="bookmark.url"
-						target="_blank"
-						class="BookmarkItem__link"
-					>
-						{{ bookmark.title || bookmark.url }}
-					</a>
-					<span v-else>
-						{{ bookmark.title || bookmark.url }}
-					</span>
-				</div>
-				<div class="BookmarkItem__actions">
-					<Button
-						@click="startEditing"
-						class="BookmarkItem__action"
-						variant="text"
-						size="small"
-					>
-						edit
-					</Button>
-
-					<Button
-						v-if="bookmark.isToRead"
-						class="BookmarkItem__action"
-						variant="text"
-						size="small"
-						@click="setBookmarkIsToRead(bookmark.id, false)"
-					>
-						mark as read
-					</Button>
-
-					<Button
-						v-if="!bookmark.isArchived"
-						class="BookmarkItem__action"
-						variant="text"
-						size="small"
-						@click="setBookmarkIsArchived(bookmark.id, true)"
-					>
-						archive
-					</Button>
-
-					<Button
-						v-if="bookmark.isArchived"
-						class="BookmarkItem__action"
-						variant="text"
-						size="small"
-						@click="setBookmarkIsArchived(bookmark.id, false)"
-					>
-						unarchive
-					</Button>
-				</div>
-			</div>
-			<tag-list
-				class="BookmarkItem__tags"
-				:tags="tags"
+		<Modal v-if="isEditing">
+			<BookmarkForm
+				:bookmark="bookmark"
+				@submit="handleSubmitBookmarkForm(bookmark.id, $event)"
+				@delete="deleteBookmark(bookmark.id)"
+				@cancel="isEditing = !isEditing"
 			/>
-		</template>
+		</Modal>
+		<div class="BookmarkItem__title-row">
+			<Button
+				class="BookmarkItem__favorite"
+				:class="{ 'is-favorite': bookmark.isFavorite }"
+				variant="filled"
+				color="transparent"
+				size="small"
+				@click="setBookmarkIsFavorite(bookmark.id, !bookmark.isFavorite)"
+			>
+				★
+			</Button>
+			<div class="BookmarkItem__title">
+				<a
+					v-if="bookmark.url"
+					:href="bookmark.url"
+					target="_blank"
+					class="BookmarkItem__link"
+				>
+					{{ bookmark.title || bookmark.url }}
+				</a>
+				<span v-else>
+					{{ bookmark.title || bookmark.url }}
+				</span>
+			</div>
+			<div class="BookmarkItem__actions">
+				<Button
+					@click="startEditing"
+					class="BookmarkItem__action"
+					variant="text"
+					size="small"
+				>
+					edit
+				</Button>
+
+				<Button
+					v-if="bookmark.isToRead"
+					class="BookmarkItem__action"
+					variant="text"
+					size="small"
+					@click="setBookmarkIsToRead(bookmark.id, false)"
+				>
+					mark as read
+				</Button>
+
+				<Button
+					v-if="!bookmark.isArchived"
+					class="BookmarkItem__action"
+					variant="text"
+					size="small"
+					@click="setBookmarkIsArchived(bookmark.id, true)"
+				>
+					archive
+				</Button>
+
+				<Button
+					v-if="bookmark.isArchived"
+					class="BookmarkItem__action"
+					variant="text"
+					size="small"
+					@click="setBookmarkIsArchived(bookmark.id, false)"
+				>
+					unarchive
+				</Button>
+			</div>
+		</div>
+		<TagList
+			class="BookmarkItem__tags"
+			:tags="bookmark.tags"
+		/>
 	</li>
 </template>
 
 <script>
-	import Button from './Button';
-	import BookmarkForm from './BookmarkForm';
-	import TagList from './TagList';
+	import Button from './Button.vue';
+	import BookmarkForm from './BookmarkForm.vue';
+	import Modal from './Modal.vue';
+	import TagList from './TagList.vue';
 
 	export default {
 		props: ['bookmark'],
 		components: {
 			BookmarkForm,
-			TagList,
 			Button,
+			Modal,
+			TagList,
 		},
 		data: () => {
 			return {
@@ -99,9 +100,6 @@
 			};
 		},
 		computed: {
-			tags() {
-				return this.$store.getters.tagsOfBookmarkWithId(this.$props.bookmark.id);
-			},
 			bookmarkSource() {
 				return new URL(this.bookmark.url).hostname;
 			}
@@ -110,8 +108,12 @@
 			startEditing() {
 				this.isEditing = true;
 			},
-			handleSubmitBookmarkForm(bookmark) {
-				this.$store.commit('updateBookmark', bookmark);
+			handleSubmitBookmarkForm(id, bookmark) {
+				this.$store.commit('updateBookmark', {
+					id,
+					...bookmark
+				});
+
 				this.isEditing = false;
 			},
 			setBookmarkIsToRead(bookmarkId, isToRead) {

@@ -7,22 +7,16 @@
 
 <script>
 	import BookmarkList from './BookmarkList';
-	
+
 	export default {
-	  props: ['tagName'],
-	  components: {
-		  BookmarkList,
-	  },
-	  methods: {
-		  getBookmarksWithTagName(tagName) {
-			  let tagWithName = this.$store.getters.tagWithName(tagName);
-			  
-			  if (!tagWithName) {
-				  return [];
-			  }
-			  
-			  return this.$store.getters.bookmarksWithTagIds([tagWithName.id]);
-		  },
-	  },
-	}
+		props: ['tagName'],
+		components: {
+			BookmarkList,
+		},
+		methods: {
+			getBookmarksWithTagName(tagName) {
+				return this.$store.getters.bookmarksWithTags([tagName]);
+			},
+		},
+	};
 </script>

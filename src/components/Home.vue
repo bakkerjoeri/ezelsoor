@@ -7,16 +7,15 @@
 
 <script>
 	import BookmarkList from './BookmarkList';
-	
+
 	export default {
-	  name: 'app',
-	  components: {
-		  BookmarkList,
-	  },
-	  computed: {
-		  bookmarks() {
-			  return this.$store.getters.activeBookmarks;
-		  }
-	  },
+		components: {
+			BookmarkList,
+		},
+		computed: {
+			bookmarks() {
+				return this.$store.getters.activeBookmarks;
+			}
+		},
 	}
 </script>
