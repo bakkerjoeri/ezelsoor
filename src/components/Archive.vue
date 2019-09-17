@@ -1,27 +1,21 @@
 <template>
-    <div>
-        <h2>Archive</h2>
-        <bookmark-list :bookmarks="archivedBookmarks"></bookmark-list>
-    </div>
+	<div>
+		<h2>Archive</h2>
+		<BookmarkList :bookmarks="archivedBookmarks"/>
+	</div>
 </template>
 
 <script>
-    import BookmarkList from './BookmarkList';
-    
-    export default {
-        components: {
-            BookmarkList,
-        },
-        computed: {
-          archivedBookmarks() {
-              return this.$store.getters.archivedBookmarks;
-          }
-      },
-    }
-</script>
+	import BookmarkList from './BookmarkList';
 
-<style lang="scss">
-    .app {
-      
-    }
-</style>
+	export default {
+		components: {
+			BookmarkList,
+		},
+		computed: {
+			archivedBookmarks() {
+				return this.$store.getters.archivedBookmarks;
+			},
+		},
+	}
+</script>

@@ -1,0 +1,52 @@
+<template>
+	<FormItem
+		class="FormInput"
+		:label="label"
+		:label-for="_uid"
+		:description="description"
+	>
+		<input
+			class="FormInput__input"
+			:type="type"
+			:id="_uid"
+			:value="value"
+			@input="$emit('input', $event.target.value)"
+		/>
+	</FormItem>
+</template>
+
+<script>
+	import FormItem from './FormItem.vue';
+	export default {
+		components: {
+			FormItem,
+		},
+		props: {
+			description: {
+				type: String,
+			},
+			label: {
+				type: String,
+			},
+			type: {
+				type: String,
+				default: "text"
+			},
+			value: {
+				type: [String, Number],
+			},
+		},
+	};
+</script>
+
+<style lang="scss">
+	.FormInput__input {
+		display: block;
+		width: 100%;
+		padding: 10px;
+		font-size: var(--font-size-body);
+		line-height: var(--baseline);
+		border: 1px solid lightgray;
+		border-radius: 5px;
+	}
+</style>

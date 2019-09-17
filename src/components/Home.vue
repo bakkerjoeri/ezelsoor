@@ -1,22 +1,22 @@
 <template>
-    <div>
-        <h2>Home</h2>
-        <bookmark-list :bookmarks="bookmarks"></bookmark-list>
-    </div>
+	<div>
+		<h2>Home</h2>
+		<BookmarkList :bookmarks="bookmarks"></BookmarkList>
+	</div>
 </template>
 
 <script>
-    import BookmarkList from './BookmarkList';
-    
-    export default {
-      name: 'app',
-      components: {
-          BookmarkList,
-      },
-      computed: {
-          bookmarks() {
-              return this.$store.getters.activeBookmarks;
-          }
-      },
-    }
+	import BookmarkList from './BookmarkList';
+	
+	export default {
+	  name: 'app',
+	  components: {
+		  BookmarkList,
+	  },
+	  computed: {
+		  bookmarks() {
+			  return this.$store.getters.activeBookmarks;
+		  }
+	  },
+	}
 </script>

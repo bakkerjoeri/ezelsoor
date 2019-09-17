@@ -9,16 +9,16 @@ import ToRead from './components/ToRead';
 Vue.use(VueRouter);
 
 const routes = [
-    { path: '/', component: Home },
-    { path: '/favorites', component: Favorites },
-    { path: '/tag/:tagName', name: 'tag', component: Tagged, props: true },
-    { path: '/archive', component: Archive },
-    { path: '/toread', component: ToRead },
+	{ path: '/', component: Home },
+	{ path: '/favorites', component: Favorites },
+	{ path: '/tag/:tagName', name: 'tag', component: Tagged, props: true },
+	{ path: '/archive', component: Archive },
+	{ path: '/toread', component: ToRead },
 ];
 
 const router = new VueRouter({
-    mode: 'history',
-    routes,
+	mode: 'history',
+	routes,
 });
 
 export default router;

@@ -1,14 +1,14 @@
 linters:
   ColorVariable:
-    enabled: false
+	enabled: false
   HexNotation:
-    style: lowercase
+	style: lowercase
   MergeableSelector:
-    force_nesting: false
+	force_nesting: false
   Indentation:
-    allow_non_nested_indentation: true
-    width: 4
+	allow_non_nested_indentation: true
+	width: 4
   PropertySortOrder:
-    order: recess
+	order: recess
   SelectorFormat:
-    convention: hyphenated_BEM
+	convention: hyphenated_BEM

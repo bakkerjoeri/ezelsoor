@@ -1,35 +1,37 @@
 <template>
-    <ul class="tag-list" v-if="tags.length">
-        <li class="tag-list__item" v-for="tag in tags" :key="tag.id">
-            <tag-item :tag="tag"></tag-item>
-        </li>
-    </ul>
+	<ul class="TagList" v-if="tags.length">
+		<TagItem
+			v-for="(tag, index) in tags"
+			class="TagList__item"
+			:key="index"
+			:tag="tag"
+		/>
+	</ul>
 </template>
 
 <script>
-    import TagItem from './TagItem';
-    
-    export default {
-        props: ['tags'],
-        components: {
-            TagItem,
-        },
-    };
+	import TagItem from './TagItem';
+
+	export default {
+		props: {
+			tags: {
+				type: Array,
+				default: () => [],
+			},
+		},
+		components: {
+			TagItem,
+		},
+	};
 </script>
 
 <style lang="scss">
-    .tag-list {
-        display: flex;
-        list-style: none;
-    }
-    
-    .tag-list__item {
-        &:not(:first-child) {
-            margin-left: 5px;
-        }
-        
-        &:not(:last-child) {
-            margin-right: 5px;
-        }
-    }
+	.TagList {
+		display: flex;
+		list-style: none;
+	}
+
+	.TagList__item + .TagList__item {
+		margin-left: 10px;
+	}
 </style>
