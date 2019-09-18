@@ -21,6 +21,8 @@
 			<FormInput
 				label="Tags"
 				type="text"
+				autocorrect="off"
+				autocapitalize="off"
 				v-model.trim="tagString"
 			/>
 

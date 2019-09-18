@@ -12,6 +12,8 @@
 			:id="_uid"
 			:value="value"
 			:required="required"
+			:autocorrect="autocorrect"
+			:autocapitalize="autocapitalize"
 			@input="$emit('input', $event.target.value)"
 		/>
 	</FormItem>
@@ -44,6 +46,12 @@
 				type: Boolean,
 				default: false,
 			},
+			autocorrect: {
+				type: Boolean,
+			},
+			autocapitalize: {
+				type: Boolean,
+			}
 		},
 	};
 </script>
