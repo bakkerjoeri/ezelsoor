@@ -19,13 +19,13 @@
 			</ul>
 		</div>
 
-		<div class="Navigation__section" v-if="Object.keys(tagCount).length">
+		<div class="Navigation__section" v-if="Object.keys(orderedTagCount).length">
 			<h2 class="Navigation__header">Tags</h2>
 
 			<ul class="Navigation__list">
 				<li
 					class="Navigation__item"
-					v-for="([tag, amount], index) in Object.entries(tagCount)"
+					v-for="([tag, amount], index) in Object.entries(orderedTagCount)"
 					:key="index"
 				>
 					<router-link
@@ -50,6 +50,16 @@
 			tagCount() {
 				return this.$store.getters.tagCount;
 			},
+			orderedTagCount() {
+				const tagCount = this.tagCount;
+
+				return Object.keys(tagCount).sort().reduce((orderedTagCount, tagName) => {
+					return {
+						...orderedTagCount,
+						[tagName]: tagCount[tagName],
+					}
+				}, {});
+			}
 		},
 	}
 </script>
