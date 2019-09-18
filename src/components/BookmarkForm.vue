@@ -4,24 +4,24 @@
 			<FormInput
 				label="Link"
 				type="url"
-				v-model="url"
+				v-model.trim="url"
 			/>
 
 			<FormInput
 				label="Title"
 				type="text"
-				v-model="title"
+				v-model.trim="title"
 			/>
 
 			<FormTextarea
 				label="Summary"
-				v-model="summary"
+				v-model.trim="summary"
 			/>
 
 			<FormInput
 				label="Tags"
 				type="text"
-				v-model="tagString"
+				v-model.trim="tagString"
 			/>
 
 			<FormCheckbox
