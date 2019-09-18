@@ -3,7 +3,7 @@
 		<FormInput
 			class="BookmarkUrlForm__input"
 			ref="input"
-			placeholder="Add your link"
+			placeholder="Enter new bookmark link"
 			type="url"
 			required
 			v-model="url"
@@ -14,7 +14,7 @@
 			type="submit"
 			variant="text"
 		>
-			Save
+			Create
 		</Button>
 
 		<Button
@@ -22,7 +22,7 @@
 			variant="text"
 			@click="isBookmarkDetailsDialogOpen = true"
 		>
-			More...
+			Provide details...
 		</Button>
 
 		<Modal v-if="isBookmarkDetailsDialogOpen">
