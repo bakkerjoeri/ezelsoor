@@ -11,6 +11,7 @@
 			:type="type"
 			:id="_uid"
 			:value="value"
+			:required="required"
 			@input="$emit('input', $event.target.value)"
 		/>
 	</FormItem>
@@ -38,6 +39,10 @@
 			},
 			value: {
 				type: [String, Number],
+			},
+			required: {
+				type: Boolean,
+				default: false,
 			},
 		},
 	};
