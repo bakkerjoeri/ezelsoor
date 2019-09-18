@@ -98,8 +98,10 @@
 					url: this.url,
 					title: this.title,
 					summary: this.summary,
+					isFavorite: this.isFavorite,
 					isToRead: this.isToRead,
 					tags: this.tagString.trim().split(' '),
+					isArchived: this.isArchived,
 				});
 			},
 		}
