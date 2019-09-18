@@ -12,9 +12,7 @@ export const DEFAULT_BOOKMARK_PROPERTIES = {
 	isFavorite: false,
 	isArchived: false,
 	isToRead: false,
-	dateRead: null,
 	dateCreated: null,
-	dateUpdated: null,
 };
 
 export default new Vuex.Store({
@@ -116,10 +114,6 @@ function createBookmark(properties = {}) {
 
 	if (!properties.dateCreated) {
 		properties.dateCreated = new Date().valueOf();
-	}
-
-	if (!properties.dateUpdated) {
-		this.dateUpdated = new Date().valueOf();
 	}
 
 	return {
