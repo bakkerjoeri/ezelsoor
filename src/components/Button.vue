@@ -42,6 +42,7 @@
 		line-height: var(--baseline);
 		font-size: var(--font-size-button);
 		white-space: nowrap;
+		background-color: transparent;
 		border: 0;
 		border-radius: 5px;
 
