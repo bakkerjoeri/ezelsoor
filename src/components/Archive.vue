@@ -7,6 +7,7 @@
 
 <script>
 	import BookmarkList from './BookmarkList';
+	import sortBookmarks from './../utility/sortBookmarks.js';
 
 	export default {
 		components: {
@@ -14,7 +15,7 @@
 		},
 		computed: {
 			archivedBookmarks() {
-				return this.$store.getters.archivedBookmarks;
+				return sortBookmarks(this.$store.getters.archivedBookmarks);
 			},
 		},
 	}
