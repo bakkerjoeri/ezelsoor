@@ -66,7 +66,7 @@
 	}
 
 	.App__menubar {
-		grid-column: 2 / span 1;
+		grid-column: 1 / -1;
 		grid-row: 1 / span 1;
 		padding-left: 10px;
 		padding-right: 10px;

@@ -14,7 +14,7 @@
 			type="submit"
 			variant="text"
 		>
-			Create
+			Add
 		</Button>
 
 		<Button
@@ -22,7 +22,7 @@
 			variant="text"
 			@click="isBookmarkDetailsDialogOpen = true"
 		>
-			Provide details...
+			Details...
 		</Button>
 
 		<Modal v-if="isBookmarkDetailsDialogOpen">

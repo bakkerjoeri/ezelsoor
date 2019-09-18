@@ -151,6 +151,11 @@
 	.BookmarkItem__title-row {
 		display: flex;
 		align-items: flex-start;
+		flex-wrap: wrap;
+
+		@media (min-width: 640px) {
+			flex-wrap: nowrap;
+		}
 	}
 
 	.BookmarkItem__title {
@@ -164,8 +169,13 @@
 
 	.BookmarkItem__actions {
 		display: flex;
-		flex: 1 1 auto;
-		justify-content: flex-end;
+		flex: 1 1 100%;
+		margin-left: 25px;
+
+		@media (min-width: 640px) {
+			flex-basis: auto;
+			justify-content: flex-end;
+		}
 	}
 
 	.BookmarkItem__action + .BookmarkItem__action {
