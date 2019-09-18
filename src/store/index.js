@@ -13,6 +13,8 @@ export const DEFAULT_BOOKMARK_PROPERTIES = {
 	isArchived: false,
 	isToRead: false,
 	dateRead: null,
+	dateCreated: null,
+	dateUpdated: null,
 };
 
 export default new Vuex.Store({
@@ -34,10 +36,10 @@ export default new Vuex.Store({
 		deleteBookmark(state, payload) {
 			Vue.delete(state.bookmarks, payload.id);
 		},
-		updateBookmark(state, payload) {
-			state.bookmarks[payload.id] = {
-				...state.bookmarks[payload.id],
-				...payload,
+		updateBookmark(state, bookmark) {
+			state.bookmarks[bookmark.id] = {
+				...state.bookmarks[bookmark.id],
+				...bookmark,
 			};
 		},
 		setBookmarkIsToRead(state, payload) {
@@ -114,6 +116,10 @@ function createBookmark(properties = {}) {
 
 	if (!properties.dateCreated) {
 		properties.dateCreated = new Date().valueOf();
+	}
+
+	if (!properties.dateUpdated) {
+		this.dateUpdated = new Date().valueOf();
 	}
 
 	return {
