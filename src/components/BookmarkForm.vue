@@ -100,8 +100,8 @@
 					summary: this.summary,
 					isFavorite: this.isFavorite,
 					isToRead: this.isToRead,
-					tags: this.tagString.trim().split(' '),
 					isArchived: this.isArchived,
+					tags: this.tagString ? this.tagString.split(' ') : [],
 				});
 			},
 		}
