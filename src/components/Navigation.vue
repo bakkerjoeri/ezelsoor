@@ -34,10 +34,8 @@
 							name: 'tag',
 							params: { tagName: tag }
 						}"
-					>
-						{{ tag }}
-					</router-link>
-					<span class="TagCount">&middot; {{ amount }}</span>
+					>{{ tag }}</router-link>
+					<span class="TagCount"> &middot; {{ amount }}</span>
 				</li>
 			</ul>
 		</div>
