@@ -63,6 +63,7 @@
 
 <script>
 	import { DEFAULT_BOOKMARK_PROPERTIES } from './../store';
+	import unique from './../utility/unique.js';
 	import Button from './Button';
 	import FormCheckbox from './FormCheckbox';
 	import FormInput from './FormInput';
@@ -101,7 +102,7 @@
 					isFavorite: this.isFavorite,
 					isToRead: this.isToRead,
 					isArchived: this.isArchived,
-					tags: this.tagString ? this.tagString.split(' ') : [],
+					tags: this.tagString ? unique(this.tagString.split(' ')) : [],
 				});
 			},
 		}
