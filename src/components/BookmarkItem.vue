@@ -170,11 +170,11 @@
 	.BookmarkItem__actions {
 		display: flex;
 		flex: 1 1 100%;
-		margin-left: 25px;
 
 		@media (min-width: 640px) {
 			flex-basis: auto;
 			justify-content: flex-end;
+			margin-left: 25px;
 		}
 	}
 
@@ -184,10 +184,14 @@
 
 	.BookmarkItem__tags {
 		flex: 0 1 100%;
-		margin-left: 25px;
+
+		@media (min-width: 640px) {
+			margin-left: 25px;
+		}
 	}
 
 	.BookmarkItem__favorite {
+		padding-left: 0;
 		color: #ccc;
 		font-size: 17px;
 
