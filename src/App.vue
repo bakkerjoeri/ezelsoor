@@ -56,33 +56,37 @@
 	}
 
 	.App {
+		--gap: calc(var(--baseline) / 2);
+
 		display: grid;
 		max-width: 800px;
-		padding: var(--baseline);
+		padding: var(--gap);
 		margin: 0 auto;
 		grid-template-columns: max-content 1fr;
 		grid-template-rows: calc(2 * var(--baseline)) 1fr;
-		grid-gap: var(--baseline);
+		grid-gap: var(--gap);
+
+		@media (min-width: 640px) {
+			--gap: var(--baseline);
+		}
 	}
 
 	.App__menubar {
 		grid-column: 1 / -1;
 		grid-row: 1 / span 1;
-		padding-left: 10px;
-		padding-right: 10px;
+
+		display: flex;
+		justify-content: space-between;
 	}
 
 	.App__navigation {
 		grid-column: 1 / span 1;
 		grid-row: 2 / -1;
-		padding-left: 10px;
-		padding-right: 10px;
+		min-width: 120px;
 	}
 
 	.App__main {
 		grid-column: span 1 / -1;
 		grid-row: 2 / -1;
-		padding-left: 10px;
-		padding-right: 10px;
 	}
 </style>
