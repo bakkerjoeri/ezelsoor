@@ -10,12 +10,12 @@
 			<FormInput
 				label="Title"
 				type="text"
-				v-model.trim="title"
+				v-model="title"
 			/>
 
 			<FormTextarea
 				label="Summary"
-				v-model.trim="summary"
+				v-model="summary"
 			/>
 
 			<FormInput
@@ -23,7 +23,7 @@
 				type="text"
 				autocorrect="off"
 				autocapitalize="off"
-				v-model.trim="tagString"
+				v-model="tagString"
 			/>
 
 			<FormCheckbox
@@ -99,12 +99,12 @@
 			onSubmitForm() {
 				this.$emit('submit', {
 					url: this.url,
-					title: this.title,
+					title: this.title.trim(),
 					summary: this.summary,
 					isFavorite: this.isFavorite,
 					isToRead: this.isToRead,
 					isArchived: this.isArchived,
-					tags: this.tagString ? unique(this.tagString.split(' ')) : [],
+					tags: this.tagString.trim() ? unique(this.tagString.trim().split(' ')) : [],
 				});
 			},
 		}
