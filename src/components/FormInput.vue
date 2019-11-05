@@ -47,10 +47,10 @@
 				default: false,
 			},
 			autocorrect: {
-				type: Boolean,
+				type: String,
 			},
 			autocapitalize: {
-				type: Boolean,
+				type: String,
 			}
 		},
 	};

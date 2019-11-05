@@ -59,7 +59,7 @@
 		overflow-y: auto;
 		resize: none;
 		width: 100%;
-		max-height: calc(4 * var(--baseline) + 2 * 12px);
+		max-height: calc(5 * var(--baseline) + 2 * 12px);
 		padding: 10px;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
