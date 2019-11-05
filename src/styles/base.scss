@@ -1,4 +1,27 @@
 :root {
     --baseline: 26px;
     --font-size-body: 17px;
+    --color-text: #000;
+}
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+body {
+    // @include debug-baseline(var(--baseline));
+    font-size: var(--font-size-body);
+    line-height: var(--baseline);
+    font-family: sans-serif;
+    color: var(--color-text);
+}
+
+h2 {
+    line-height: calc(2 * var(--baseline));
+}
+
+textarea {
+    font-family: inherit;
 }

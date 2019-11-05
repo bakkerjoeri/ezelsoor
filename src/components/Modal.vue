@@ -1,19 +1,17 @@
 <template>
-	<transition name="Modal">
-		<div class="Modal__mask">
-			<div class="Modal">
-				<div class="Modal__header" v-if="$slots.header">
-					<slot name="header"/>
-				</div>
-				<div class="Modal__body" v-if="$slots.default">
-					<slot/>
-				</div>
-				<div class="Modal__footer" v-if="$slots.footer">
-					<slot name="footer"/>
-				</div>
+	<div class="Modal__mask">
+		<div class="Modal">
+			<div class="Modal__header" v-if="$slots.header">
+				<slot name="header"/>
+			</div>
+			<div class="Modal__body" v-if="$slots.default">
+				<slot/>
+			</div>
+			<div class="Modal__footer" v-if="$slots.footer">
+				<slot name="footer"/>
 			</div>
 		</div>
-	</transition>
+	</div>
 </template>
 
 <style lang="scss">

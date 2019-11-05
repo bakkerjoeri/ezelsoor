@@ -4,7 +4,7 @@
 			<BookmarkForm
 				:bookmark="bookmark"
 				@submit="handleSubmitBookmarkForm(bookmark.id, $event)"
-				@delete="deleteBookmark(bookmark.id)"
+				@delete="handleDeleteBookmark(bookmark.id)"
 				@cancel="isEditing = !isEditing"
 			/>
 		</Modal>
@@ -114,6 +114,10 @@
 					...bookmark
 				});
 
+				this.isEditing = false;
+			},
+			handleDeleteBookmark(id) {
+				this.deleteBookmark(id);
 				this.isEditing = false;
 			},
 			setBookmarkIsToRead(bookmarkId, isToRead) {

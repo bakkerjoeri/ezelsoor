@@ -2,8 +2,8 @@
 	<ul class="BookmarkList" v-if="bookmarks.length">
 		<BookmarkItem
 			class="BookmarkList__item"
-			v-for="bookmark in bookmarks"
-			:key="bookmark.id"
+			v-for="(bookmark, index) in sortedBookmarks"
+			:key="index"
 			:bookmark="bookmark"
 		/>
 	</ul>
@@ -14,11 +14,22 @@
 
 <script>
 	import BookmarkItem from './BookmarkItem';
+	import sortBookmarks from './../utility/sortBookmarks.js';
 
 	export default {
-		props: ['bookmarks'],
 		components: {
 			BookmarkItem
+		},
+		props: {
+			bookmarks: {
+				type: Array,
+				default: () => [],
+			},
+		},
+		computed: {
+			sortedBookmarks() {
+				return sortBookmarks(this.bookmarks);
+			}
 		}
 	};
 </script>

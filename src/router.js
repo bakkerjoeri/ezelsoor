@@ -1,19 +1,53 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from './components/Home';
-import Favorites from './components/Favorites';
-import Tagged from './components/Tagged';
-import Archive from './components/Archive';
-import ToRead from './components/ToRead';
+import store from './store';
+import BookmarkCollectionView from './components/BookmarkCollectionView';
 
 Vue.use(VueRouter);
 
 const routes = [
-	{ path: '/', component: Home },
-	{ path: '/favorites', component: Favorites },
-	{ path: '/tag/:tagName', name: 'tag', component: Tagged, props: true },
-	{ path: '/archive', component: Archive },
-	{ path: '/toread', component: ToRead },
+	{
+		path: '/',
+		component: BookmarkCollectionView,
+		props: () => ({
+			title: 'Bookmarks',
+			bookmarks: store.getters.activeBookmarks,
+		}),
+	},
+	{
+		path: '/favorites',
+		component: BookmarkCollectionView,
+		props: () => ({
+			title: 'Favorites',
+			bookmarks: store.getters.archivedBookmarks,
+		}),
+	},
+	{
+		path: '/tag/:tagName',
+		component: BookmarkCollectionView,
+		name: 'tag',
+		props: (route) => ({
+			title: `#${route.params.tagName}`,
+			tagName: route.params.tagName,
+			bookmarks: store.getters.bookmarksWithTags([route.params.tagName]),
+		}),
+	},
+	{
+		path: '/toread',
+		component: BookmarkCollectionView,
+		props: () => ({
+			title: 'Read later',
+			bookmarks: store.getters.toReadBookmarks,
+		}),
+	},
+	{
+		path: '/archive',
+		component: BookmarkCollectionView,
+		props: () => ({
+			title: 'Archived',
+			bookmarks: store.getters.archivedBookmarks,
+		}),
+	},
 ];
 
 const router = new VueRouter({
