@@ -19,7 +19,7 @@ const routes = [
 		component: BookmarkCollectionView,
 		props: () => ({
 			title: 'Favorites',
-			bookmarks: store.getters.archivedBookmarks,
+			bookmarks: store.getters.favoriteBookmarks,
 		}),
 	},
 	{
