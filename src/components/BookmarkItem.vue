@@ -24,6 +24,7 @@
 					v-if="bookmark.url"
 					:href="bookmark.url"
 					target="_blank"
+					rel="noopener noreferrer"
 					class="BookmarkItem__link"
 				>
 					{{ bookmark.title || bookmark.url }}
