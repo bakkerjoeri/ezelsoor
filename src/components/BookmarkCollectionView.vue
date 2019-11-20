@@ -22,7 +22,13 @@
 		</header>
 
 		<main class="BookmarkCollectionView__content">
-			<BookmarkList :bookmarks="bookmarks"/>
+			<div class="Search">
+				<span class="Search__icon">🔎</span>
+				<input class="Search__input" v-model="query"/>
+			</div>
+
+
+			<BookmarkList :bookmarks="filteredBookmarks"/>
 		</main>
 
 		<Modal v-if="isCreateBookmarkFormOpen">
@@ -60,7 +66,29 @@
 		data() {
 			return {
 				isCreateBookmarkFormOpen: false,
+				query: '',
 			};
+		},
+		computed: {
+			filteredBookmarks() {
+				if (!this.query) {
+					return this.bookmarks;
+				}
+
+				return this.bookmarks.filter((bookmark) => {
+					const normalizedQuery = this.query.toLowerCase();
+
+					return normalizedQuery.split(' ').every((queryPart) => {
+						const normalizedBookmarkTitle = bookmark.title.toLowerCase();
+						const normalizedSummary = bookmark.summary.toLowerCase();
+						const normalizedTags = bookmark.tags.join().toLowerCase();
+
+						return normalizedBookmarkTitle.indexOf(queryPart) >= 0 ||
+							normalizedSummary.indexOf(queryPart) >= 0 ||
+							normalizedTags.indexOf(queryPart) >= 0;
+					});
+				});
+			},
 		},
 		methods: {
 			handleSubmitBookmark(bookmark) {
@@ -73,7 +101,7 @@
 
 <style lang="scss">
 	.BookmarkCollectionView__title {
-		font-size: 18px;
+		font-size: var(--font-size-body);
 		line-height: calc(2 * var(--baseline));
 	}
 
@@ -81,5 +109,26 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
+	}
+
+	.Search {
+		display: flex;
+		align-items: center;
+		margin-bottom: var(--baseline);
+	}
+
+	.Search__icon {
+		font-size: 26px;
+		width: 40px;
+	}
+
+	.Search__input {
+		display: block;
+		width: 100%;
+		padding: 10px;
+		font-size: var(--font-size-body);
+		line-height: var(--baseline);
+		border: 1px solid lightgray;
+		border-radius: 5px;
 	}
 </style>
