@@ -25,23 +25,19 @@
 			</template>
 
 			<template v-slot:right>
-				<ButtonRow>
+				<Row>
 					<Button
 						variant="text"
 						@click="isCreateBookmarkFormOpen = true"
 					>
 						Add
 					</Button>
-				</ButtonRow>
+				</Row>
 			</template>
 		</TopBar>
 
 		<main class="BookmarkCollectionView__content">
-			<div class="Search">
-				<span class="Search__icon">🔎</span>
-				<input class="Search__input" v-model="query"/>
-			</div>
-
+			<SearchBar v-model="query"/>
 			<BookmarkList :bookmarks="filteredBookmarks"/>
 		</main>
 
@@ -58,8 +54,9 @@
 	import BookmarkList from './BookmarkList.vue';
 	import BookmarkForm from './BookmarkForm.vue';
 	import Button from './Button.vue';
-	import ButtonRow from './ButtonRow.vue';
 	import Modal from './Modal.vue';
+	import Row from './Row.vue';
+	import SearchBar from './SearchBar.vue';
 	import TopBar from './TopBar.vue';
 
 	export default {
@@ -67,8 +64,9 @@
 			BookmarkForm,
 			BookmarkList,
 			Button,
-			ButtonRow,
 			Modal,
+			Row,
+			SearchBar,
 			TopBar,
 		},
 		props: {
@@ -121,26 +119,5 @@
 	.BookmarkCollectionView__title {
 		font-size: var(--font-size-body);
 		line-height: calc(2 * var(--baseline));
-	}
-
-	.Search {
-		display: flex;
-		align-items: center;
-		margin-bottom: var(--baseline);
-	}
-
-	.Search__icon {
-		font-size: 26px;
-		width: 40px;
-	}
-
-	.Search__input {
-		display: block;
-		width: 100%;
-		padding: 10px;
-		font-size: var(--font-size-body);
-		line-height: var(--baseline);
-		border: 1px solid lightgray;
-		border-radius: 5px;
 	}
 </style>

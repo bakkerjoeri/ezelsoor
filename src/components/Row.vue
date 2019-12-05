@@ -1,15 +1,15 @@
 <template>
-	<div class="ButtonRow">
+	<div class="Row">
 		<slot/>
 	</div>
 </template>
 
 <style lang="scss">
-	.ButtonRow {
+	.Row {
 		display: flex;
 	}
 
-	.ButtonRow > * + * {
+	.Row > * + * {
 		margin-left: 10px;
 	}
 </style>
