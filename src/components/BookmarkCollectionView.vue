@@ -1,32 +1,39 @@
 <template>
 	<div class="BookmarkCollectionView">
-		<header class="BookmarkCollectionView__header">
-			<Button
-				v-if="$mq === 'sm'"
-				variant="text"
-				@click="$root.$emit('toggleMenu')"
-			>
-				Menu
-			</Button>
+		<TopBar class="BookmarkCollectionView__header">
+			<template v-slot:left>
+				<Button
+					v-if="$mq === 'sm'"
+					variant="text"
+					@click="$root.$emit('toggleMenu')"
+				>
+					Menu
+				</Button>
+			</template>
 
-			<h1 class="BookmarkCollectionView__title">
-				{{ title }}
-			</h1>
+			<template v-slot:center>
+				<h1 class="BookmarkCollectionView__title">
+					{{ title }}
+				</h1>
+			</template>
 
-			<Button
-				variant="text"
-				@click="isCreateBookmarkFormOpen = true"
-			>
-				Add
-			</Button>
-		</header>
+			<template v-slot:right>
+				<ButtonRow>
+					<Button
+						variant="text"
+						@click="isCreateBookmarkFormOpen = true"
+					>
+						Add
+					</Button>
+				</ButtonRow>
+			</template>
+		</TopBar>
 
 		<main class="BookmarkCollectionView__content">
 			<div class="Search">
 				<span class="Search__icon">🔎</span>
 				<input class="Search__input" v-model="query"/>
 			</div>
-
 
 			<BookmarkList :bookmarks="filteredBookmarks"/>
 		</main>
@@ -44,14 +51,18 @@
 	import BookmarkList from './BookmarkList.vue';
 	import BookmarkForm from './BookmarkForm.vue';
 	import Button from './Button.vue';
+	import ButtonRow from './ButtonRow.vue';
 	import Modal from './Modal.vue';
+	import TopBar from './TopBar.vue';
 
 	export default {
 		components: {
 			BookmarkForm,
 			BookmarkList,
 			Button,
+			ButtonRow,
 			Modal,
+			TopBar,
 		},
 		props: {
 			title: {
@@ -103,12 +114,6 @@
 	.BookmarkCollectionView__title {
 		font-size: var(--font-size-body);
 		line-height: calc(2 * var(--baseline));
-	}
-
-	.BookmarkCollectionView__header {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
 	}
 
 	.Search {
