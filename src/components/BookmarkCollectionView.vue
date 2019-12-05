@@ -9,10 +9,17 @@
 				>
 					Menu
 				</Button>
+
+				<h1
+					v-else
+					class="BookmarkCollectionView__title"
+				>
+					{{ title }}
+				</h1>
 			</template>
 
 			<template v-slot:center>
-				<h1 class="BookmarkCollectionView__title">
+				<h1 class="BookmarkCollectionView__title" v-if="$mq === 'sm'">
 					{{ title }}
 				</h1>
 			</template>
