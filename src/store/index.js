@@ -24,6 +24,17 @@ export default new Vuex.Store({
 	mutations: {
 		fetch(state) {
 			if (localStorage.getItem('state')) {
+				const localState = JSON.parse(localStorage.getItem('state'));
+
+				// @deprecated this only serves to migrate existing local storage
+				if (!localState.bookmarks.hasOwnProperty('all')) {
+					localState.bookmarks = {
+						all: localState.bookmarks,
+					}
+
+					localStorage.setItem('state', JSON.stringify(localState));
+				}
+
 				this.replaceState(
 					Object.assign(state, JSON.parse(localStorage.getItem('state')))
 				);
