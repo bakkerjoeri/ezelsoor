@@ -49,7 +49,6 @@ export default new Vuex.Store({
 			});
 		},
 		syncLocalBookmarks: async ({ getters }, userId) => {
-			console.log(`syncing ${getters.allBookmarks.length} bookmarks`);
 			await Promise.all(
 				getters.allBookmarks.map(async (bookmark) => {
 					return await createBookmarkForUser(userId, bookmark);
@@ -196,23 +195,18 @@ async function fetchBookmarksForUser(userId) {
 }
 
 async function createBookmarkForUser(userId, bookmark) {
-	console.log(`creating bookmark ${bookmark.id}`, bookmark);
 	await database
 		.collection('users').doc(userId)
 		.collection('bookmarks').doc(bookmark.id).set(bookmark);
 }
 
 async function updateBookmarkForUser(userId, bookmarkId, bookmark) {
-	console.log(`updating bookmark ${bookmarkId}`, bookmark);
-
 	await database
 		.collection('users').doc(userId)
 		.collection('bookmarks').doc(bookmarkId).update(bookmark);
 }
 
 async function deleteBookmarkForUser(userId, bookmarkId) {
-	console.log(`deleting bookmark ${bookmarkId}`);
-
 	await database
 		.collection('users').doc(userId)
 		.collection('bookmarks').doc(bookmarkId).delete();
