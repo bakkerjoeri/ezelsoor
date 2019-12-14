@@ -17,11 +17,24 @@ export const DEFAULT_BOOKMARK_PROPERTIES = {
 
 export default new Vuex.Store({
 	state: {
-		bookmarks: {},
+		bookmarks: {
+			all: {},
+		},
 	},
 	mutations: {
 		fetch(state) {
 			if (localStorage.getItem('state')) {
+				const localState = JSON.parse(localStorage.getItem('state'));
+
+				// @deprecated this only serves to migrate existing local storage
+				if (!localState.bookmarks.hasOwnProperty('all')) {
+					localState.bookmarks = {
+						all: localState.bookmarks,
+					}
+
+					localStorage.setItem('state', JSON.stringify(localState));
+				}
+
 				this.replaceState(
 					Object.assign(state, JSON.parse(localStorage.getItem('state')))
 				);
@@ -29,33 +42,33 @@ export default new Vuex.Store({
 		},
 		addBookmark(state, payload) {
 			let newBookmark = createBookmark(payload);
-			Vue.set(state.bookmarks, newBookmark.id, newBookmark);
+			Vue.set(state.bookmarks.all, newBookmark.id, newBookmark);
 		},
 		deleteBookmark(state, payload) {
-			Vue.delete(state.bookmarks, payload.id);
+			Vue.delete(state.bookmarks.all, payload.id);
 		},
 		updateBookmark(state, bookmark) {
-			state.bookmarks[bookmark.id] = {
-				...state.bookmarks[bookmark.id],
+			state.bookmarks.all[bookmark.id] = {
+				...state.bookmarks.all[bookmark.id],
 				...bookmark,
 			};
 		},
 		setBookmarkIsToRead(state, payload) {
-			Vue.set(state.bookmarks[payload.id], 'isToRead', payload.isToRead);
+			Vue.set(state.bookmarks.all[payload.id], 'isToRead', payload.isToRead);
 		},
 		setBookmarkIsFavorite(state, payload) {
-			Vue.set(state.bookmarks[payload.id], 'isFavorite', payload.isFavorite);
+			Vue.set(state.bookmarks.all[payload.id], 'isFavorite', payload.isFavorite);
 		},
 		setBookmarkIsArchived(state, payload) {
-			Vue.set(state.bookmarks[payload.id], 'isArchived', payload.isArchived);
+			Vue.set(state.bookmarks.all[payload.id], 'isArchived', payload.isArchived);
 		},
 	},
 	getters: {
 		allBookmarks: state => {
-			return Object.values(state.bookmarks);
+			return Object.values(state.bookmarks.all);
 		},
 		bookmarkWithId: (state) => bookmarkId => {
-			return state.bookmarks[bookmarkId];
+			return state.bookmarks.all[bookmarkId];
 		},
 		activeBookmarks: (state, getters) => {
 			return getters.allBookmarks.filter((bookmark) => {
