@@ -5,6 +5,43 @@
 		<div class="Navigation__section">
 			<ul class="Navigation__list">
 				<li
+					v-if="$store.getters.isLoggedIn"
+					class="Navigation__item"
+				>
+					<Button @click="handleClickLogout">Log out</Button>
+				</li>
+
+				<li
+					v-if="!$store.getters.isLoggedIn"
+					class="Navigation__item"
+				>
+					<router-link
+						class="Navigation__link"
+						to="/login"
+						@click.native="$emit('close')"
+					>
+						Log in
+					</router-link>
+				</li>
+
+				<li
+					v-if="!$store.getters.isLoggedIn"
+					class="Navigation__item"
+				>
+					<router-link
+						class="Navigation__link"
+						to="/signup"
+						@click.native="$emit('close')"
+					>
+						Sign up
+					</router-link>
+				</li>
+			</ul>
+		</div>
+
+		<div class="Navigation__section">
+			<ul class="Navigation__list">
+				<li
 					v-for="(menuItem, index) in menuItems"
 					class="Navigation__item"
 					:key="index"
@@ -46,6 +83,7 @@
 
 <script>
 	import Button from './Button.vue';
+	import { auth } from './../utility/firebase.js';
 
 	export default {
 		components: {
@@ -75,8 +113,13 @@
 					}
 				}, {});
 			}
-		}
-	}
+		},
+		methods: {
+			handleClickLogout() {
+				auth.signOut();
+			},
+		},
+	};
 </script>
 
 <style lang="scss">

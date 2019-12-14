@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import uuid from './../utility/uuid.js';
+import { database } from './../utility/firebase.js';
 
 Vue.use(Vuex)
 
@@ -17,45 +18,103 @@ export const DEFAULT_BOOKMARK_PROPERTIES = {
 
 export default new Vuex.Store({
 	state: {
-		bookmarks: {},
+		bookmarks: {
+			all: {},
+		},
+		users: {
+			all: {},
+			loggedInUserId: null,
+		},
 	},
-	mutations: {
-		fetch(state) {
+	actions: {
+		login: async ({ dispatch, commit }, userId) => {
+			await dispatch('syncLocalBookmarks', userId);
+			await dispatch('fetchRemoteBookmarks', userId);
+			commit('setLoggedInUser', userId);
+		},
+		logout: ({ commit }) => {
+			commit('clearLoggedInUser');
+			commit('clearBookmarks');
+		},
+		fetchLocalBookmarks: ({ commit }) => {
 			if (localStorage.getItem('state')) {
-				this.replaceState(
-					Object.assign(state, JSON.parse(localStorage.getItem('state')))
-				);
+				commit('setState', JSON.parse(localStorage.getItem('state')));
 			}
 		},
+		fetchRemoteBookmarks: async ({ commit }, userId) => {
+			const bookmarks = await fetchBookmarksForUser(userId);
+			commit('clearBookmarks');
+			bookmarks.forEach((bookmark) => {
+				commit('addBookmark', bookmark);
+			});
+		},
+		syncLocalBookmarks: async ({ getters }, userId) => {
+			console.log(`syncing ${getters.allBookmarks.length} bookmarks`);
+			await Promise.all(
+				getters.allBookmarks.map(async (bookmark) => {
+					return await createBookmarkForUser(userId, bookmark);
+				})
+			);
+		},
+		addBookmark: async ({ state, getters, commit }, data) => {
+			const bookmark = initializeBookmark(data);
+
+			commit('addBookmark', bookmark);
+
+			if (getters.isLoggedIn) {
+				await createBookmarkForUser(state.users.loggedInUserId, bookmark);
+			}
+		},
+		updateBookmark: async ({ state, getters, commit }, { id, bookmark }) => {
+			commit('updateBookmark', { id, bookmark });
+
+			if (getters.isLoggedIn) {
+				await updateBookmarkForUser(state.users.loggedInUserId, id, bookmark);
+			}
+		},
+		deleteBookmark: async ({ state, getters, commit }, id) => {
+			commit('deleteBookmark', { id });
+
+			if (getters.isLoggedIn) {
+				await deleteBookmarkForUser(state.users.loggedInUserId, id);
+			}
+		},
+	},
+	mutations: {
+		setState(state, newState) {
+			this.replaceState(newState);
+		},
+		setLoggedInUser(state, id) {
+			state.users.loggedInUserId = id;
+		},
+		clearLoggedInUser(state) {
+			state.users.loggedInUserId = null;
+		},
 		addBookmark(state, payload) {
-			let newBookmark = createBookmark(payload);
-			Vue.set(state.bookmarks, newBookmark.id, newBookmark);
+			Vue.set(state.bookmarks.all, payload.id, payload);
 		},
 		deleteBookmark(state, payload) {
-			Vue.delete(state.bookmarks, payload.id);
+			Vue.delete(state.bookmarks.all, payload.id);
 		},
-		updateBookmark(state, bookmark) {
-			state.bookmarks[bookmark.id] = {
-				...state.bookmarks[bookmark.id],
-				...bookmark,
+		updateBookmark(state, payload) {
+			state.bookmarks.all[payload.id] = {
+				...state.bookmarks.all[payload.id],
+				...payload.bookmark,
 			};
 		},
-		setBookmarkIsToRead(state, payload) {
-			Vue.set(state.bookmarks[payload.id], 'isToRead', payload.isToRead);
-		},
-		setBookmarkIsFavorite(state, payload) {
-			Vue.set(state.bookmarks[payload.id], 'isFavorite', payload.isFavorite);
-		},
-		setBookmarkIsArchived(state, payload) {
-			Vue.set(state.bookmarks[payload.id], 'isArchived', payload.isArchived);
+		clearBookmarks(state) {
+			state.bookmarks.all = {};
 		},
 	},
 	getters: {
+		isLoggedIn: state => {
+			return state.users.loggedInUserId !== null;
+		},
 		allBookmarks: state => {
-			return Object.values(state.bookmarks);
+			return Object.values(state.bookmarks.all);
 		},
 		bookmarkWithId: (state) => bookmarkId => {
-			return state.bookmarks[bookmarkId];
+			return state.bookmarks.all[bookmarkId];
 		},
 		activeBookmarks: (state, getters) => {
 			return getters.allBookmarks.filter((bookmark) => {
@@ -107,7 +166,7 @@ export default new Vuex.Store({
 	},
 });
 
-function createBookmark(properties = {}) {
+function initializeBookmark(properties = {}) {
 	if (!properties.id) {
 		properties.id = uuid();
 	}
@@ -120,4 +179,41 @@ function createBookmark(properties = {}) {
 		...DEFAULT_BOOKMARK_PROPERTIES,
 		...properties,
 	};
+}
+
+async function fetchBookmarksForUser(userId) {
+	const querySnapshot = await database
+		.collection('users').doc(userId)
+		.collection('bookmarks').get();
+
+	const bookmarks = [];
+
+	querySnapshot.forEach((doc) => {
+		bookmarks.push(doc.data());
+	});
+
+	return bookmarks;
+}
+
+async function createBookmarkForUser(userId, bookmark) {
+	console.log(`creating bookmark ${bookmark.id}`, bookmark);
+	await database
+		.collection('users').doc(userId)
+		.collection('bookmarks').doc(bookmark.id).set(bookmark);
+}
+
+async function updateBookmarkForUser(userId, bookmarkId, bookmark) {
+	console.log(`updating bookmark ${bookmarkId}`, bookmark);
+
+	await database
+		.collection('users').doc(userId)
+		.collection('bookmarks').doc(bookmarkId).update(bookmark);
+}
+
+async function deleteBookmarkForUser(userId, bookmarkId) {
+	console.log(`deleting bookmark ${bookmarkId}`);
+
+	await database
+		.collection('users').doc(userId)
+		.collection('bookmarks').doc(bookmarkId).delete();
 }

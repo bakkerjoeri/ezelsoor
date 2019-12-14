@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from './store';
-import BookmarkCollectionView from './components/BookmarkCollectionView';
+import BookmarkCollectionView from './components/BookmarkCollectionView.vue';
+import Signup from './components/Signup.vue';
+import Login from './components/Login.vue';
 
 Vue.use(VueRouter);
 
@@ -13,6 +15,14 @@ const routes = [
 			title: 'Bookmarks',
 			bookmarks: store.getters.activeBookmarks,
 		}),
+	},
+	{
+		path: '/signup',
+		component: Signup,
+	},
+	{
+		path: '/login',
+		component: Login,
 	},
 	{
 		path: '/favorites',
