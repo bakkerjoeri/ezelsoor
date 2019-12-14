@@ -110,39 +110,27 @@
 				this.isEditing = true;
 			},
 			handleSubmitBookmarkForm(id, bookmark) {
-				this.$store.commit('updateBookmark', {
-					id,
-					...bookmark
-				});
-
+				this.updateBookmark(id, bookmark);
 				this.isEditing = false;
 			},
 			handleDeleteBookmark(id) {
 				this.deleteBookmark(id);
 				this.isEditing = false;
 			},
-			setBookmarkIsToRead(bookmarkId, isToRead) {
-				this.$store.commit('setBookmarkIsToRead', {
-					id: bookmarkId,
-					isToRead,
-				});
+			updateBookmark(id, bookmark) {
+				this.$store.dispatch('updateBookmark', { id, bookmark });
 			},
-			setBookmarkIsFavorite(bookmarkId, isFavorite) {
-				this.$store.commit('setBookmarkIsFavorite', {
-					id: bookmarkId,
-					isFavorite,
-				});
+			setBookmarkIsToRead(id, isToRead) {
+				this.$store.dispatch('updateBookmark', { id, bookmark: { isToRead }});
 			},
-			setBookmarkIsArchived(bookmarkId, isArchived) {
-				this.$store.commit('setBookmarkIsArchived', {
-					id: bookmarkId,
-					isArchived,
-				});
+			setBookmarkIsFavorite(id, isFavorite) {
+				this.$store.dispatch('updateBookmark', { id, bookmark: { isFavorite }});
+			},
+			setBookmarkIsArchived(id, isArchived) {
+				this.$store.dispatch('updateBookmark', { id, bookmark: { isArchived }});
 			},
 			deleteBookmark(bookmarkId) {
-				this.$store.commit('deleteBookmark', {
-					id: bookmarkId,
-				});
+				this.$store.dispatch('deleteBookmark', bookmarkId);
 			},
 		},
 	}

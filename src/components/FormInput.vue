@@ -1,9 +1,11 @@
 <template>
 	<FormItem
 		class="FormInput"
+		:class="{ 'has-error': state === false }"
 		:label="label"
 		:label-for="_uid"
 		:description="description"
+		:error="error"
 	>
 		<input
 			class="FormInput__input"
@@ -12,6 +14,7 @@
 			:id="_uid"
 			:value="value"
 			:required="required"
+			:autocomplete="autocomplete"
 			:autocorrect="autocorrect"
 			:autocapitalize="autocapitalize"
 			@input="$emit('input', $event.target.value)"
@@ -29,6 +32,9 @@
 			description: {
 				type: String,
 			},
+			error: {
+				type: String,
+			},
 			label: {
 				type: String,
 			},
@@ -44,7 +50,9 @@
 			},
 			required: {
 				type: Boolean,
-				default: false,
+			},
+			autocomplete: {
+				type: String,
 			},
 			autocorrect: {
 				type: String,
@@ -52,6 +60,11 @@
 			autocapitalize: {
 				type: String,
 			}
+		},
+		computed: {
+			state() {
+				return !this.error;
+			},
 		},
 	};
 </script>
@@ -65,5 +78,9 @@
 		line-height: var(--baseline);
 		border: 1px solid lightgray;
 		border-radius: 5px;
+
+		.FormInput.has-error & {
+			border-color: red;
+		}
 	}
 </style>

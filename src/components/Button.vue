@@ -6,6 +6,7 @@
 			[`Button--variant-${variant}`]: true,
 			[`Button--color-${color}`]: true,
 		}"
+		:disabled="disabled"
 		@click="$emit('click', $event)"
 		:type="type"
 	>
@@ -16,6 +17,9 @@
 <script>
 	export default {
 		props: {
+			disabled: {
+				type: Boolean,
+			},
 			type: {
 				type: String,
 				default: 'button',
@@ -46,7 +50,13 @@
 		border: 0;
 		border-radius: 5px;
 
-		cursor: pointer;
+		&:not(:disabled) {
+			cursor: pointer;
+		}
+	}
+
+	.Button:disabled {
+		opacity: 0.5;
 	}
 
 	.Button--color-transparent {

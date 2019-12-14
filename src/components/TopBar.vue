@@ -4,7 +4,7 @@
 			<slot name="left"/>
 		</div>
 
-		<div class="TopBar__left">
+		<div class="TopBar__center">
 			<slot name="center"/>
 		</div>
 

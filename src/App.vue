@@ -50,8 +50,6 @@ export default {
 		this.$store.subscribe((mutation, state) => {
 			localStorage.setItem('state', JSON.stringify(state));
 		});
-
-		this.$store.commit('fetch');
 	},
 	mounted() {
 		this.$root.$on('toggleMenu', () => {

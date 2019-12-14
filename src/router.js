@@ -1,7 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from './store';
-import BookmarkCollectionView from './components/BookmarkCollectionView';
+import BookmarkCollectionView from './components/BookmarkCollectionView.vue';
+import Signup from './components/Signup.vue';
+import Login from './components/Login.vue';
 
 Vue.use(VueRouter);
 
@@ -13,6 +15,20 @@ const routes = [
 			title: 'Bookmarks',
 			bookmarks: store.getters.activeBookmarks,
 		}),
+	},
+	{
+		path: '/signup',
+		component: Signup,
+		meta: {
+			requiresNoAuth: true,
+		},
+	},
+	{
+		path: '/login',
+		component: Login,
+		meta: {
+			requiresNoAuth: true,
+		},
 	},
 	{
 		path: '/favorites',
@@ -53,6 +69,20 @@ const routes = [
 const router = new VueRouter({
 	mode: 'history',
 	routes,
+});
+
+router.beforeEach((to, from, next) => {
+	if (to.matched.some(record => record.meta.requiresNoAuth)) {
+		if (store.getters.isLoggedIn) {
+			if (from) {
+				return next(from.path);
+			}
+
+			return next('/');
+		}
+	}
+
+	return next();
 });
 
 export default router;

@@ -12,6 +12,12 @@
 
 		<slot />
 
+		<FormError
+			v-if="!!error"
+			class="FormItem__error"
+			:text="error"
+		/>
+
 		<div
 			class="FormItem__description"
 			v-if="!!$slots.description || !!description"
@@ -24,7 +30,12 @@
 </template>
 
 <script>
+	import FormError from './FormError.vue';
+
 	export default {
+		components: {
+			FormError,
+		},
 		props: {
 			label: {
 				type: String,
@@ -34,9 +45,12 @@
 			},
 			description: {
 				type: String,
-			}
-		}
-	}
+			},
+			error: {
+				type: String,
+			},
+		},
+	};
 </script>
 
 <style lang="scss">
@@ -51,5 +65,16 @@
 		&[for] {
 			cursor: pointer;
 		}
+	}
+
+	.FormItem__description {
+		color: #333;
+		font-size: 15px;
+		font-style: italic;
+	}
+
+	.FormItem__description,
+	.FormItem__error {
+		margin-top: 5px;
 	}
 </style>

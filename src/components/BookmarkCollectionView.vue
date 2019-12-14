@@ -108,7 +108,7 @@
 		},
 		methods: {
 			handleSubmitBookmark(bookmark) {
-				this.$store.commit('addBookmark', bookmark);
+				this.$store.dispatch('addBookmark', bookmark);
 				this.isCreateBookmarkFormOpen = false;
 			},
 		},
