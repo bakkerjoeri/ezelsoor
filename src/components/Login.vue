@@ -121,9 +121,8 @@
 
 				try {
 					await auth.signInWithEmailAndPassword(this.email, this.password);
-					this.$router.push('/');
-
 					this.isSubmitPending = false;
+					this.$router.push('/');
 				} catch(error) {
 					if (error.code === 'auth/invalid-email') {
 						this.errors.push({

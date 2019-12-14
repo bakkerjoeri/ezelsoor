@@ -121,8 +121,8 @@
 
 				try {
 					await auth.createUserWithEmailAndPassword(this.email, this.password);
-
 					this.isSubmitPending = false;
+					this.$router.push('/');
 				} catch(error) {
 					if (error.code === 'auth/email-already-in-use') {
 						this.errors.push({

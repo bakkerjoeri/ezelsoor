@@ -28,9 +28,9 @@ export default new Vuex.Store({
 	},
 	actions: {
 		login: async ({ dispatch, commit }, userId) => {
+			commit('setLoggedInUser', userId);
 			await dispatch('syncLocalBookmarks', userId);
 			await dispatch('fetchRemoteBookmarks', userId);
-			commit('setLoggedInUser', userId);
 		},
 		logout: ({ commit }) => {
 			commit('clearLoggedInUser');

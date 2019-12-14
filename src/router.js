@@ -19,10 +19,16 @@ const routes = [
 	{
 		path: '/signup',
 		component: Signup,
+		meta: {
+			requiresNoAuth: true,
+		},
 	},
 	{
 		path: '/login',
 		component: Login,
+		meta: {
+			requiresNoAuth: true,
+		},
 	},
 	{
 		path: '/favorites',
@@ -63,6 +69,20 @@ const routes = [
 const router = new VueRouter({
 	mode: 'history',
 	routes,
+});
+
+router.beforeEach((to, from, next) => {
+	if (to.matched.some(record => record.meta.requiresNoAuth)) {
+		if (store.getters.isLoggedIn) {
+			if (from) {
+				return next(from.path);
+			}
+
+			return next('/');
+		}
+	}
+
+	return next();
 });
 
 export default router;

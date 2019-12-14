@@ -7,17 +7,21 @@ import router from './router';
 import breakpoints from './config/breakpoints.js';
 import { auth } from './utility/firebase.js';
 
-Vue.config.productionTip = false;
-Vue.use(clickOutside)
-Vue.use(VueMq, {
-	breakpoints,
-});
+let hasAppMounted = false;
 
-new Vue({
-	store,
-	router,
-	render: h => h(App),
-}).$mount('#app');
+function mountApp() {
+	Vue.config.productionTip = false;
+	Vue.use(clickOutside)
+	Vue.use(VueMq, {
+		breakpoints,
+	});
+
+	new Vue({
+		store,
+		router,
+		render: h => h(App),
+	}).$mount('#app');
+}
 
 auth.onAuthStateChanged(user => {
 	if (user) {
@@ -26,5 +30,10 @@ auth.onAuthStateChanged(user => {
 		store.dispatch('logout');
 	} else {
 		store.dispatch('fetchLocalBookmarks');
+	}
+
+	if (!hasAppMounted) {
+		mountApp();
+		hasAppMounted = true;
 	}
 });
