@@ -33,10 +33,10 @@
 					{{ bookmark.title || bookmark.url }}
 				</span>
 			</div>
-			<div class="BookmarkItem__actions">
+
+			<Row class="BookmarkItem__actions">
 				<Button
 					@click="startEditing"
-					class="BookmarkItem__action"
 					variant="text"
 					size="small"
 				>
@@ -45,7 +45,6 @@
 
 				<Button
 					v-if="bookmark.isToRead"
-					class="BookmarkItem__action"
 					variant="text"
 					size="small"
 					@click="setBookmarkIsToRead(bookmark.id, false)"
@@ -55,7 +54,6 @@
 
 				<Button
 					v-if="!bookmark.isArchived"
-					class="BookmarkItem__action"
 					variant="text"
 					size="small"
 					@click="setBookmarkIsArchived(bookmark.id, true)"
@@ -65,15 +63,15 @@
 
 				<Button
 					v-if="bookmark.isArchived"
-					class="BookmarkItem__action"
 					variant="text"
 					size="small"
 					@click="setBookmarkIsArchived(bookmark.id, false)"
 				>
 					unarchive
 				</Button>
-			</div>
+			</Row>
 		</div>
+
 		<TagList
 			class="BookmarkItem__tags"
 			:tags="bookmark.tags"
@@ -85,6 +83,7 @@
 	import Button from './Button.vue';
 	import BookmarkForm from './BookmarkForm.vue';
 	import Modal from './Modal.vue';
+	import Row from './Row.vue';
 	import TagList from './TagList.vue';
 
 	export default {
@@ -93,6 +92,7 @@
 			BookmarkForm,
 			Button,
 			Modal,
+			Row,
 			TagList,
 		},
 		data: () => {
@@ -173,7 +173,6 @@
 	}
 
 	.BookmarkItem__actions {
-		display: flex;
 		flex: 1 1 100%;
 
 		@media (min-width: 640px) {
@@ -181,10 +180,6 @@
 			justify-content: flex-end;
 			margin-left: 25px;
 		}
-	}
-
-	.BookmarkItem__action + .BookmarkItem__action {
-		margin-left: 10px;
 	}
 
 	.BookmarkItem__tags {
