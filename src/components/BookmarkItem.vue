@@ -192,7 +192,7 @@
 
 	.BookmarkItem__favorite {
 		grid-column: 1;
-		grid-row: 1 / -1;
+		grid-row: 1;
 		display: flex;
 		padding-left: 0;
 		color: #ccc;
@@ -200,6 +200,10 @@
 
 		&.is-favorite {
 			color: gold;
+		}
+
+		@media (min-width: 640px) {
+			grid-row: 1 / -1;
 		}
 	}
 </style>
