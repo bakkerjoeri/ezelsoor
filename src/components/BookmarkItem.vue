@@ -197,13 +197,10 @@
 		padding-left: 0;
 		color: #ccc;
 		font-size: 17px;
+		height: var(--baseline);
 
 		&.is-favorite {
 			color: gold;
-		}
-
-		@media (min-width: 640px) {
-			grid-row: 1 / -1;
 		}
 	}
 </style>
