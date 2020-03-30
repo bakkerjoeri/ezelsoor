@@ -8,69 +8,69 @@
 				@cancel="isEditing = !isEditing"
 			/>
 		</Modal>
-		<div class="BookmarkItem__title-row">
-			<Button
-				class="BookmarkItem__favorite"
-				:class="{ 'is-favorite': bookmark.isFavorite }"
-				variant="filled"
-				color="transparent"
-				size="small"
-				@click="setBookmarkIsFavorite(bookmark.id, !bookmark.isFavorite)"
+
+		<Button
+			class="BookmarkItem__favorite"
+			:class="{ 'is-favorite': bookmark.isFavorite }"
+			variant="filled"
+			color="transparent"
+			size="small"
+			@click="setBookmarkIsFavorite(bookmark.id, !bookmark.isFavorite)"
+		>
+			★
+		</Button>
+
+		<div class="BookmarkItem__title">
+			<a
+				v-if="bookmark.url"
+				:href="bookmark.url"
+				target="_blank"
+				rel="noopener noreferrer"
+				class="BookmarkItem__link"
 			>
-				★
-			</Button>
-			<div class="BookmarkItem__title">
-				<a
-					v-if="bookmark.url"
-					:href="bookmark.url"
-					target="_blank"
-					rel="noopener noreferrer"
-					class="BookmarkItem__link"
-				>
-					{{ bookmark.title || bookmark.url }}
-				</a>
-				<span v-else>
-					{{ bookmark.title || bookmark.url }}
-				</span>
-			</div>
-
-			<Row class="BookmarkItem__actions">
-				<Button
-					@click="startEditing"
-					variant="text"
-					size="small"
-				>
-					edit
-				</Button>
-
-				<Button
-					v-if="bookmark.isToRead"
-					variant="text"
-					size="small"
-					@click="setBookmarkIsToRead(bookmark.id, false)"
-				>
-					mark as read
-				</Button>
-
-				<Button
-					v-if="!bookmark.isArchived"
-					variant="text"
-					size="small"
-					@click="setBookmarkIsArchived(bookmark.id, true)"
-				>
-					archive
-				</Button>
-
-				<Button
-					v-if="bookmark.isArchived"
-					variant="text"
-					size="small"
-					@click="setBookmarkIsArchived(bookmark.id, false)"
-				>
-					unarchive
-				</Button>
-			</Row>
+				{{ bookmark.title || bookmark.url }}
+			</a>
+			<span v-else>
+				{{ bookmark.title || bookmark.url }}
+			</span>
 		</div>
+
+		<Row class="BookmarkItem__actions">
+			<Button
+				@click="startEditing"
+				variant="text"
+				size="small"
+			>
+				edit
+			</Button>
+
+			<Button
+				v-if="bookmark.isToRead"
+				variant="text"
+				size="small"
+				@click="setBookmarkIsToRead(bookmark.id, false)"
+			>
+				mark as read
+			</Button>
+
+			<Button
+				v-if="!bookmark.isArchived"
+				variant="text"
+				size="small"
+				@click="setBookmarkIsArchived(bookmark.id, true)"
+			>
+				archive
+			</Button>
+
+			<Button
+				v-if="bookmark.isArchived"
+				variant="text"
+				size="small"
+				@click="setBookmarkIsArchived(bookmark.id, false)"
+			>
+				unarchive
+			</Button>
+		</Row>
 
 		<TagList
 			class="BookmarkItem__tags"
@@ -141,19 +141,25 @@
 		margin-top: var(--baseline);
 	}
 
-	.BookmarkItem__title-row {
-		display: flex;
-		align-items: flex-start;
-		flex-wrap: wrap;
+	.BookmarkItem {
+		display: grid;
+		grid-template-columns: 26px 1fr;
+		grid-template-rows: min-content min-content min-content;
 
 		@media (min-width: 640px) {
-			flex-wrap: nowrap;
+			grid-template-columns: 26px 1fr max-content;
+			grid-template-rows: min-content min-content;
 		}
 	}
 
 	.BookmarkItem__title {
-		flex: 0 1 auto;
+		grid-row: 1;
+		grid-column: 2 / -1;
 		line-height: var(--baseline);
+
+		@media (min-width: 640px) {
+			grid-column: 2 / 3;
+		}
 	}
 
 	.BookmarkItem__link {
@@ -161,24 +167,33 @@
 	}
 
 	.BookmarkItem__actions {
-		flex: 1 1 100%;
+		grid-row: 2;
+		grid-column: 1 / -1;
 
 		@media (min-width: 640px) {
-			flex-basis: auto;
+			grid-row: 1;
+			grid-column: 3;
+
 			justify-content: flex-end;
+			align-items: flex-start;
 			margin-left: 25px;
 		}
 	}
 
 	.BookmarkItem__tags {
-		flex: 0 1 100%;
+		grid-row: 3;
+		grid-column: 1 / -1;
 
 		@media (min-width: 640px) {
-			margin-left: 25px;
+			grid-row: 2 / 2;
+			grid-column: 2 / -1;
 		}
 	}
 
 	.BookmarkItem__favorite {
+		grid-column: 1;
+		grid-row: 1 / -1;
+		display: flex;
 		padding-left: 0;
 		color: #ccc;
 		font-size: 17px;
