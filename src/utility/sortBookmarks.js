@@ -1,5 +1,5 @@
 export default function sortBookmarks(bookmarks, property = 'dateCreated', order = 'descending') {
-	return bookmarks.sort((a, b) => {
+	return [...bookmarks].sort((a, b) => {
 		if (a.hasOwnProperty(property) && b.hasOwnProperty(property)) {
 			if (order === 'ascending') {
 				return a[property] - b[property];
