@@ -123,7 +123,7 @@ export default {
 		}
 
 		@media (min-width: 640px) {
-			min-width: 200px;
+			width: 240px;
 		}
 	}
 

@@ -27,14 +27,17 @@
 			size: {
 				type: String,
 				default: 'normal',
+				validator: (value) => ['normal', 'small'].includes(value),
 			},
 			variant: {
 				type: String,
 				default: 'outline',
+				validator: (value) => ['filled', 'outline', 'text'].includes(value),
 			},
 			color: {
 				type: String,
 				default: 'black',
+				validator: (value) => ['black', 'transparent'].includes(value),
 			}
 		},
 	}

@@ -1,8 +1,6 @@
 <template>
 	<nav class="Navigation">
-		<h2 class="Navigation__sectionTitle">Menu</h2>
-
-		<div class="Navigation__section">
+		<NavigationSection title="Menu">
 			<ul class="Navigation__list">
 				<li
 					v-if="$store.getters.isLoggedIn"
@@ -37,9 +35,10 @@
 					</router-link>
 				</li>
 			</ul>
-		</div>
+		</NavigationSection>
 
-		<div class="Navigation__section">
+
+		<NavigationSection>
 			<ul class="Navigation__list">
 				<li
 					v-for="(menuItem, index) in menuItems"
@@ -55,11 +54,13 @@
 					</router-link>
 				</li>
 			</ul>
-		</div>
+		</NavigationSection>
 
-		<div class="Navigation__section" v-if="Object.keys(orderedTagCount).length">
-			<h2 class="Navigation__sectionTitle">Tags</h2>
-
+		<NavigationSection
+			v-if="Object.keys(orderedTagCount).length"
+			title="Tags"
+			collapsible
+		>
 			<ul class="Navigation__list">
 				<li
 					class="Navigation__item"
@@ -68,26 +69,34 @@
 				>
 					<router-link
 						class="Navigation__link"
+						:title="tag"
 						:to="{
 							name: 'tag',
 							params: { tagName: tag }
 						}"
 						@click.native="$emit('close')"
-					>{{ tag }}</router-link>
-					<span class="TagCount"> &middot; {{ amount }}</span>
+					>
+						{{ tag }}
+					</router-link>
+
+					<span class="TagCount">
+						&middot; {{ amount }}
+					</span>
 				</li>
 			</ul>
-		</div>
+		</NavigationSection>
 	</nav>
 </template>
 
 <script>
 	import Button from './Button.vue';
+	import NavigationSection from './NavigationSection.vue';
 	import { auth } from './../utility/firebase.js';
 
 	export default {
 		components: {
 			Button,
+			NavigationSection,
 		},
 		data: function() {
 			return {
@@ -130,35 +139,36 @@
 		padding-left: var(--gap);
 	}
 
-	.Navigation__section + .Navigation__section {
-		margin-top: var(--baseline);
-	}
-
-	.Navigation__sectionTitle {
-		font-size: var(--font-size-body);
-		line-height: calc(2 * var(--baseline));
-	}
-
 	.Navigation__list {
 		list-style: none;
+		margin-bottom: var(--baseline);
 	}
 
 	.Navigation__item {
+		display: flex;
 		line-height: var(--baseline);
 		white-space: nowrap;
 	}
 
 	.Navigation__link {
+		display: inline;
+		overflow: hidden;
 		text-decoration: none;
+		text-overflow: ellipsis;
 		color: var(--color-text);
 
 		&:hover,
 		&:focus {
 			text-decoration: underline;
 		}
+
+		&.router-link-exact-active {
+			color: var(--color-highlight);
+		}
 	}
 
 	.TagCount {
-		color: lightgray;
+		margin-left: 6px;
+		color: #aaa;
 	}
 </style>
