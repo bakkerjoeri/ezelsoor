@@ -62,6 +62,11 @@ export default {
 <style lang="scss">
 	@import './styles/base.scss';
 
+	html,
+	body {
+		height: 100%;
+	}
+
 	.App {
 		--gap: calc(var(--baseline) / 2);
 
@@ -70,7 +75,7 @@ export default {
 		grid-template-rows: 100%;
 
 		overflow: hidden;
-		height: 100vh;
+		height: 100%;
 
 		@media (min-width: 640px) {
 			--gap: var(--baseline);
