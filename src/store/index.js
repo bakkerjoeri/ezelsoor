@@ -126,17 +126,17 @@ export default new Vuex.Store({
 			});
 		},
 		favoriteBookmarks: (state, getters) => {
-			return getters.allBookmarks.filter((bookmark) => {
+			return getters.activeBookmarks.filter((bookmark) => {
 				return bookmark.isFavorite;
 			});
 		},
 		toReadBookmarks: (state, getters) => {
-			return getters.allBookmarks.filter((bookmark) => {
+			return getters.activeBookmarks.filter((bookmark) => {
 				return bookmark.isToRead;
 			});
 		},
 		tagCount: (state, getters) => {
-			return getters.allBookmarks.reduce((tags, bookmark) => {
+			return getters.activeBookmarks.reduce((tags, bookmark) => {
 				return bookmark.tags.reduce((tags, tag) => {
 					if (tags.hasOwnProperty(tag)) {
 						return {
@@ -156,7 +156,7 @@ export default new Vuex.Store({
 			return getters.bookmarkWithId(bookmarkId).tags;
 		},
 		bookmarksWithTags: (state, getters) => tags => {
-			return getters.allBookmarks.filter((bookmark) => {
+			return getters.activeBookmarks.filter((bookmark) => {
 				return tags.every((tag) => {
 					return bookmark.tags.includes(tag);
 				});
