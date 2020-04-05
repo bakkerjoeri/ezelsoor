@@ -51,7 +51,7 @@ const routes = [
 		path: '/archive',
 		component: BookmarkCollectionView,
 		props: () => ({
-			title: 'Archived',
+			title: 'Archive',
 			bookmarks: store.getters.archivedBookmarks,
 		}),
 	},
