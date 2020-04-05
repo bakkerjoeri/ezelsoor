@@ -25,6 +25,7 @@ export const DEFAULT_LIST_PROPERTIES = {
 
 export default new Vuex.Store({
 	state: {
+		hasFetchedData: false,
 		bookmarks: {
 			all: {},
 		},
@@ -40,17 +41,24 @@ export default new Vuex.Store({
 		login: async ({ dispatch, commit }, userId) => {
 			commit('setLoggedInUser', userId);
 			await dispatch('syncLocalBookmarks', userId);
-			await dispatch('fetchRemoteBookmarks', userId);
-			await dispatch('fetchRemoteLists', userId);
+			await dispatch('fetchRemoteState', userId);
 		},
 		logout: ({ commit }) => {
 			commit('clearLoggedInUser');
 			commit('clearBookmarks');
 		},
-		fetchLocalBookmarks: ({ commit }) => {
+		fetchLocalState: ({ commit }) => {
 			if (localStorage.getItem('state')) {
 				commit('setState', JSON.parse(localStorage.getItem('state')));
 			}
+
+			commit('finishFirstFetch');
+		},
+		fetchRemoteState: async ({ dispatch, commit }, userId) => {
+			await dispatch('fetchRemoteBookmarks', userId);
+			await dispatch('fetchRemoteLists', userId);
+
+			commit('finishFirstFetch');
 		},
 		fetchRemoteBookmarks: async ({ commit }, userId) => {
 			const bookmarks = await fetchBookmarksForUser(userId);
@@ -67,7 +75,7 @@ export default new Vuex.Store({
 			});
 		},
 		syncLocalBookmarks: async ({ getters }, userId) => {
-			await Promise.all(
+			return await Promise.all(
 				getters.allBookmarks.map(async (bookmark) => {
 					return await createBookmarkForUser(userId, bookmark);
 				})
@@ -123,6 +131,9 @@ export default new Vuex.Store({
 	mutations: {
 		setState(state, newState) {
 			this.replaceState(newState);
+		},
+		finishFirstFetch(state) {
+			state.hasFetchedData = true;
 		},
 		setLoggedInUser(state, id) {
 			state.users.loggedInUserId = id;
@@ -231,6 +242,9 @@ export default new Vuex.Store({
 			}
 
 			return state.lists.all[listId];
+		},
+		hasListWithId: state => listId => {
+			return state.lists.all.hasOwnProperty(listId);
 		},
 	},
 });

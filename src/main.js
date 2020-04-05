@@ -29,7 +29,7 @@ auth.onAuthStateChanged(user => {
 	} else if (store.getters.isLoggedIn) {
 		store.dispatch('logout');
 	} else {
-		store.dispatch('fetchLocalBookmarks');
+		store.dispatch('fetchLocalState');
 	}
 
 	if (!hasAppMounted) {

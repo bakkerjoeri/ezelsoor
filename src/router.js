@@ -68,6 +68,35 @@ const routes = [
 				bookmarks: filterBookmarks(bookmarks, list.filters),
 			};
 		},
+		beforeEnter: (to, from, next) => {
+			if (store.state.hasFetchedData) {
+				if (store.getters.hasListWithId(to.params.listId)) {
+					return next();
+				}
+
+				if (from) {
+					return next(from.path);
+				}
+
+				return next('/');
+			}
+
+			const unwatch = store.watch(state => state.hasFetchedData, hasFetchedData => {
+				if (hasFetchedData) {
+					unwatch();
+
+					if (store.getters.hasListWithId(to.params.listId)) {
+						return next();
+					}
+
+					if (from) {
+						return next(from.path);
+					}
+
+					return next('/');
+				}
+			});
+		}
 	},
 	{
 		path: '/tag/:tagName',
