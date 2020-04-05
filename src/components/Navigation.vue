@@ -37,7 +37,6 @@
 			</ul>
 		</NavigationSection>
 
-
 		<NavigationSection>
 			<ul class="Navigation__list">
 				<li
@@ -52,6 +51,51 @@
 					>
 						{{ menuItem.name }}
 					</router-link>
+				</li>
+			</ul>
+		</NavigationSection>
+
+		<NavigationSection
+			title="Lists"
+			collapsible
+		>
+			<template v-slot:actions>
+				<Button
+					@click="handleClickCreateList"
+					variant="text"
+					size="small"
+				>
+					create
+				</Button>
+			</template>
+
+			<ul class="Navigation__list" v-if="listMenuItems.length">
+				<li
+					class="Navigation__item Navigation__item--list"
+					v-for="(listMenuItem, index) in listMenuItems"
+					:key="index"
+				>
+					<router-link
+						class="Navigation__link"
+						:title="listMenuItem.name"
+						:to="{
+							name: 'list',
+							params: { listId: listMenuItem.id }
+						}"
+						@click.native="$emit('close')"
+					>
+						{{ listMenuItem.name }}
+					</router-link>
+
+					<Row class="ListActions">
+						<Button
+							@click="handleClickEditList(listMenuItem.id)"
+							size="small"
+							variant="text"
+						>
+							edit
+						</Button>
+					</Row>
 				</li>
 			</ul>
 		</NavigationSection>
@@ -85,21 +129,46 @@
 				</li>
 			</ul>
 		</NavigationSection>
+
+		<Modal v-if="isCreatingList">
+			<ListForm
+				@submit="handleSubmitNewList"
+				@cancel="isCreatingList = false"
+			/>
+		</Modal>
+
+		<Modal v-if="isEditingList && listToEdit">
+			<ListForm
+				:list="listToEdit"
+				@submit="handleSubmitEditedList(listToEdit.id, $event)"
+				@cancel="isEditingList = false"
+				@delete="handleClickDeleteList(listToEdit.id)"
+			/>
+		</Modal>
 	</nav>
 </template>
 
 <script>
 	import Button from './Button.vue';
+	import ListForm from './ListForm.vue';
+	import Modal from './Modal.vue';
 	import NavigationSection from './NavigationSection.vue';
+	import Row from './Row.vue';
 	import { auth } from './../utility/firebase.js';
 
 	export default {
 		components: {
 			Button,
+			ListForm,
+			Modal,
+			Row,
 			NavigationSection,
 		},
 		data: function() {
 			return {
+				isCreatingList: false,
+				isEditingList: false,
+				listToEditId: null,
 				menuItems: [
 					{ name: 'Home', route: '/' },
 					{ name: 'Read later', route: '/toread' },
@@ -109,6 +178,29 @@
 			};
 		},
 		computed: {
+			listMenuItems() {
+				return this.sortedLists.map(list => {
+					return {
+						id: list.id,
+						name: list.title,
+					};
+				});
+			},
+			lists() {
+				return this.$store.getters.allLists;
+			},
+			sortedLists() {
+				return [...this.lists].sort((listA, listB) => {
+					return listA.title - listB.title;
+				})
+			},
+			listToEdit() {
+				if (!this.listToEditId) {
+					return null;
+				}
+
+				return this.$store.getters.listWithId(this.listToEditId);
+			},
 			tagCount() {
 				return this.$store.getters.tagCount;
 			},
@@ -126,6 +218,26 @@
 		methods: {
 			handleClickLogout() {
 				auth.signOut();
+			},
+			handleClickCreateList() {
+				this.$emit('close');
+				this.isCreatingList = true;
+			},
+			handleClickEditList(listId) {
+				this.listToEditId = listId;
+				this.isEditingList = true;
+			},
+			handleSubmitNewList(list) {
+				this.$store.dispatch('addList', list);
+				this.isCreatingList = false;
+			},
+			handleSubmitEditedList(id, list) {
+				this.$store.dispatch('updateList', { id, list });
+				this.isEditingList = false;
+			},
+			handleClickDeleteList(listId) {
+				this.$store.dispatch('deleteList', listId);
+				this.isEditingList = false;
 			},
 		},
 	};
@@ -148,6 +260,14 @@
 		display: flex;
 		line-height: var(--baseline);
 		white-space: nowrap;
+	}
+
+	.Navigation__item--list {
+		justify-content: space-between;
+	}
+
+	.ListActions {
+		margin-left: 6px;
 	}
 
 	.Navigation__link {

@@ -16,6 +16,13 @@ export const DEFAULT_BOOKMARK_PROPERTIES = {
 	dateCreated: null,
 };
 
+export const DEFAULT_LIST_PROPERTIES = {
+	title: '',
+	description: '',
+	shouldIncludeArchived: false,
+	filters: [],
+}
+
 export default new Vuex.Store({
 	state: {
 		bookmarks: {
@@ -25,12 +32,16 @@ export default new Vuex.Store({
 			all: {},
 			loggedInUserId: null,
 		},
+		lists: {
+			all: {},
+		},
 	},
 	actions: {
 		login: async ({ dispatch, commit }, userId) => {
 			commit('setLoggedInUser', userId);
 			await dispatch('syncLocalBookmarks', userId);
 			await dispatch('fetchRemoteBookmarks', userId);
+			await dispatch('fetchRemoteLists', userId);
 		},
 		logout: ({ commit }) => {
 			commit('clearLoggedInUser');
@@ -46,6 +57,13 @@ export default new Vuex.Store({
 			commit('clearBookmarks');
 			bookmarks.forEach((bookmark) => {
 				commit('addBookmark', bookmark);
+			});
+		},
+		fetchRemoteLists: async ({ commit }, userId) => {
+			const lists = await fetchListsForUser(userId);
+			commit('clearLists');
+			lists.forEach((bookmark) => {
+				commit('addList', bookmark);
 			});
 		},
 		syncLocalBookmarks: async ({ getters }, userId) => {
@@ -78,6 +96,29 @@ export default new Vuex.Store({
 				await deleteBookmarkForUser(state.users.loggedInUserId, id);
 			}
 		},
+		addList: async ({state, getters, commit }, data) => {
+			const list = initializeList(data);
+
+			commit('addList', list);
+
+			if (getters.isLoggedIn) {
+				await createListForUser(state.users.loggedInUserId, list);
+			}
+		},
+		updateList: async ({ state, getters, commit }, { id, list }) => {
+			commit('updateList', { id, list });
+
+			if (getters.isLoggedIn) {
+				await updateListForUser(state.users.loggedInUserId, id, list);
+			}
+		},
+		deleteList: async ({ state, getters, commit }, id) => {
+			commit('deleteList', { id });
+
+			if (getters.isLoggedIn) {
+				await deleteListForUser(state.users.loggedInUserId, id);
+			}
+		},
 	},
 	mutations: {
 		setState(state, newState) {
@@ -104,6 +145,21 @@ export default new Vuex.Store({
 		clearBookmarks(state) {
 			state.bookmarks.all = {};
 		},
+		addList(state, payload) {
+			Vue.set(state.lists.all, payload.id, payload);
+		},
+		deleteList(state, payload) {
+			Vue.delete(state.lists.all, payload.id);
+		},
+		updateList(state, payload) {
+			state.lists.all[payload.id] = {
+				...state.lists.all[payload.id],
+				...payload.list,
+			};
+		},
+		clearLists(state) {
+			state.lists.all = {};
+		},
 	},
 	getters: {
 		isLoggedIn: state => {
@@ -113,6 +169,10 @@ export default new Vuex.Store({
 			return Object.values(state.bookmarks.all);
 		},
 		bookmarkWithId: (state) => bookmarkId => {
+			if (!state.bookmarks.all.hasOwnProperty(bookmarkId)) {
+				throw new Error(`Couldn't find bookmark with ID ${bookmarkId}.`);
+			}
+
 			return state.bookmarks.all[bookmarkId];
 		},
 		activeBookmarks: (state, getters) => {
@@ -162,6 +222,16 @@ export default new Vuex.Store({
 				});
 			});
 		},
+		allLists: state => {
+			return Object.values(state.lists.all);
+		},
+		listWithId: state => listId => {
+			if (!state.lists.all.hasOwnProperty(listId)) {
+				throw new Error(`Couldn't find list with ID ${listId}.`);
+			}
+
+			return state.lists.all[listId];
+		},
 	},
 });
 
@@ -176,6 +246,21 @@ function initializeBookmark(properties = {}) {
 
 	return {
 		...DEFAULT_BOOKMARK_PROPERTIES,
+		...properties,
+	};
+}
+
+function initializeList(properties = {}) {
+	if (!properties.id) {
+		properties.id = uuid();
+	}
+
+	if (!properties.dateCreated) {
+		properties.dateCreated = new Date().valueOf();
+	}
+
+	return {
+		...DEFAULT_LIST_PROPERTIES,
 		...properties,
 	};
 }
@@ -210,4 +295,36 @@ async function deleteBookmarkForUser(userId, bookmarkId) {
 	await database
 		.collection('users').doc(userId)
 		.collection('bookmarks').doc(bookmarkId).delete();
+}
+
+async function fetchListsForUser(userId) {
+	const querySnapshot = await database
+		.collection('users').doc(userId)
+		.collection('lists').get();
+
+	const lists = [];
+
+	querySnapshot.forEach((doc) => {
+		lists.push(doc.data());
+	});
+
+	return lists;
+}
+
+async function createListForUser(userId, list) {
+	await database
+		.collection('users').doc(userId)
+		.collection('lists').doc(list.id).set(list);
+}
+
+async function updateListForUser(userId, listId, list) {
+	await database
+		.collection('users').doc(userId)
+		.collection('lists').doc(listId).update(list);
+}
+
+async function deleteListForUser(userId, listId) {
+	await database
+		.collection('users').doc(userId)
+		.collection('lists').doc(listId).delete();
 }

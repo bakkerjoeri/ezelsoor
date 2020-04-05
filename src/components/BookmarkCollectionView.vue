@@ -30,7 +30,7 @@
 						variant="text"
 						@click="isCreateBookmarkFormOpen = true"
 					>
-						Add
+						New
 					</Button>
 				</Row>
 			</template>
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+	import { searchBookmarks } from './../utility/searchBookmarks.js';
 	import BookmarkList from './BookmarkList.vue';
 	import BookmarkForm from './BookmarkForm.vue';
 	import Button from './Button.vue';
@@ -91,19 +92,7 @@
 					return this.bookmarks;
 				}
 
-				return this.bookmarks.filter((bookmark) => {
-					const normalizedQuery = this.query.toLowerCase();
-
-					return normalizedQuery.split(' ').every((queryPart) => {
-						const normalizedBookmarkTitle = bookmark.title.toLowerCase();
-						const normalizedSummary = bookmark.summary.toLowerCase();
-						const normalizedTags = bookmark.tags.join().toLowerCase();
-
-						return normalizedBookmarkTitle.indexOf(queryPart) >= 0 ||
-							normalizedSummary.indexOf(queryPart) >= 0 ||
-							normalizedTags.indexOf(queryPart) >= 0;
-					});
-				});
+				return searchBookmarks(this.bookmarks, this.query);
 			},
 		},
 		methods: {

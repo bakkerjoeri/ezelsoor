@@ -8,14 +8,18 @@
 				{{ title }}
 			</h2>
 
-			<Button
-				v-if="collapsible"
-				variant="text"
-				size="small"
-				@click="isSectionHidden = !isSectionHidden"
-			>
-				{{ isSectionHidden ? 'show' : 'hide' }}
-			</Button>
+			<Row class="NavigationSection__actions">
+				<slot name="actions"/>
+
+				<Button
+					v-if="collapsible && $slots.default"
+					variant="text"
+					size="small"
+					@click="isSectionHidden = !isSectionHidden"
+				>
+					{{ isSectionHidden ? 'show' : 'hide' }}
+				</Button>
+			</Row>
 		</header>
 
 		<div
@@ -29,10 +33,12 @@
 
 <script>
 	import Button from './Button.vue';
+	import Row from './Row.vue';
 
 	export default {
 		components: {
 			Button,
+			Row,
 		},
 		props: {
 			collapsible: {
