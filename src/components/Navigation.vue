@@ -191,7 +191,15 @@
 			},
 			sortedLists() {
 				return [...this.lists].sort((listA, listB) => {
-					return listA.title - listB.title;
+					if (listB.title > listA.title) {
+						return -1;
+					}
+
+					if (listB.title < listA.title) {
+						return 1;
+					}
+
+					return 0;
 				})
 			},
 			listToEdit() {
