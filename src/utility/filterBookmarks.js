@@ -68,7 +68,7 @@ export default function filterBookmarks(bookmarks, filters) {
 			}
 
 			if (filter.type === 'untagged') {
-				return bookmarks.tags.length === 0;
+				return bookmark.tags.length === 0;
 			}
 
 			return false;
