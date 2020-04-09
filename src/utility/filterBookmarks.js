@@ -20,10 +20,6 @@ export default function filterBookmarks(bookmarks, filters) {
 					return false;
 				}
 
-				console.log(new URL(bookmark.url).host);
-				console.log(filter.source);
-				console.log(new URL(bookmark.url).host.indexOf(filter.source));
-
 				return new URL(bookmark.url).host.indexOf(filter.source) >= 0;
 			}
 
