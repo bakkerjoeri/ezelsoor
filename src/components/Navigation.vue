@@ -6,7 +6,7 @@
 					v-if="$store.getters.isLoggedIn"
 					class="Navigation__item"
 				>
-					<Button @click="handleClickLogout" variant="text">Log out</Button>
+					<Button @click="handleClickLogout">Log out</Button>
 				</li>
 
 				<li
