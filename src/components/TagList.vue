@@ -29,9 +29,10 @@
 	.TagList {
 		display: flex;
 		list-style: none;
+		flex-wrap: wrap;
 	}
 
-	.TagList__item + .TagList__item {
-		margin-left: 10px;
+	.TagList__item:not(:last-child) {
+		margin-right: 10px;
 	}
 </style>
