@@ -153,9 +153,11 @@
 	}
 
 	.BookmarkItem__title {
+		overflow: hidden;
 		grid-row: 1;
 		grid-column: 2 / -1;
 		line-height: var(--baseline);
+		text-overflow: ellipsis;
 
 		@media (min-width: 640px) {
 			grid-column: 2 / 3;
