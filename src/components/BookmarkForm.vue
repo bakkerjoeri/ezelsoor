@@ -14,7 +14,7 @@
 			/>
 
 			<FormTextarea
-				label="Summary"
+				label="Notes"
 				v-model="summary"
 			/>
 
