@@ -20,7 +20,7 @@
 	.Modal__mask {
 		display: flex;
 		justify-content: center;
-		align-items: center;
+		align-items: flex-end;
 		position: fixed;
 		top: 0;
 		left: 0;
@@ -28,15 +28,23 @@
 		height: 100%;
 		background-color: rgba(0, 0, 0, .5);
 		transition: opacity .2s;
+
+		@media (min-width: 480px) {
+			align-items: center;
+		}
 	}
 
 	.Modal {
 		overflow-y: scroll;
 		width: 480px;
 		max-width: 100%;
-		max-height: calc(100vh - 40px);
-		margin: 20px;
+		max-height: 100vh;
 		background-color: #fff;
+
+		@media (min-width: 480px) {
+			margin: 20px;
+			max-height: calc(100vh - 40px);
+		}
 	}
 
 	.Modal__header,
