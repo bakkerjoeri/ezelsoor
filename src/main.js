@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import clickOutside from 'v-click-outside'
 import VueMq from 'vue-mq';
+import PortalVue from 'portal-vue';
 import App from './App.vue';
 import store from './store';
 import router from './router';
@@ -12,6 +13,7 @@ let hasAppMounted = false;
 function mountApp() {
 	Vue.config.productionTip = false;
 	Vue.use(clickOutside)
+	Vue.use(PortalVue);
 	Vue.use(VueMq, {
 		breakpoints,
 	});

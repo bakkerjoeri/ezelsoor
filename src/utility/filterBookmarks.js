@@ -39,9 +39,9 @@ export default function filterBookmarks(bookmarks, filters) {
 				return bookmark.isArchived;
 			}
 
-			if (filter.type === 'taggedWithAllOf') {
+			if (filter.type === 'andTags') {
 				if (!filter.tags) {
-					throw Error('Filter of type "taggedWithAllOf" is missing "tags" parameter.');
+					throw Error('Filter of type "andTags" is missing "tags" parameter.');
 				}
 
 				if (bookmark.tags.length === 0) {
@@ -53,9 +53,9 @@ export default function filterBookmarks(bookmarks, filters) {
 				});
 			}
 
-			if (filter.type === 'taggedWithAnyOf') {
+			if (filter.type === 'orTags') {
 				if (!filter.tags) {
-					throw Error('Filter of type "taggedWithAnyOf" is missing "tags" parameter.');
+					throw Error('Filter of type "orTags" is missing "tags" parameter.');
 				}
 
 				if (bookmark.tags.length === 0) {

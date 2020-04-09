@@ -6,7 +6,7 @@
 					v-if="$store.getters.isLoggedIn"
 					class="Navigation__item"
 				>
-					<Button @click="handleClickLogout">Log out</Button>
+					<Button @click="handleClickLogout" variant="text">Log out</Button>
 				</li>
 
 				<li
@@ -123,7 +123,7 @@
 						{{ tag }}
 					</router-link>
 
-					<span class="TagCount">
+					<span class="BookmarkCount">
 						&middot; {{ amount }}
 					</span>
 				</li>
@@ -191,12 +191,16 @@
 			},
 			sortedLists() {
 				return [...this.lists].sort((listA, listB) => {
-					if (listB.title > listA.title) {
-						return -1;
+					const titleA = listA.title.toLowerCase();
+					const titleB = listB.title.toLowerCase();
+
+
+					if (titleA > titleB) {
+						return 1;
 					}
 
-					if (listB.title < listA.title) {
-						return 1;
+					if (titleA < titleB) {
+						return -1;
 					}
 
 					return 0;
@@ -235,15 +239,27 @@
 				this.listToEditId = listId;
 				this.isEditingList = true;
 			},
-			handleSubmitNewList(list) {
-				this.$store.dispatch('addList', list);
+			async handleSubmitNewList(list) {
+				const { id } = await this.$store.dispatch('addList', list);
 				this.isCreatingList = false;
+
+				this.$router.push({
+					name: 'list',
+					params: { listId: id },
+				});
 			},
 			handleSubmitEditedList(id, list) {
 				this.$store.dispatch('updateList', { id, list });
 				this.isEditingList = false;
 			},
 			handleClickDeleteList(listId) {
+				if (
+					this.$router.history.current.name === 'list' &&
+					this.$router.history.current.params.listId === listId
+				) {
+					this.$router.push('/')
+				}
+
 				this.$store.dispatch('deleteList', listId);
 				this.isEditingList = false;
 			},
@@ -276,6 +292,14 @@
 
 	.ListActions {
 		margin-left: 6px;
+		transition: opacity .1s .1s;
+
+		@media (min-width: 640px) {
+			.Navigation__item:not(:hover) & {
+				opacity: 0;
+				transition: opacity .1s 0s;
+			}
+		}
 	}
 
 	.Navigation__link {
@@ -295,7 +319,7 @@
 		}
 	}
 
-	.TagCount {
+	.BookmarkCount {
 		margin-left: 6px;
 		color: #aaa;
 	}

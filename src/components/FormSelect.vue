@@ -1,24 +1,34 @@
 <template>
 	<FormItem
-		class="FormInput"
+		class="FormSelect"
 		:class="{ 'has-error': state === false }"
 		:label="label"
 		:label-for="_uid"
 		:description="description"
 		:error="error"
 	>
-		<input
-			class="FormInput__input"
+		<select
+			class="FormSelect__dropdown"
 			:placeholder="placeholder"
 			:type="type"
 			:id="_uid"
 			:value="value"
 			:required="required"
-			:autocomplete="autocomplete"
-			:autocorrect="autocorrect"
-			:autocapitalize="autocapitalize"
-			@input="$emit('input', $event.target.value)"
-		/>
+			@change="$emit('change', $event.target.value)"
+		>
+			<option v-if="placeholder" disabled value="">
+				{{ placeholder }}
+			</option>
+
+			<option
+				class="FormSelect__option"
+				v-for="(option, index) in options"
+				:key="index"
+				:value="option.value"
+			>
+				{{ option.text }}
+			</option>
+		</select>
 	</FormItem>
 </template>
 
@@ -30,7 +40,7 @@
 		},
 		model: {
 			prop: 'value',
-			event: 'input',
+			event: 'change',
 		},
 		props: {
 			description: {
@@ -42,6 +52,9 @@
 			label: {
 				type: String,
 			},
+			options: {
+				type: Array,
+			},
 			placeholder: {
 				type: String,
 			},
@@ -50,20 +63,11 @@
 				default: "text"
 			},
 			value: {
-				type: [String, Number],
+				default: null,
 			},
 			required: {
 				type: Boolean,
 			},
-			autocomplete: {
-				type: String,
-			},
-			autocorrect: {
-				type: String,
-			},
-			autocapitalize: {
-				type: String,
-			}
 		},
 		computed: {
 			state() {
@@ -74,16 +78,16 @@
 </script>
 
 <style lang="scss">
-	.FormInput__input {
+	.FormSelect__dropdown {
 		display: block;
 		width: 100%;
-		padding: 10px;
+		padding: 12px;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
 		border: 1px solid lightgray;
 		border-radius: 5px;
 
-		.FormInput.has-error & {
+		.FormSelect.has-error & {
 			border-color: red;
 		}
 	}

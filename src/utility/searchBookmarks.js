@@ -12,6 +12,7 @@ export function doesBookmarkMatchQuery(bookmark, query) {
 	return normalizedQuery.split(' ').every((queryPart) => {
 		return normalizedBookmarkTitle.indexOf(queryPart) >= 0 ||
 			normalizedSummary.indexOf(queryPart) >= 0 ||
-			normalizedTags.indexOf(queryPart) >= 0;
+			normalizedTags.indexOf(queryPart) >= 0 ||
+			bookmark.url.indexOf(queryPart) > 0;
 	});
 }

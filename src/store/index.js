@@ -41,11 +41,13 @@ export default new Vuex.Store({
 		login: async ({ dispatch, commit }, userId) => {
 			commit('setLoggedInUser', userId);
 			await dispatch('syncLocalBookmarks', userId);
+			await dispatch('syncLocalLists', userId);
 			await dispatch('fetchRemoteState', userId);
 		},
 		logout: ({ commit }) => {
 			commit('clearLoggedInUser');
 			commit('clearBookmarks');
+			commit('clearLists');
 		},
 		fetchLocalState: ({ commit }) => {
 			if (localStorage.getItem('state')) {
@@ -81,6 +83,13 @@ export default new Vuex.Store({
 				})
 			);
 		},
+		syncLocalLists: async ({ getters }, userId) => {
+			return await Promise.all(
+				getters.allLists.map(async (list) => {
+					return await createListForUser(userId, list);
+				})
+			);
+		},
 		addBookmark: async ({ state, getters, commit }, data) => {
 			const bookmark = initializeBookmark(data);
 
@@ -112,6 +121,8 @@ export default new Vuex.Store({
 			if (getters.isLoggedIn) {
 				await createListForUser(state.users.loggedInUserId, list);
 			}
+
+			return list;
 		},
 		updateList: async ({ state, getters, commit }, { id, list }) => {
 			commit('updateList', { id, list });
