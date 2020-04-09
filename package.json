@@ -9,6 +9,7 @@
 	},
 	"dependencies": {
 		"firebase": "^7.13.2",
+		"portal-vue": "^2.1.7",
 		"v-click-outside": "^3.0.1",
 		"vue": "^2.6.10",
 		"vue-mq": "^1.0.1",

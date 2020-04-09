@@ -14,6 +14,8 @@
 		>
 			<RouterView/>
 		</main>
+
+		<portal-target name="dialog"/>
 	</div>
 </template>
 

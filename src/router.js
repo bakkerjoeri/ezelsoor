@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from './store';
+import filterBookmarks from './utility/filterBookmarks.js';
 import BookmarkCollectionView from './components/BookmarkCollectionView.vue';
 import Signup from './components/Signup.vue';
 import Login from './components/Login.vue';
@@ -39,16 +40,6 @@ const routes = [
 		}),
 	},
 	{
-		path: '/tag/:tagName',
-		component: BookmarkCollectionView,
-		name: 'tag',
-		props: (route) => ({
-			title: `#${route.params.tagName}`,
-			tagName: route.params.tagName,
-			bookmarks: store.getters.bookmarksWithTags([route.params.tagName]),
-		}),
-	},
-	{
 		path: '/toread',
 		component: BookmarkCollectionView,
 		props: () => ({
@@ -60,8 +51,61 @@ const routes = [
 		path: '/archive',
 		component: BookmarkCollectionView,
 		props: () => ({
-			title: 'Archived',
+			title: 'Archive',
 			bookmarks: store.getters.archivedBookmarks,
+		}),
+	},
+	{
+		path: '/list/:listId',
+		component: BookmarkCollectionView,
+		name: 'list',
+		props: (route) => {
+			const list = store.getters.listWithId(route.params.listId);
+			const bookmarks = list.shouldIncludeArchived ? store.getters.allBookmarks : store.getters.activeBookmarks;
+
+			return {
+				title: list.title,
+				bookmarks: filterBookmarks(bookmarks, list.filters),
+			};
+		},
+		beforeEnter: (to, from, next) => {
+			if (store.state.hasFetchedData) {
+				if (store.getters.hasListWithId(to.params.listId)) {
+					return next();
+				}
+
+				if (from) {
+					return next(from.path);
+				}
+
+				return next('/');
+			}
+
+			const unwatch = store.watch(state => state.hasFetchedData, hasFetchedData => {
+				if (hasFetchedData) {
+					unwatch();
+
+					if (store.getters.hasListWithId(to.params.listId)) {
+						return next();
+					}
+
+					if (from) {
+						return next(from.path);
+					}
+
+					return next('/');
+				}
+			});
+		}
+	},
+	{
+		path: '/tag/:tagName',
+		component: BookmarkCollectionView,
+		name: 'tag',
+		props: (route) => ({
+			title: `#${route.params.tagName}`,
+			tagName: route.params.tagName,
+			bookmarks: store.getters.bookmarksWithTags([route.params.tagName]),
 		}),
 	},
 ];
