@@ -38,12 +38,12 @@
 		overflow-y: scroll;
 		width: 480px;
 		max-width: 100%;
-		max-height: 100vh;
+		max-height: 100%;
 		background-color: #fff;
 
 		@media (min-width: 480px) {
 			margin: 20px;
-			max-height: calc(100vh - 40px);
+			max-height: calc(100% - 40px);
 		}
 	}
 
