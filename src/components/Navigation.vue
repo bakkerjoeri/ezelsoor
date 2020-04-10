@@ -294,7 +294,7 @@
 		margin-left: 6px;
 		transition: opacity .1s .1s;
 
-		@media (min-width: 640px) {
+		@media (hover: hover) {
 			.Navigation__item:not(:hover) & {
 				opacity: 0;
 				transition: opacity .1s 0s;
