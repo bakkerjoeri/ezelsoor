@@ -45,7 +45,7 @@
 		<div class="BookmarkForm__actions">
 			<Button class="BookmarkForm__action" type="submit">Save</Button>
 			<Button
-				v-if="$listeners.cancel"
+				v-if="$attrs.onCancel"
 				class="BookmarkForm__action"
 				@click="$emit('cancel')"
 			>
@@ -53,7 +53,7 @@
 			</Button>
 
 			<Button
-				v-if="$listeners.delete"
+				v-if="$attrs.onDelete"
 				class="BookmarkForm__action"
 				@click="$emit('delete')"
 			>

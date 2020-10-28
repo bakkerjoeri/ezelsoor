@@ -12,14 +12,15 @@
 			class="App__main"
 			:class="{ 'is-disabled': isMenuOpen && $mq === 'sm' }"
 		>
-			<RouterView/>
+			<router-view/>
 		</main>
 
-		<portal-target name="dialog"/>
+		<div id="dialog-target"></div>
 	</div>
 </template>
 
 <script>
+import PubSub from './utility/PubSub.js';
 import Navigation from './components/Navigation.vue';
 
 export default {
@@ -54,7 +55,7 @@ export default {
 		});
 	},
 	mounted() {
-		this.$root.$on('toggleMenu', () => {
+		PubSub.on('toggleMenu', () => {
 			this.isMenuOpen = !this.isMenuOpen;
 		});
 	}

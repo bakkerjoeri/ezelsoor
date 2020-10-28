@@ -1,9 +1,8 @@
-import Vue from 'vue';
+import { createApp } from 'vue';
 import clickOutside from 'v-click-outside'
-import VueMq from 'vue-mq';
-import PortalVue from 'portal-vue';
+import VueMq from 'vue3-mq';
 import App from './App.vue';
-import store from './store';
+import { store } from './store';
 import router from './router';
 import breakpoints from './config/breakpoints.js';
 import { auth } from './utility/firebase.js';
@@ -11,18 +10,16 @@ import { auth } from './utility/firebase.js';
 let hasAppMounted = false;
 
 function mountApp() {
-	Vue.config.productionTip = false;
-	Vue.use(clickOutside)
-	Vue.use(PortalVue);
-	Vue.use(VueMq, {
+	const app = createApp(App);
+
+	app.use(store);
+	app.use(router);
+	app.use(clickOutside);
+	app.use(VueMq, {
 		breakpoints,
 	});
 
-	new Vue({
-		store,
-		router,
-		render: h => h(App),
-	}).$mount('#app');
+	app.mount('#app');
 }
 
 auth.onAuthStateChanged(user => {

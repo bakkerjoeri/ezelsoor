@@ -1,12 +1,9 @@
-import Vue from 'vue';
-import VueRouter from 'vue-router';
-import store from './store';
+import { createRouter, createWebHistory } from 'vue-router';
+import { store } from './store';
 import filterBookmarks from './utility/filterBookmarks.js';
 import BookmarkCollectionView from './components/BookmarkCollectionView.vue';
 import Signup from './components/Signup.vue';
 import Login from './components/Login.vue';
-
-Vue.use(VueRouter);
 
 const routes = [
 	{
@@ -110,8 +107,8 @@ const routes = [
 	},
 ];
 
-const router = new VueRouter({
-	mode: 'history',
+const router = createRouter({
+	history: createWebHistory(),
 	routes,
 });
 

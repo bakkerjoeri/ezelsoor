@@ -5,7 +5,7 @@
 				<Button
 					v-if="$mq === 'sm'"
 					variant="text"
-					@click="$root.$emit('toggleMenu')"
+					@click="handleClickToggleMenu"
 				>
 					Menu
 				</Button>
@@ -51,6 +51,7 @@
 </template>
 
 <script>
+	import PubSub from './../utility/PubSub.js';
 	import { searchBookmarks } from './../utility/searchBookmarks.js';
 	import BookmarkList from './BookmarkList.vue';
 	import BookmarkForm from './BookmarkForm.vue';
@@ -100,6 +101,9 @@
 				this.$store.dispatch('addBookmark', bookmark);
 				this.isCreateBookmarkFormOpen = false;
 			},
+			handleClickToggleMenu() {
+				PubSub.emit('toggleMenu');
+			}
 		},
 	}
 </script>

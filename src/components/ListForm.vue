@@ -95,7 +95,7 @@
 			</Button>
 
 			<Button
-				v-if="$listeners.cancel"
+				v-if="$attrs.onCancel"
 				class="ListForm__action"
 				@click="$emit('cancel')"
 			>
@@ -103,7 +103,7 @@
 			</Button>
 
 			<Button
-				v-if="$listeners.delete"
+				v-if="$attrs.onDelete"
 				class="ListForm__action"
 				@click="$emit('delete')"
 			>

@@ -16,7 +16,7 @@
 					<router-link
 						class="Navigation__link"
 						to="/login"
-						@click.native="$emit('close')"
+						@click="$emit('close')"
 					>
 						Log in
 					</router-link>
@@ -29,7 +29,7 @@
 					<router-link
 						class="Navigation__link"
 						to="/signup"
-						@click.native="$emit('close')"
+						@click="$emit('close')"
 					>
 						Sign up
 					</router-link>
@@ -47,7 +47,7 @@
 					<router-link
 						class="Navigation__link"
 						:to="menuItem.route"
-						@click.native="$emit('close')"
+						@click="$emit('close')"
 					>
 						{{ menuItem.name }}
 					</router-link>
@@ -82,7 +82,7 @@
 							name: 'list',
 							params: { listId: listMenuItem.id }
 						}"
-						@click.native="$emit('close')"
+						@click="$emit('close')"
 					>
 						{{ listMenuItem.name }}
 					</router-link>
@@ -118,7 +118,7 @@
 							name: 'tag',
 							params: { tagName: tag }
 						}"
-						@click.native="$emit('close')"
+						@click="$emit('close')"
 					>
 						{{ tag }}
 					</router-link>

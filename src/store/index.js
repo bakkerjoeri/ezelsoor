@@ -1,9 +1,6 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createStore } from 'vuex'
 import uuid from './../utility/uuid.js';
 import { database } from './../utility/firebase.js';
-
-Vue.use(Vuex)
 
 export const DEFAULT_BOOKMARK_PROPERTIES = {
 	url: '',
@@ -23,7 +20,7 @@ export const DEFAULT_LIST_PROPERTIES = {
 	filters: [],
 }
 
-export default new Vuex.Store({
+export const store = createStore({
 	state: {
 		hasFetchedData: false,
 		bookmarks: {
@@ -153,10 +150,10 @@ export default new Vuex.Store({
 			state.users.loggedInUserId = null;
 		},
 		addBookmark(state, payload) {
-			Vue.set(state.bookmarks.all, payload.id, payload);
+			state.bookmarks.all[payload.id] = payload;
 		},
 		deleteBookmark(state, payload) {
-			Vue.delete(state.bookmarks.all, payload.id);
+			delete state.bookmarks.all[payload.id];
 		},
 		updateBookmark(state, payload) {
 			state.bookmarks.all[payload.id] = {
@@ -168,10 +165,10 @@ export default new Vuex.Store({
 			state.bookmarks.all = {};
 		},
 		addList(state, payload) {
-			Vue.set(state.lists.all, payload.id, payload);
+			state.lists.all[payload.id] = payload;
 		},
 		deleteList(state, payload) {
-			Vue.delete(state.lists.all, payload.id);
+			delete state.lists.all[payload.id];
 		},
 		updateList(state, payload) {
 			state.lists.all[payload.id] = {

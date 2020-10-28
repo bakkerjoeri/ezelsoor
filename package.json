@@ -9,22 +9,22 @@
 	},
 	"dependencies": {
 		"firebase": "^7.15.5",
-		"portal-vue": "^2.1.7",
-		"v-click-outside": "^3.0.1",
-		"vue": "^2.6.10",
-		"vue-mq": "^1.0.1",
-		"vue-router": "^3.3.4",
-		"vuex": "^3.5.1"
+		"json2mq": "^0.2.0",
+		"v-click-outside": "^3.1.2",
+		"vue": "^3.0.2",
+		"vue-router": "^4.0.0-rc.1",
+		"vue3-mq": "^2.1.0",
+		"vuex": "^4.0.0-beta.4"
 	},
 	"devDependencies": {
-		"@vue/cli-plugin-babel": "^4.4.6",
-		"@vue/cli-plugin-eslint": "^4.4.6",
-		"@vue/cli-service": "^4.4.6",
+		"@vue/compiler-sfc": "^3.0.2",
+		"@vue/cli-plugin-babel": "^4.5.8",
+		"@vue/cli-plugin-eslint": "^4.5.8",
+		"@vue/cli-service": "^4.5.8",
 		"babel-eslint": "^10.1.0",
-		"eslint": "^7.3.1",
-		"eslint-plugin-vue": "^6.2.2",
+		"eslint": "^7.12.1",
+		"eslint-plugin-vue": "^7.1.0",
 		"node-sass": "^4.14.1",
-		"sass-loader": "^9.0.1",
-		"vue-template-compiler": "^2.6.10"
+		"sass-loader": "^10.0.4"
 	}
 }

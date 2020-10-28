@@ -1,5 +1,5 @@
 <template>
-	<portal to="dialog">
+	<teleport to="#dialog-target">
 		<div class="Modal__mask">
 			<div class="Modal">
 				<div class="Modal__header" v-if="$slots.header">
@@ -13,7 +13,7 @@
 				</div>
 			</div>
 		</div>
-	</portal>
+	</teleport>
 </template>
 
 <style lang="scss">
