@@ -1,5 +1,4 @@
 import { createApp } from 'vue';
-import clickOutside from 'v-click-outside'
 import VueMq from 'vue3-mq';
 import App from './App.vue';
 import { store } from './store';
@@ -14,7 +13,6 @@ function mountApp() {
 
 	app.use(store);
 	app.use(router);
-	app.use(clickOutside);
 	app.use(VueMq, {
 		breakpoints,
 	});

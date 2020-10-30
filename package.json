@@ -10,7 +10,6 @@
 	"dependencies": {
 		"firebase": "^8.0.0",
 		"json2mq": "^0.2.0",
-		"v-click-outside": "^3.1.2",
 		"vue": "^3.0.2",
 		"vue-router": "^4.0.0-rc.1",
 		"vue3-mq": "^2.2.0",

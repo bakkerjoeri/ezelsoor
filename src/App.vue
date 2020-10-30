@@ -4,7 +4,7 @@
 			class="App__sidebar"
 			:class="{ 'is-open': isMenuOpen }"
 		>
-			<Navigation v-if="isMenuOpen" @close="isMenuOpen = false" v-click-outside="() => isMenuOpen = false"/>
+			<Navigation v-if="isMenuOpen" @close="isMenuOpen = false"/>
 			<Navigation v-else/>
 		</aside>
 
