@@ -19,7 +19,7 @@ function mountApp() {
 		breakpoints,
 	});
 
-	app.mount('#app');
+	app.mount('body');
 }
 
 auth.onAuthStateChanged(user => {

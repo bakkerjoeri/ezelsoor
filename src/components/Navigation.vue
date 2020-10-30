@@ -16,7 +16,6 @@
 					<router-link
 						class="Navigation__link"
 						to="/login"
-						@click="$emit('close')"
 					>
 						Log in
 					</router-link>
@@ -29,7 +28,6 @@
 					<router-link
 						class="Navigation__link"
 						to="/signup"
-						@click="$emit('close')"
 					>
 						Sign up
 					</router-link>
@@ -47,7 +45,6 @@
 					<router-link
 						class="Navigation__link"
 						:to="menuItem.route"
-						@click="$emit('close')"
 					>
 						{{ menuItem.name }}
 					</router-link>
@@ -82,7 +79,6 @@
 							name: 'list',
 							params: { listId: listMenuItem.id }
 						}"
-						@click="$emit('close')"
 					>
 						{{ listMenuItem.name }}
 					</router-link>
@@ -118,7 +114,6 @@
 							name: 'tag',
 							params: { tagName: tag }
 						}"
-						@click="$emit('close')"
 					>
 						{{ tag }}
 					</router-link>
@@ -265,6 +260,11 @@
 				this.isEditingList = false;
 			},
 		},
+		watch: {
+			$route() {
+				this.$emit('close');
+			}
+		}
 	};
 </script>
 
