@@ -3,7 +3,7 @@
 		class="FormSelect"
 		:class="{ 'has-error': state === false }"
 		:label="label"
-		:label-for="_uid"
+		:label-for="id"
 		:description="description"
 		:error="error"
 	>
@@ -11,10 +11,10 @@
 			class="FormSelect__dropdown"
 			:placeholder="placeholder"
 			:type="type"
-			:id="_uid"
+			:id="id"
 			:value="value"
 			:required="required"
-			@change="$emit('change', $event.target.value)"
+			@change="$emit('update:value', $event.target.value)"
 		>
 			<option v-if="placeholder" disabled value="">
 				{{ placeholder }}
@@ -33,14 +33,11 @@
 </template>
 
 <script>
+import uuid from '../utility/uuid';
 	import FormItem from './FormItem.vue';
 	export default {
 		components: {
 			FormItem,
-		},
-		model: {
-			prop: 'value',
-			event: 'change',
 		},
 		props: {
 			description: {
@@ -68,6 +65,11 @@
 			required: {
 				type: Boolean,
 			},
+		},
+		data: () => {
+			return {
+				id: uuid(),
+			};
 		},
 		computed: {
 			state() {

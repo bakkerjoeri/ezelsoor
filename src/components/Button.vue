@@ -40,6 +40,7 @@
 				validator: (value) => ['black', 'transparent'].includes(value),
 			}
 		},
+		emits: ['click'],
 	}
 </script>
 

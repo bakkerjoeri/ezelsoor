@@ -17,7 +17,7 @@
 				/>
 
 				<FormInput
-					v-model="email"
+					v-model:value="email"
 					type="email"
 					label="Email address"
 					autocomplete="username"
@@ -27,7 +27,7 @@
 				/>
 
 				<FormInput
-					v-model="password"
+					v-model:value="password"
 					type="password"
 					label="Password"
 					autocomplete="new-password"

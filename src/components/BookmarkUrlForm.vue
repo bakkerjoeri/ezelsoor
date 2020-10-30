@@ -6,7 +6,7 @@
 			placeholder="Enter new bookmark link"
 			type="url"
 			required
-			v-model="url"
+			v-model:value="url"
 		/>
 
 		<Button
@@ -48,6 +48,7 @@
 			FormInput,
 			Modal,
 		},
+		emits: ['submit'],
 		data: function() {
 			return {
 				url: '',

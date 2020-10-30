@@ -164,6 +164,7 @@
 			Row,
 			NavigationSection,
 		},
+		emits: ['close'],
 		data: function() {
 			return {
 				isCreatingList: false,

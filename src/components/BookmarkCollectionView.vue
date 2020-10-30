@@ -37,7 +37,7 @@
 		</TopBar>
 
 		<main class="BookmarkCollectionView__content">
-			<SearchBar v-model="query"/>
+			<SearchBar v-model:query="query"/>
 			<BookmarkList :bookmarks="filteredBookmarks"/>
 		</main>
 

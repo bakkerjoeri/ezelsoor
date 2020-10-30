@@ -4,18 +4,18 @@
 			<FormInput
 				label="Link"
 				type="url"
-				v-model.trim="url"
+				v-model:value.trim="url"
 			/>
 
 			<FormInput
 				label="Title"
 				type="text"
-				v-model="title"
+				v-model:value="title"
 			/>
 
 			<FormTextarea
 				label="Notes"
-				v-model="summary"
+				v-model:value="summary"
 			/>
 
 			<FormInput
@@ -23,29 +23,35 @@
 				type="text"
 				autocorrect="off"
 				autocapitalize="off"
-				v-model="tagString"
+				v-model:value="tagString"
 			/>
 
 			<FormCheckbox
 				label="Favorite"
-				v-model="isFavorite"
+				v-model:value="isFavorite"
 			/>
 
 			<FormCheckbox
 				label="To read"
-				v-model="isToRead"
+				v-model:value="isToRead"
 			/>
 
 			<FormCheckbox
 				label="Archived"
-				v-model="isArchived"
+				v-model:value="isArchived"
 			/>
 		</div>
 
 		<div class="BookmarkForm__actions">
-			<Button class="BookmarkForm__action" type="submit">Save</Button>
 			<Button
-				v-if="$attrs.onCancel"
+				class="BookmarkForm__action"
+				type="submit"
+			>
+				Save
+			</Button>
+
+			<Button
+				v-if="onCancel"
 				class="BookmarkForm__action"
 				@click="$emit('cancel')"
 			>
@@ -53,7 +59,7 @@
 			</Button>
 
 			<Button
-				v-if="$attrs.onDelete"
+				v-if="onDelete"
 				class="BookmarkForm__action"
 				@click="$emit('delete')"
 			>
@@ -83,7 +89,14 @@
 				type: Object,
 				default: () => ({ ...DEFAULT_BOOKMARK_PROPERTIES }),
 			},
+			onCancel: {
+				type: Function,
+			},
+			onDelete: {
+				type: Function,
+			},
 		},
+		emits: ['cancel', 'delete', 'submit'],
 		data: function() {
 			return {
 				url: this.bookmark.url || DEFAULT_BOOKMARK_PROPERTIES.url,
@@ -107,7 +120,7 @@
 					tags: this.tagString.trim() ? unique(this.tagString.trim().split(' ')) : [],
 				});
 			},
-		}
+		},
 	}
 </script>
 

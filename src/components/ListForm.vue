@@ -4,18 +4,18 @@
 			<FormInput
 				label="Title"
 				type="text"
-				v-model="title"
+				v-model:value="title"
 				required
 			/>
 
 			<FormTextarea
 				label="Description"
-				v-model="description"
+				v-model:value="description"
 			/>
 
 			<FormCheckbox
 				label="Include archived bookmarks"
-				v-model="shouldIncludeArchived"
+				v-model:value="shouldIncludeArchived"
 			/>
 
 			<FormItem>
@@ -139,6 +139,7 @@
 				}),
 			},
 		},
+		emits: ['cancel, delete, submit'],
 		data: function() {
 			return {
 				title: this.list.title,

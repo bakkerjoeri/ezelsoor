@@ -5,17 +5,13 @@
 		<input
 			class="SearchBar__input"
 			:value="query"
-			@input="$emit('input', $event.target.value)"
+			@input="$emit('update:query', $event.target.value)"
 		/>
 	</div>
 </template>
 
 <script>
 	export default {
-		model: {
-			prop: 'query',
-			event: 'input'
-		},
 		props: {
 			query: {
 				type: String,

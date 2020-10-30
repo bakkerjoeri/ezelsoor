@@ -3,7 +3,7 @@
 		class="FormInput"
 		:class="{ 'has-error': state === false }"
 		:label="label"
-		:label-for="_uid"
+		:label-for="id"
 		:description="description"
 		:error="error"
 	>
@@ -11,26 +11,23 @@
 			class="FormInput__input"
 			:placeholder="placeholder"
 			:type="type"
-			:id="_uid"
+			:id="id"
 			:value="value"
 			:required="required"
 			:autocomplete="autocomplete"
 			:autocorrect="autocorrect"
 			:autocapitalize="autocapitalize"
-			@input="$emit('input', $event.target.value)"
+			@input="$emit('update:value', $event.target.value)"
 		/>
 	</FormItem>
 </template>
 
 <script>
+import uuid from '../utility/uuid';
 	import FormItem from './FormItem.vue';
 	export default {
 		components: {
 			FormItem,
-		},
-		model: {
-			prop: 'value',
-			event: 'input',
 		},
 		props: {
 			description: {
@@ -64,6 +61,11 @@
 			autocapitalize: {
 				type: String,
 			}
+		},
+		data: () => {
+			return {
+				id: uuid(),
+			};
 		},
 		computed: {
 			state() {

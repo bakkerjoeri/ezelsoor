@@ -2,14 +2,14 @@
 	<FormItem
 		class="FormTextarea"
 		:label="label"
-		:label-for="_uid"
+		:label-for="id"
 		:description="description"
 	>
 		<textarea
 			rows="1"
 			ref="textarea"
 			class="FormTextarea__input"
-			:id="_uid"
+			:id="id"
 			:value="value"
 			@input="handleInput"
 		/>
@@ -17,6 +17,7 @@
 </template>
 
 <script>
+import uuid from '../utility/uuid';
 	import FormItem from './FormItem.vue';
 	export default {
 		components: {
@@ -37,10 +38,15 @@
 				type: [String, Number],
 			},
 		},
+		data: () => {
+			return {
+				id: uuid(),
+			};
+		},
 		methods: {
 			handleInput(event) {
 				this.resize();
-				this.$emit('input', event.target.value);
+				this.$emit('update:value', event.target.value);
 			},
 			resize() {
 				this.$refs.textarea.style.height = "auto";

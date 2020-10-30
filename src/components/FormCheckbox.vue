@@ -6,12 +6,12 @@
 		<input
 			class="FormCheckbox__input"
 			type="checkbox"
-			:id="_uid"
+			:id="id"
 			:checked="value"
-			@change="$emit('change', $event.target.checked)"
+			@change="$emit('update:value', $event.target.checked)"
 		/>
 		<label
-			:for="_uid"
+			:for="id"
 			class="FormCheckbox__label"
 		>
 			{{ label }}
@@ -20,13 +20,10 @@
 </template>
 
 <script>
+import uuid from '../utility/uuid';
 	import FormItem from './FormItem.vue';
 
 	export default {
-		model: {
-			prop: 'value',
-			event: 'change',
-		},
 		components: {
 			FormItem,
 		},
@@ -44,6 +41,11 @@
 			value: {
 				type: Boolean,
 			},
+		},
+		data: () => {
+			return {
+				id: uuid(),
+			};
 		},
 	};
 </script>
