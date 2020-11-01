@@ -55,7 +55,7 @@
 	import FormInput from './FormInput.vue';
 	import FormItem from './FormItem.vue';
 	import TopBar from './TopBar.vue';
-	import { auth } from './../utility/firebase.js';
+	import { auth } from './../utility/firebase';
 
 	export default {
 		components: {
