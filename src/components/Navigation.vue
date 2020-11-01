@@ -149,7 +149,7 @@
 	import Modal from './Modal.vue';
 	import NavigationSection from './NavigationSection.vue';
 	import Row from './Row.vue';
-	import { auth } from './../utility/firebase.js';
+	import { auth } from './../utility/firebase';
 
 	export default {
 		components: {

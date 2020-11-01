@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
 import uuid from './../utility/uuid.js';
-import { database } from './../utility/firebase.js';
+import { database } from './../utility/firebase';
 
 export const DEFAULT_BOOKMARK_PROPERTIES = {
 	url: '',

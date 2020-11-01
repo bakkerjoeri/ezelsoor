@@ -4,7 +4,7 @@ import App from './App.vue';
 import { store } from './store';
 import router from './router';
 import breakpoints from './config/breakpoints.js';
-import { auth } from './utility/firebase.js';
+import { auth } from './utility/firebase';
 
 let hasAppMounted = false;
 
