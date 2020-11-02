@@ -1,3 +1,3 @@
 # 🐶 Easelear (*ezelsoor*)
 
-Store and organise bookmarks.
+Store and organize bookmarks.
