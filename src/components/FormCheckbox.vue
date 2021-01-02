@@ -24,6 +24,7 @@ import uuid from '../utility/uuid';
 	import FormItem from './FormItem.vue';
 
 	export default {
+		emits: ['update:value'],
 		components: {
 			FormItem,
 		},

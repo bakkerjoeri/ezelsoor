@@ -12,6 +12,7 @@
 
 <script>
 	export default {
+		emits: ['update:query'],
 		props: {
 			query: {
 				type: String,

@@ -51,7 +51,9 @@ export default {
 	},
 	beforeCreate() {
 		this.$store.subscribe((mutation, state) => {
-			localStorage.setItem('state', JSON.stringify(state));
+			if (!state.users.loggedInUserId) {
+				localStorage.setItem('state', JSON.stringify(state));
+			}
 		});
 	},
 	mounted() {
