@@ -101,7 +101,6 @@ const routes = [
 		name: 'tag',
 		props: (route) => ({
 			title: `#${route.params.tagName}`,
-			tagName: route.params.tagName,
 			bookmarks: store.getters.bookmarksWithTags([route.params.tagName]),
 		}),
 	},
