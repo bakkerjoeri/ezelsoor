@@ -1,6 +1,4 @@
 <script lang="ts">
-	import unique from './../utils/unique.js';
-
 	export let id = '';
 	export let tags = [];
 
@@ -17,7 +15,7 @@
 			return [];
 		}
 
-		return unique(trimmedTagString.split(' '));
+		return trimmedTagString.split(' ');
 	}
 </script>
 

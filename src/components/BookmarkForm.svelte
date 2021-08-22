@@ -1,11 +1,13 @@
 <script lang="ts">
-	import TagInput from './TagInput.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import type { Bookmark } from './../store/bookmarks.js';
+	import unique from './../utils/unique.js';
+	import TagInput from './TagInput.svelte';
 	import FormItem from './form/FormItem.svelte';
 	import InputText from './form/InputText.svelte';
 	import TextArea from './form/TextArea.svelte';
 	import Checkbox from './form/Checkbox.svelte';
+	import Button from './Button.svelte';
 
 	export let url = '';
 	export let title = '';
@@ -26,7 +28,7 @@
 		dispatch('save', {
 			title,
 			url,
-			tags,
+			tags: unique(tags),
 			notes,
 			isFavorite,
 			isToRead,
@@ -101,23 +103,17 @@
 		bind:checked={isArchived}
 	/>
 	
-	<button type="submit">
+	<Button type="submit">
 		Save
-	</button>
+	</Button>
 
-	<button
-		type="button"
-		on:click={handleClickCancel}
-	>
+	<Button on:click={handleClickCancel}>
 		Cancel
-	</button>
+	</Button>
 
 	{#if canDelete}
-		<button
-			type="button"
-			on:click={handleClickDelete}
-		>
+		<Button on:click={handleClickDelete}>
 			Delete
-		</button>
+		</Button>
 	{/if}
 </form>

@@ -1,6 +1,7 @@
 import uuid from '@bakkerjoeri/uuid';
-import { Writable, writable } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 import { createLocalStore } from './localStore';
+import type { Readable, Writable } from 'svelte/store';
 
 export interface Bookmark {
 	readonly id: string;
@@ -48,6 +49,21 @@ function createBookmarkStore(baseStore: Writable<Bookmark[]> = writable<Bookmark
 
 const localStore = createLocalStore<Bookmark[]>('easelear-bookmarks', []);
 export const bookmarks = createBookmarkStore(localStore);
+export const activeBookmarks = derived(bookmarks, bookmarks => bookmarks.filter(bookmark => !bookmark.isArchived));
+export const bookmarksToRead = derived(bookmarks, bookmarks => bookmarks.filter(bookmark => bookmark.isToRead));
+export const favoriteBookmarks = derived(bookmarks, bookmarks => bookmarks.filter(bookmark => bookmark.isFavorite));
+export const archivedBookmarks = derived(bookmarks, bookmarks => bookmarks.filter(bookmark => bookmark.isArchived));
+export const untaggedBookmarks = derived(bookmarks, bookmarks => bookmarks.filter(bookmark => bookmark.tags.length === 0));
+export const tagCount: Readable<{[tagName: string]: number}> = derived(activeBookmarks, (bookmarks) => {
+	return bookmarks.reduce((tags, bookmark) => {
+		return bookmark.tags.reduce((tags, tag) => {
+			return {
+				...tags,
+				[tag]: tags.hasOwnProperty(tag) ? tags[tag] + 1 : 1,
+			};
+		}, tags);
+	}, {});
+});
 
 export function createNewBookmark(properties: Partial<Bookmark> = {}): Bookmark {
 	return {
