@@ -66,14 +66,6 @@
 			<h2>Tags</h2>
 
 			<ul>
-				<li>
-					<Link to={`/untagged`}>
-						Untagged
-					</Link>
-					
-					&middot; {$untaggedBookmarks.length}
-				</li>
-
 				{#each Object.entries($tagCount) as [tagName, tagAmount] (tagName)}
 					<li>
 						<Link to={`/tag/${tagName}`}>
@@ -117,7 +109,9 @@
 			<Route path="/tag/:tagName" let:params>
 				<h1>Bookmarks tagged with "{params.tagName}"</h1>
 
-				<BookmarkList bookmarks={$bookmarks.filter(bookmark => bookmark.tags.includes(params.tagName))}/>
+				{#key params.tagName}
+					<BookmarkList bookmarks={$bookmarks.filter(bookmark => bookmark.tags.includes(params.tagName))}/>
+				{/key}
 			</Route>
 		</main>
 
