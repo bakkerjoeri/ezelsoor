@@ -18,6 +18,7 @@
 		--color-button: #ffffff;
 
 		display: inline-block;
+		padding: 0 10px;
 		line-height: var(--baseline);
 		font-size: var(--font-size-button);
 		white-space: nowrap;

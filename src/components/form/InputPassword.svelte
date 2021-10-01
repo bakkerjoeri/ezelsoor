@@ -1,21 +1,15 @@
 <script lang="ts">
 	export let value: string;
-	export let type: 'text' | 'url' | 'email' = 'text';
 	export let state: boolean | null = null;
 	export let autocomplete: string = null;
 	export let required: boolean = false;
 	export let disabled: boolean = false;
 	export let id: string;
-
-	function handleInput(event: any) {
-		value = event.target.value;
-	}
 </script>
 
 <input
-	on:input={handleInput}
-	value={value}
-	type={type}
+	bind:value={value}
+	type="password"
 	autocomplete={autocomplete}
 	required={required}
 	disabled={disabled}

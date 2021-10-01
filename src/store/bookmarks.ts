@@ -2,6 +2,7 @@ import uuid from '@bakkerjoeri/uuid';
 import { derived, writable } from 'svelte/store';
 import { createLocalStore } from './localStore';
 import type { Readable, Writable } from 'svelte/store';
+import { createFireStore } from './firestore';
 
 export interface Bookmark {
 	readonly id: string;
@@ -48,7 +49,8 @@ function createBookmarkStore(baseStore: Writable<Bookmark[]> = writable<Bookmark
 }
 
 const localStore = createLocalStore<Bookmark[]>('easelear-bookmarks', []);
-export const bookmarks = createBookmarkStore(localStore);
+const fireStore = createFireStore(null);
+export const bookmarks = createBookmarkStore(fireStore);
 export const activeBookmarks = derived(bookmarks, bookmarks => bookmarks.filter(bookmark => !bookmark.isArchived));
 export const bookmarksToRead = derived(bookmarks, bookmarks => bookmarks.filter(bookmark => bookmark.isToRead));
 export const favoriteBookmarks = derived(bookmarks, bookmarks => bookmarks.filter(bookmark => bookmark.isFavorite));

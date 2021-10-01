@@ -12,3 +12,15 @@
 		</li>
 	{/each}
 </ul>
+
+<style lang="scss">
+	ul {
+		list-style: none;
+		padding-left: 0;
+		margin: 0;
+	}
+
+	li + li {
+		margin-top: 26px;
+	}
+</style>

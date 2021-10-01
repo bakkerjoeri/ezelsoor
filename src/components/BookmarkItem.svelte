@@ -10,9 +10,10 @@
 	}
 </script>
 
-<div>
+<div class="Bookmark">
 	{#if bookmark.url.length > 0}
 		<a
+			class="Bookmark__link"
 			href={bookmark.url}
 			target="_blank"
 			rel="noopener noreferrer"
@@ -35,10 +36,10 @@
 	</button>
 
 	{#if bookmark.tags.length > 0}
-		<ul>
+		<ul class="BookmarkItem__tags TagList">
 			{#each bookmark.tags as tag}
-				<li>
-					<Link to={`/tag/${tag}`}>
+				<li class="TagList__item">
+					<Link to={`/tag/${tag}`} class="TagList__link">
 						{tag}
 					</Link>
 				</li>
@@ -46,3 +47,31 @@
 		</ul>
 	{/if}
 </div>
+
+<style lang="scss">
+	.Bookmark {
+		font-size: 17px;
+		line-height: 26px;
+	}
+
+	.Bookmark__link {
+		color: #0044ab;
+	}
+
+	.TagList {
+		display: flex;
+	}
+
+	.TagList__item {
+		font-size: 14px;
+		line-height: 26px;
+
+		&:not(:last-child) {
+			margin-right: 10px;
+		}
+	}
+
+	:global(.TagList__link) {
+		color: inherit;
+	}
+</style>
