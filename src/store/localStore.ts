@@ -1,16 +1,17 @@
-import { writable, get } from 'svelte/store';
-import type { Writable } from 'svelte/store';
+import { writable, get, StartStopNotifier } from "svelte/store";
+import type { Writable } from "svelte/store";
 
 export function createLocalStore<TValue>(
 	key: string,
-	initial: TValue
+	initial?: TValue,
+	start?: StartStopNotifier<TValue>
 ): Writable<TValue> {
-	if (localStorage.getItem(key) === null) {
+	if (initial !== undefined && localStorage.getItem(key) === null) {
 		localStorage.setItem(key, JSON.stringify(initial));
 	}
 
 	const savedValue = JSON.parse(localStorage.getItem(key));
-	const store = writable<TValue>(savedValue);
+	const store = writable<TValue>(savedValue, start);
 	const { subscribe, set } = store;
 
 	return {
@@ -24,11 +25,11 @@ export function createLocalStore<TValue>(
 			save(key, value);
 			set(value);
 		},
-	}
+	};
 }
 
 function save(key: string, value: any): void {
-	if (typeof(localStorage) === 'undefined') {
+	if (typeof localStorage === "undefined") {
 		return;
 	}
 
