@@ -1,4 +1,3 @@
-
 <script lang="ts">
 	import { auth } from "../utils/firebase";
 	import { navigate } from "svelte-routing";
@@ -6,9 +5,10 @@
 	import InputPassword from "../components/form/InputPassword.svelte";
 	import InputText from "../components/form/InputText.svelte";
 	import Button from "../components/Button.svelte";
+	import Page from "../components/Page.svelte";
 
-	let emailAddress: string = '';
-	let password: string = '';
+	let emailAddress: string = "";
+	let password: string = "";
 	let isSubmitPending: boolean = false;
 	let errors = [];
 
@@ -19,33 +19,35 @@
 		try {
 			await auth.signInWithEmailAndPassword(emailAddress, password);
 			isSubmitPending = false;
-			console.log('success!');
+			console.log("success!");
 			navigate("/");
-		} catch(error) {
-			if (error.code === 'auth/invalid-email') {
+		} catch (error) {
+			if (error.code === "auth/invalid-email") {
 				errors.push({
-					field: 'email',
-					message: 'The email address you provided is not valid.'
+					field: "email",
+					message: "The email address you provided is not valid.",
 				});
-			} else if (error.code === 'auth/user-disabled') {
+			} else if (error.code === "auth/user-disabled") {
 				errors.push({
-					field: 'email',
-					message: 'The user this email address belongs to has been disabled.',
+					field: "email",
+					message:
+						"The user this email address belongs to has been disabled.",
 				});
-			} else if (error.code === 'auth/user-not-found') {
+			} else if (error.code === "auth/user-not-found") {
 				errors.push({
-					field: 'email',
-					message: 'No user exists for the email address you provided.'
+					field: "email",
+					message:
+						"No user exists for the email address you provided.",
 				});
-			} else if (error.code === 'auth/wrong-password') {
+			} else if (error.code === "auth/wrong-password") {
 				errors.push({
-					field: 'password',
-					message: 'The password is incorrect.'
+					field: "password",
+					message: "The password is incorrect.",
 				});
 			} else {
 				errors.push({
 					isForForm: true,
-					message: 'Something went wrong. Please try again.'
+					message: "Something went wrong. Please try again.",
 				});
 			}
 
@@ -54,29 +56,33 @@
 	}
 </script>
 
-<form on:submit|preventDefault={handleSubmit}>
-	<FormItem label="Email address" labelFor="loginEmailAddress">
-		<InputText
-			type="email"
-			bind:value={emailAddress}
-			id="loginEmailAddress"
-			autocomplete="username"
-			required
-			disabled={isSubmitPending}
-		/>
-	</FormItem>
+<Page>
+	<h1>Login</h1>
 
-	<FormItem label="Password" labelFor="loginPassword">
-		<InputPassword
-			bind:value={password}
-			id="loginPassword"
-			autocomplete="current-password"
-			required
-			disabled={isSubmitPending}
-		/>
-	</FormItem>
+	<form on:submit|preventDefault={handleSubmit}>
+		<FormItem label="Email address" labelFor="loginEmailAddress">
+			<InputText
+				type="email"
+				bind:value={emailAddress}
+				id="loginEmailAddress"
+				autocomplete="username"
+				required
+				disabled={isSubmitPending}
+			/>
+		</FormItem>
 
-	<FormItem>
-		<Button type="submit" disabled={isSubmitPending}>Log in</Button>
-	</FormItem>
-</form>
+		<FormItem label="Password" labelFor="loginPassword">
+			<InputPassword
+				bind:value={password}
+				id="loginPassword"
+				autocomplete="current-password"
+				required
+				disabled={isSubmitPending}
+			/>
+		</FormItem>
+
+		<FormItem>
+			<Button type="submit" disabled={isSubmitPending}>Log in</Button>
+		</FormItem>
+	</form>
+</Page>

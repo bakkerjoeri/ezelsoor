@@ -1,14 +1,24 @@
 <script lang="ts">
-	import type { Bookmark } from './../store/bookmarks.js';
-	import BookmarkItem from './BookmarkItem.svelte';
+	import type { Bookmark } from "./../store/bookmarks.js";
+	import BookmarkItem from "./BookmarkItem.svelte";
 
+	type SortingMethod = "date";
 	export let bookmarks: Bookmark[] = [];
+	export let sortedBy: SortingMethod = "date";
+
+	$: sortedBookmarks = (() => {
+		if (sortedBy === "date") {
+			return [...bookmarks].sort((a, b) => b.dateCreated - a.dateCreated);
+		}
+
+		return bookmarks;
+	})();
 </script>
 
 <ul>
-	{#each bookmarks as bookmark (bookmark.id)}
+	{#each sortedBookmarks as bookmark (bookmark.id)}
 		<li>
-			<BookmarkItem bookmark={bookmark}/>
+			<BookmarkItem {bookmark} />
 		</li>
 	{/each}
 </ul>

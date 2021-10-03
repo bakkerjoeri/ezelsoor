@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { Link } from 'svelte-routing';
-	import { tagCount } from './../store/bookmarks';
+	import { isLoggedIn } from "../store/session";
+	import { tagCount } from "./../store/bookmarks";
+	import NavigationLink from "./NavigationLink.svelte";
 
 	$: sortedTags = Object.entries($tagCount).sort(([tagNameA], [tagNameB]) => {
 		if (tagNameA > tagNameB) {
@@ -15,46 +16,38 @@
 	});
 </script>
 
-<ul class="Navigation__list">
-	<li class="Navigation__item">
-		<Link to="/login" class="Navigation__link">
-			Log in
-		</Link>
+<ul class="navigation__list">
+	{#if !$isLoggedIn}
+		<li class="navigation__item">
+			<NavigationLink to="/login">Log in</NavigationLink>
+		</li>
+	{/if}
+
+	<li class="navigation__item">
+		<NavigationLink to="/">Home</NavigationLink>
 	</li>
 
-	<li class="Navigation__item">
-		<Link to="/" class="Navigation__link">
-			Home
-		</Link>
+	<li class="navigation__item">
+		<NavigationLink to="/toread">Read later</NavigationLink>
 	</li>
 
-	<li class="Navigation__item">
-		<Link to="/toread" class="Navigation__link">
-			Read later
-		</Link>
+	<li class="navigation__item">
+		<NavigationLink to="/favorites">Favorites</NavigationLink>
 	</li>
 
-	<li class="Navigation__item">
-		<Link to="/favorites" class="Navigation__link">
-			Favorites
-		</Link>
-	</li>
-
-	<li class="Navigation__item">
-		<Link to="/archive" class="Navigation__link">
-			Archive
-		</Link>
+	<li class="navigation__item">
+		<NavigationLink to="/archive">Archive</NavigationLink>
 	</li>
 </ul>
 
-<h2 class="Navigation__heading">Tags</h2>
+<h2 class="navigation__heading">Tags</h2>
 
-<ul class="Navigation__list">
+<ul class="navigation__list">
 	{#each sortedTags as [tagName, tagAmount] (tagName)}
-		<li class="Navigation__item">
-			<Link to={`/tag/${tagName}`} class="Navigation__link">
+		<li class="navigation__item">
+			<NavigationLink to={`/tag/${tagName}`}>
 				{tagName}
-			</Link>
+			</NavigationLink>
 
 			&middot; {tagAmount}
 		</li>
@@ -62,30 +55,19 @@
 </ul>
 
 <style lang="scss">
-	.Navigation__list {
+	.navigation__list {
 		&:not(:last-child) {
 			margin-bottom: var(--baseline);
 		}
 	}
 
-	.Navigation__heading {
+	.navigation__heading {
+		font-size: var(--font-size-body);
+		line-height: calc(2 * var(--baseline));
+	}
+
+	.navigation__item {
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
-	}
-
-	:global(.Navigation__link) {
-		color: inherit;
-		text-decoration: none;
-		font-size: var(--font-size-body);
-		line-height: var(--baseline);
-	}
-
-	:global(.Navigation__link:hover),
-	:global(.Navigation__link:focus) {
-		text-decoration: underline;
-	}
-
-	:global(.Navigation__link[aria-current="page"]) {
-		color: var(--color-highlight);
 	}
 </style>
