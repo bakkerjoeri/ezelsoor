@@ -1,16 +1,25 @@
 <script lang="ts">
-	import { bookmarkBeingEdited } from './../store/bookmarks.js';
-	import type { Bookmark } from "../store/bookmarks";
+	import { bookmarks } from "../store/bookmarks";
 	import { Link } from "svelte-routing";
+	import { entityBeingEdited } from "../store/ui.js";
+	import type { Bookmark } from "../store/bookmarks";
+	import Button from "./Button.svelte";
 
 	export let bookmark: Bookmark;
 
-	function onClickEditBookmark(bookmark: Bookmark) {
-		$bookmarkBeingEdited = bookmark;
+	function onClickEditBookmark() {
+		$entityBeingEdited = {
+			type: "bookmark",
+			id: bookmark.id,
+		};
+	}
+
+	function onClickMarkAsRead() {
+		bookmarks.patch(bookmark.id, { isToRead: true });
 	}
 </script>
 
-<div class="Bookmark">
+<div class="BookmarkItem">
 	{#if bookmark.url.length > 0}
 		<a
 			class="Bookmark__link"
@@ -28,12 +37,25 @@
 		{bookmark.title}
 	{/if}
 
-	<button
-		type="button"
-		on:click={() => { onClickEditBookmark(bookmark) }}
-	>
-		Edit
-	</button>
+	<ul class="BookmarkItem__actionList">
+		<li class="BookmarkItem__actionItem">
+			<Button variant="text" size="small" on:click={onClickEditBookmark}>
+				edit
+			</Button>
+		</li>
+
+		<li class="BookmarkItem__actionItem">
+			{#if bookmark.isToRead}
+				<Button
+					variant="text"
+					size="small"
+					on:click={onClickMarkAsRead}
+				>
+					mark as read
+				</Button>
+			{/if}
+		</li>
+	</ul>
 
 	{#if bookmark.tags.length > 0}
 		<ul class="BookmarkItem__tags TagList">
@@ -49,13 +71,34 @@
 </div>
 
 <style lang="scss">
-	.Bookmark {
+	.BookmarkItem {
 		font-size: 17px;
-		line-height: 26px;
+		line-height: var(--baseline);
 	}
 
 	.Bookmark__link {
 		color: #0044ab;
+	}
+
+	.BookmarkItem__actionList {
+		display: flex;
+	}
+
+	.BookmarkItem__actionItem + .BookmarkItem__actionItem {
+		margin-left: 10px;
+	}
+
+	.BookmarkItem__action {
+		cursor: pointer;
+		font-size: 14px;
+		line-height: var(--baseline);
+		background-color: transparent;
+		border: 0;
+
+		&:hover,
+		&:focus {
+			text-decoration: underline;
+		}
 	}
 
 	.TagList {

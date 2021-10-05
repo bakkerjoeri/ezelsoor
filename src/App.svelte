@@ -3,7 +3,6 @@
 	import {
 		bookmarks,
 		createNewBookmark,
-		bookmarkBeingEdited,
 		bookmarksToRead,
 		activeBookmarks,
 		favoriteBookmarks,
@@ -12,13 +11,18 @@
 	} from "./store/bookmarks.js";
 	import Login from "./pages/Login.svelte";
 	import TaggedWith from "./pages/TaggedWith.svelte";
+	import ListPage from "./pages/ListPage.svelte";
 	import BookmarkList from "./components/BookmarkList.svelte";
 	import Page from "./components/Page.svelte";
+	import { entityBeingEdited } from "./store/ui.js";
 
 	function onClickCreateNewBookmark() {
 		const newBookmark = createNewBookmark();
 		bookmarks.add(newBookmark);
-		$bookmarkBeingEdited = newBookmark;
+		$entityBeingEdited = {
+			id: newBookmark.id,
+			type: "bookmark",
+		};
 	}
 </script>
 
@@ -58,6 +62,10 @@
 			<h1>Untagged bookmarks</h1>
 			<BookmarkList bookmarks={$untaggedBookmarks} />
 		</Page>
+	</Route>
+
+	<Route path="/list/:listId" let:params>
+		<ListPage listId={params.listId} />
 	</Route>
 
 	<Route path="/tag/:tagName" let:params>

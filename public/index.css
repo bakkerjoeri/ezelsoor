@@ -16,6 +16,17 @@ ol {
 }
 
 h1 {
-	font-size: 17px;
-	line-height: 52px;
+	font-size: var(--font-size-body);
+	line-height: calc(2 * var(--baseline));
+}
+
+h2 {
+	font-size: var(--font-size-body);
+	line-height: calc(2 * var(--baseline));
+}
+
+p {
+	margin-bottom: var(--baseline);
+	font-size: var(--font-size-body);
+	line-height: var(--baseline);
 }

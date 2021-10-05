@@ -3,15 +3,14 @@ import type { Writable } from "svelte/store";
 
 export function createLocalStore<TValue>(
 	key: string,
-	initial?: TValue,
-	start?: StartStopNotifier<TValue>
+	initial?: TValue
 ): Writable<TValue> {
 	if (initial !== undefined && localStorage.getItem(key) === null) {
 		localStorage.setItem(key, JSON.stringify(initial));
 	}
 
 	const savedValue = JSON.parse(localStorage.getItem(key));
-	const store = writable<TValue>(savedValue, start);
+	const store = writable<TValue>(savedValue);
 	const { subscribe, set } = store;
 
 	return {
@@ -28,7 +27,7 @@ export function createLocalStore<TValue>(
 	};
 }
 
-function save(key: string, value: any): void {
+export function save(key: string, value: any): void {
 	if (typeof localStorage === "undefined") {
 		return;
 	}

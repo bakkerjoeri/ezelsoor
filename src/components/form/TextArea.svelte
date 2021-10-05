@@ -1,16 +1,18 @@
 <script lang="ts">
+	import { text } from "svelte/internal";
+
 	export let id: string;
 	export let value: string;
 	export let minRows: number = 1;
 	export let maxRows: number = undefined;
 
 	let textarea: HTMLTextAreaElement;
-	let height = 'auto';
+	let height = "auto";
 
-	$: if (value) {
+	$: if (value && textarea) {
 		height = `${textarea.scrollHeight + 2}px`;
 	} else {
-		height = 'auto';
+		height = "auto";
 	}
 
 	$: minHeight = `${1 + minRows * 1.2}em`;
@@ -19,11 +21,11 @@
 
 <textarea
 	rows="1"
-	id={id}
-	bind:value={value}
+	{id}
+	bind:value
 	bind:this={textarea}
 	style="min-height: {minHeight}; max-height: {maxHeight}; height: {height}"
-></textarea>
+/>
 
 <style lang="scss">
 	textarea {
@@ -35,7 +37,7 @@
 		padding: 10px;
 		font-family: inherit;
 		font-size: var(--font-size-body);
-		line-height: inherit;
+		line-height: var(--baseline);
 		border: 1px solid lightgray;
 		border-radius: 5px;
 	}

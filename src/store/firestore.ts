@@ -1,6 +1,7 @@
 import { database } from "./../utils/firebase";
 import { get, writable, Writable } from "svelte/store";
 import { loggedInUserId } from "./session";
+import { save } from "./localStore";
 
 export function createFireStore(collection: any): Writable<any[]> {
 	return writable([], (set) => {
@@ -12,6 +13,7 @@ export function createFireStore(collection: any): Writable<any[]> {
 			const bookmarks = await fetchBookmarksForUser(get(loggedInUserId));
 
 			set(bookmarks);
+			save("bookmarks", bookmarks);
 		});
 	});
 }

@@ -8,7 +8,7 @@
 
 	$: sortedBookmarks = (() => {
 		if (sortedBy === "date") {
-			return [...bookmarks].sort((a, b) => b.dateCreated - a.dateCreated);
+			return [...bookmarks].sort((a, b) => b.createdAt - a.createdAt);
 		}
 
 		return bookmarks;
@@ -31,6 +31,6 @@
 	}
 
 	li + li {
-		margin-top: 26px;
+		margin-top: var(--baseline);
 	}
 </style>

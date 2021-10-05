@@ -1,40 +1,70 @@
 <script lang="ts">
-import { bookmarkBeingEdited, bookmarks } from "../store/bookmarks";
-import type { Bookmark } from "../store/bookmarks";
+	import { bookmarkBeingEdited, bookmarks } from "../store/bookmarks";
+	import type { Bookmark } from "../store/bookmarks";
 
 	import BookmarkForm from "./BookmarkForm.svelte";
 	import Navigation from "./Navigation.svelte";
+	import { entityBeingEdited } from "../store/ui";
+	import { listBeingEdited, lists } from "../store/lists";
+	import ListForm from "./ListForm.svelte";
+	import type { List } from "../store/lists";
 
 	function onSaveEditedBookmark(event: CustomEvent<Partial<Bookmark>>) {
 		if (!$bookmarkBeingEdited) {
-			throw new Error('Failed saving bookmark because it seems like no bookmark is being edited.');
+			throw new Error(
+				"Failed saving bookmark because it seems like no bookmark is being edited."
+			);
 		}
 
 		bookmarks.patch($bookmarkBeingEdited.id, event.detail);
-		$bookmarkBeingEdited = null;
+		$entityBeingEdited = null;
+	}
+
+	function onSaveEditedList(event: CustomEvent<Partial<List>>) {
+		if (!$listBeingEdited) {
+			throw new Error(
+				"Failed saving bookmark because it seems like no bookmark is being edited."
+			);
+		}
+
+		lists.patch($listBeingEdited.id, event.detail);
+		$entityBeingEdited = null;
 	}
 
 	function onCancelEditing() {
-		$bookmarkBeingEdited = null;
+		$entityBeingEdited = null;
 	}
 
 	function onDeleteEditedBookmark() {
 		if (!$bookmarkBeingEdited) {
-			throw new Error('Failed deleting bookmark because it seems like no bookmark is being edited.');
+			throw new Error(
+				"Failed deleting bookmark because it seems like no bookmark is being edited."
+			);
 		}
 
 		bookmarks.delete($bookmarkBeingEdited.id);
-		$bookmarkBeingEdited = null;
+		$entityBeingEdited = null;
+	}
+
+	function onDeleteEditedList() {
+		if (!$listBeingEdited) {
+			throw new Error(
+				"Failed deleting list because it seems like no list is being edited."
+			);
+		}
+
+		lists.delete($listBeingEdited.id);
+		$entityBeingEdited = null;
 	}
 </script>
 
 <div class="page">
 	<nav class="page__navigation">
-		<Navigation/>
+		<Navigation />
 	</nav>
 
 	<main class="page__main">
-		<slot/>
+		<slot />
 	</main>
 
 	{#if !!$bookmarkBeingEdited}
@@ -54,13 +84,26 @@ import type { Bookmark } from "../store/bookmarks";
 				/>
 			{/key}
 		</aside>
+	{:else if !!$listBeingEdited}
+		<aside class="page__sidebar">
+			{#key $listBeingEdited.id}
+				<ListForm
+					title={$listBeingEdited.title}
+					description={$listBeingEdited.description}
+					on:save={onSaveEditedList}
+					on:cancel={onCancelEditing}
+					on:delete={onDeleteEditedList}
+					canDelete
+				/>
+			{/key}
+		</aside>
 	{/if}
 </div>
 
 <style lang="scss">
 	.page {
 		display: grid;
-		grid-template-columns: auto 1fr fit-content(480px);
+		grid-template-columns: 240px 1fr fit-content(480px);
 	}
 
 	.page__navigation {
@@ -84,7 +127,7 @@ import type { Bookmark } from "../store/bookmarks";
 		top: 0;
 		height: 100vh;
 	}
-	
+
 	.page__navigation,
 	.page__main,
 	.page__sidebar {

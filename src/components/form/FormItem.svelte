@@ -1,8 +1,8 @@
 <script lang="ts">
-	export let description: string = '';
-	export let error: string = '';
-	export let label: string = '';
-	export let labelFor: string = '';
+	export let description: string = "";
+	export let error: string = "";
+	export let label: string = "";
+	export let labelFor: string = "";
 </script>
 
 <div>
@@ -12,7 +12,7 @@
 		</label>
 	{/if}
 
-	<slot></slot>
+	<slot />
 
 	{#if description}
 		<p class="description">{description}</p>
@@ -25,7 +25,7 @@
 
 <style lang="scss">
 	div {
-		margin-bottom: 10px;
+		margin-bottom: 15px;
 	}
 
 	label {
