@@ -19,7 +19,7 @@
 		<slot />
 	</Link>
 
-	{#if count !== undefined}
+	{#if count !== undefined || count > 0}
 		<span class="count">
 			&middot; {count}
 		</span>
