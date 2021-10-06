@@ -282,6 +282,8 @@
 
 	.page__main {
 		grid-column: 2 / 3;
+		max-width: 800px;
+		justify-self: center;
 		padding: var(--baseline);
 	}
 
