@@ -4,6 +4,7 @@
 	import ActionRow from "./ActionRow.svelte";
 	import TagList from "./TagList.svelte";
 	import type { Bookmark } from "../store/bookmarks";
+	import FavButton from "./FavButton.svelte";
 
 	export let bookmark: Bookmark;
 
@@ -44,16 +45,12 @@
 </script>
 
 <div class="bookmark-item">
-	<button
-		on:click={toggleIsFavorite}
-		class="button-toggle-favorite"
-		class:is-favorite={bookmark.isFavorite}
-		aria-label={bookmark.isFavorite
-			? "Remove from favorites"
-			: "Mark as favorite"}
-	>
-		{bookmark.isFavorite ? "★" : "☆"}
-	</button>
+	<div class="favbutton">
+		<FavButton
+			on:click={toggleIsFavorite}
+			isFavorite={bookmark.isFavorite}
+		/>
+	</div>
 
 	<h3 class="title" class:is-placeholder={!bookmark.url && !bookmark.title}>
 		{#if bookmark.url.length > 0}
@@ -138,22 +135,9 @@
 		}
 	}
 
-	.button-toggle-favorite {
+	.favbutton {
 		grid-column: 1;
 		grid-row: 1;
-		cursor: pointer;
-		background-color: transparent;
-		border: 0;
-		font-size: 17px;
-		height: var(--baseline);
-		color: var(--color-text-soft);
-		transition: 0.2s color;
-
-		&.is-favorite,
-		&:hover,
-		&:focus-visible {
-			color: #ff9b00;
-		}
 	}
 
 	.link {
