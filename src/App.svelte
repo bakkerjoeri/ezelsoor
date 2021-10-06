@@ -1,39 +1,22 @@
 <script lang="ts">
 	import { Route, Router } from "svelte-routing";
 	import {
-		bookmarks,
-		createNewBookmark,
 		bookmarksToRead,
-		activeBookmarks,
 		favoriteBookmarks,
 		archivedBookmarks,
 		untaggedBookmarks,
 	} from "./store/bookmarks.js";
+	import Page from "./components/Page.svelte";
+	import BookmarkList from "./components/BookmarkList.svelte";
 	import Login from "./pages/Login.svelte";
+	import HomePage from "./pages/HomePage.svelte";
 	import TaggedWith from "./pages/TaggedWith.svelte";
 	import ListPage from "./pages/ListPage.svelte";
-	import BookmarkList from "./components/BookmarkList.svelte";
-	import Page from "./components/Page.svelte";
-	import { entityBeingEdited } from "./store/ui.js";
-
-	function onClickCreateNewBookmark() {
-		const newBookmark = createNewBookmark();
-		bookmarks.add(newBookmark);
-		$entityBeingEdited = {
-			id: newBookmark.id,
-			type: "bookmark",
-		};
-	}
 </script>
 
 <Router>
 	<Route path="/">
-		<Page>
-			<button on:click={onClickCreateNewBookmark}>New</button>
-
-			<h1>Your bookmarks</h1>
-			<BookmarkList bookmarks={$activeBookmarks} />
-		</Page>
+		<HomePage />
 	</Route>
 
 	<Route path="toread">
