@@ -2,11 +2,11 @@
 	import { bookmarkBeingEdited, bookmarks } from "../store/bookmarks";
 	import type { Bookmark } from "../store/bookmarks";
 
-	import BookmarkForm from "./BookmarkForm.svelte";
-	import Navigation from "./Navigation.svelte";
+	import BookmarkForm from "../components/BookmarkForm.svelte";
+	import Navigation from "../components/Navigation.svelte";
 	import { entityBeingEdited } from "../store/ui";
 	import { listBeingEdited, lists } from "../store/lists";
-	import ListForm from "./ListForm.svelte";
+	import ListForm from "../components/ListForm.svelte";
 	import type { List } from "../store/lists";
 
 	function onSaveEditedBookmark(event: CustomEvent<Partial<Bookmark>>) {

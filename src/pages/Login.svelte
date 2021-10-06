@@ -5,7 +5,7 @@
 	import InputPassword from "../components/form/InputPassword.svelte";
 	import InputText from "../components/form/InputText.svelte";
 	import Button from "../components/Button.svelte";
-	import Page from "../components/Page.svelte";
+	import Page from "./Page.svelte";
 
 	let emailAddress: string = "";
 	let password: string = "";

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import BookmarkList from "../components/BookmarkList.svelte";
 	import Button from "../components/Button.svelte";
-	import Page from "../components/Page.svelte";
+	import Page from "./Page.svelte";
 	import {
 		activeBookmarks,
 		bookmarks,

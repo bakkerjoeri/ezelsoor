@@ -1,6 +1,6 @@
 <script lang="ts">
 	import BookmarkList from "../components/BookmarkList.svelte";
-	import Page from "../components/Page.svelte";
+	import Page from "./Page.svelte";
 	import { bookmarks } from "../store/bookmarks";
 
 	export let tagName: string;

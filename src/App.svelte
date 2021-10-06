@@ -6,7 +6,7 @@
 		archivedBookmarks,
 		untaggedBookmarks,
 	} from "./store/bookmarks.js";
-	import Page from "./components/Page.svelte";
+	import Page from "./pages/Page.svelte";
 	import BookmarkList from "./components/BookmarkList.svelte";
 	import Login from "./pages/Login.svelte";
 	import HomePage from "./pages/HomePage.svelte";
