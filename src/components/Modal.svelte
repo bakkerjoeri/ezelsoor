@@ -28,7 +28,7 @@
 		width: 480px;
 		max-width: 100%;
 		max-height: 100%;
-		background-color: #fff;
+		background-color: var(--background-color-ui-primary);
 
 		@media (min-width: 480px) {
 			margin: var(--baseline);
