@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { bookmarks } from "../store/bookmarks";
+	import { activeBookmarks } from "../store/bookmarks";
 	import BookmarkPage from "./BookmarkPage.svelte";
 
 	export let tagName: string;
 
-	$: bookmarksWithTag = $bookmarks.filter((bookmark) =>
+	$: bookmarksWithTag = $activeBookmarks.filter((bookmark) =>
 		bookmark.tags.includes(tagName)
 	);
 </script>
