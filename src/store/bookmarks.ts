@@ -117,7 +117,7 @@ export function createNewBookmark(
 	};
 }
 
-export const bookmarkBeingEdited = derived(
+export const bookmarkBeingEdited: Readable<Bookmark | null> = derived(
 	[bookmarks, entityBeingEdited],
 	([$bookmarks, $entityBeingEdited]) => {
 		if (!$entityBeingEdited) {

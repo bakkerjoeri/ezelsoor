@@ -4,8 +4,8 @@
 	export let count: number | undefined = undefined;
 </script>
 
-<li>
-	<Link {to} class="link">
+<li class="navigation-item">
+	<Link {to} class="navigation-item__link">
 		<slot />
 	</Link>
 
@@ -17,31 +17,32 @@
 </li>
 
 <style>
-	li {
+	.navigation-item {
 		white-space: nowrap;
 		display: flex;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
 	}
 
-	:global(.link) {
+	:global(.navigation-item__link) {
 		color: inherit;
 		text-decoration: none;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
-	:global(.link:hover),
-	:global(.link:focus) {
+	:global(.navigation-item__link:hover),
+	:global(.navigation-item__link:focus) {
 		text-decoration: underline;
 	}
 
-	:global(.link[aria-current="page"]) {
+	:global(.navigation-item__link[aria-current="page"]) {
 		color: var(--color-highlight);
 	}
 
 	.count {
 		margin-left: 6px;
+		font-size: 16px;
 		color: var(--color-text-soft);
 	}
 </style>

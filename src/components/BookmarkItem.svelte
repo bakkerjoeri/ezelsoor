@@ -1,107 +1,162 @@
 <script lang="ts">
-	import { bookmarks } from "../store/bookmarks";
-	import { Link } from "svelte-routing";
+	import { bookmarkBeingEdited, bookmarks } from "../store/bookmarks";
 	import { entityBeingEdited } from "../store/ui.js";
+	import ActionRow from "./ActionRow.svelte";
+	import TagList from "./TagList.svelte";
 	import type { Bookmark } from "../store/bookmarks";
-	import Button from "./Button.svelte";
 
 	export let bookmark: Bookmark;
 
-	function onClickEditBookmark() {
+	$: actions = (() => {
+		const actions = [];
+
+		if (bookmark.isToRead) {
+			actions.push({
+				label: "mark as read",
+				callback: markAsRead,
+			});
+		}
+
+		if ($bookmarkBeingEdited?.id !== bookmark.id) {
+			actions.push({
+				label: "edit",
+				callback: startEditing,
+			});
+		}
+
+		return actions;
+	})();
+
+	function startEditing() {
 		$entityBeingEdited = {
 			type: "bookmark",
 			id: bookmark.id,
 		};
 	}
 
-	function onClickMarkAsRead() {
+	function markAsRead() {
 		bookmarks.patch(bookmark.id, { isToRead: true });
+	}
+
+	function toggleIsFavorite() {
+		bookmarks.patch(bookmark.id, { isFavorite: !bookmark.isFavorite });
 	}
 </script>
 
-<div class="BookmarkItem">
-	{#if bookmark.url.length > 0}
-		<a
-			class="Bookmark__link"
-			href={bookmark.url}
-			target="_blank"
-			rel="noopener noreferrer"
-		>
-			{#if bookmark.title.length > 0}
-				{bookmark.title}
-			{:else}
-				{bookmark.url}
-			{/if}
-		</a>
-	{:else}
-		{bookmark.title}
-	{/if}
+<div class="bookmark-item">
+	<button
+		on:click={toggleIsFavorite}
+		class="button-toggle-favorite"
+		class:is-favorite={bookmark.isFavorite}
+		aria-label={bookmark.isFavorite
+			? "Remove from favorites"
+			: "Mark as favorite"}
+	>
+		{bookmark.isFavorite ? "★" : "☆"}
+	</button>
 
-	<ul class="BookmarkItem__actionList">
-		<li class="BookmarkItem__actionItem">
-			<Button variant="text" size="small" on:click={onClickEditBookmark}>
-				edit
-			</Button>
-		</li>
+	<h3 class="title" class:is-placeholder={!bookmark.url && !bookmark.title}>
+		{#if bookmark.url.length > 0}
+			<a
+				class="link"
+				href={bookmark.url}
+				target="_blank"
+				rel="noopener noreferrer"
+			>
+				{#if bookmark.title.length > 0}
+					{bookmark.title}
+				{:else}
+					{bookmark.url}
+				{/if}
+			</a>
+		{:else if bookmark.title}
+			{bookmark.title}
+		{:else}
+			New bookmark
+		{/if}
+	</h3>
 
-		<li class="BookmarkItem__actionItem">
-			{#if bookmark.isToRead}
-				<Button
-					variant="text"
-					size="small"
-					on:click={onClickMarkAsRead}
-				>
-					mark as read
-				</Button>
-			{/if}
-		</li>
-	</ul>
+	<div class="actions">
+		<ActionRow {actions} />
+	</div>
 
-	{#if bookmark.tags.length > 0}
-		<ul class="BookmarkItem__tags TagList">
-			{#each bookmark.tags as tag}
-				<li class="TagList__item">
-					<Link to={`/tag/${tag}`} class="TagList__link">
-						{tag}
-					</Link>
-				</li>
-			{/each}
-		</ul>
-	{/if}
+	<div class="tags">
+		{#if bookmark.tags.length > 0}
+			<TagList tags={bookmark.tags} />
+		{/if}
+	</div>
 </div>
 
 <style lang="scss">
-	.BookmarkItem {
-		font-size: 17px;
-		line-height: var(--baseline);
-	}
+	.bookmark-item {
+		display: grid;
+		grid-template-columns: var(--baseline) 1fr;
+		grid-template-rows: min-content min-content min-content;
 
-	.Bookmark__link {
-		color: var(--color-link);
-	}
-
-	.BookmarkItem__actionList {
-		display: flex;
-	}
-
-	.BookmarkItem__actionItem + .BookmarkItem__actionItem {
-		margin-left: 10px;
-	}
-
-	.TagList {
-		display: flex;
-	}
-
-	.TagList__item {
-		font-size: 14px;
-		line-height: 26px;
-
-		&:not(:last-child) {
-			margin-right: 10px;
+		@media (min-width: 720px) {
+			grid-template-columns: var(--baseline) 1fr max-content;
+			grid-template-rows: min-content min-content;
 		}
 	}
 
-	:global(.TagList__link) {
-		color: inherit;
+	.title {
+		grid-row: 1;
+		grid-column: 2 / -1;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		font-size: 17px;
+		font-weight: normal;
+		line-height: var(--baseline);
+
+		&.is-placeholder {
+			color: var(--color-text-soft);
+		}
+
+		@media (min-width: 720px) {
+			grid-column: 2 / 3;
+		}
+	}
+
+	.actions {
+		grid-row: 3;
+		grid-column: 1 / -1;
+
+		@media (min-width: 720px) {
+			grid-row: 1;
+			grid-column: 3;
+			margin-left: 15px;
+		}
+	}
+
+	.tags {
+		grid-row: 2;
+		grid-column: 1 / -1;
+
+		@media (min-width: 720px) {
+			grid-row: 2 / 2;
+			grid-column: 2 / -1;
+		}
+	}
+
+	.button-toggle-favorite {
+		grid-column: 1;
+		grid-row: 1;
+		cursor: pointer;
+		background-color: transparent;
+		border: 0;
+		font-size: 17px;
+		height: var(--baseline);
+		color: var(--color-text-soft);
+		transition: 0.2s color;
+
+		&.is-favorite,
+		&:hover,
+		&:focus-visible {
+			color: #ff9b00;
+		}
+	}
+
+	.link {
+		color: var(--color-link);
 	}
 </style>
