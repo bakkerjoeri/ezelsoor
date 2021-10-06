@@ -17,7 +17,7 @@ export function mediaquery(query: string): Readable<boolean> {
 }
 
 export const isPhabletUp = mediaquery("(min-width: 641px)");
-export const isTabletUp = mediaquery("(min-width: 981px)");
+export const isTabletUp = mediaquery("(min-width: 1021px)");
 
 export function matches(query: string): boolean {
 	let mediaQueryList = window.matchMedia(query);

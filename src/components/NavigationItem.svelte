@@ -42,7 +42,7 @@
 	}
 
 	:global(.navigation-item__link:hover),
-	:global(.navigation-item__link:focus) {
+	:global(.navigation-item__link:focus-visible) {
 		text-decoration: underline;
 	}
 

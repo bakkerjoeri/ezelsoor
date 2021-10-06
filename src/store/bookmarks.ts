@@ -146,7 +146,7 @@ export function searchBookmarks(bookmarks: Bookmark[], query: string) {
 	);
 }
 
-function doesBookmarkMatchQuery(bookmark: Bookmark, query: string) {
+export function doesBookmarkMatchQuery(bookmark: Bookmark, query: string) {
 	const normalizedQuery = removeDiacretics(query.toLowerCase());
 
 	const normalizedBookmarkTitle = removeDiacretics(

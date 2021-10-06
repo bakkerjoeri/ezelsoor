@@ -2,8 +2,8 @@
 	import { searchBookmarks } from "../store/bookmarks";
 	import Page from "./Page.svelte";
 	import BookmarkList from "../components/BookmarkList.svelte";
-	import InputText from "../components/form/InputText.svelte";
 	import type { Bookmark } from "../store/bookmarks";
+	import SearchBar from "../components/SearchBar.svelte";
 
 	export let title: string;
 	export let description: string = "";
@@ -20,17 +20,7 @@
 		<p>{description}</p>
 	{/if}
 
-	<div class="search">
-		<label
-			class="search__label"
-			for="local-search"
-			aria-label="Search here"
-		>
-			🔎
-		</label>
-
-		<InputText bind:value={searchQuery} id="local-search" />
-	</div>
+	<SearchBar bind:query={searchQuery} />
 
 	{#if searchQuery}
 		<p>Found {filteredBookmarks.length} bookmarks</p>
@@ -38,21 +28,3 @@
 
 	<BookmarkList bookmarks={filteredBookmarks} />
 </Page>
-
-<style lang="scss">
-	h1 {
-		line-height: var(--baseline);
-		margin-bottom: var(--baseline);
-	}
-
-	.search {
-		display: flex;
-		align-items: center;
-		margin-bottom: var(--baseline);
-	}
-
-	.search__label {
-		font-size: 26px;
-		width: 40px;
-	}
-</style>

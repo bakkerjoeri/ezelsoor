@@ -15,6 +15,9 @@
 	import Modal from "../components/Modal.svelte";
 	import type { Bookmark } from "../store/bookmarks";
 	import type { List } from "../store/lists";
+	import type { FilterList } from "../store/filters";
+	import { filterListBeingEdited, filterLists } from "../store/filters";
+	import FilterListForm from "../components/FilterListForm.svelte";
 
 	function onNavigate() {
 		$isNavigationOpen = get(isPhabletUp);
@@ -57,6 +60,17 @@
 		$entityBeingEdited = null;
 	}
 
+	function onSaveEditedFilterList(event: CustomEvent<Partial<FilterList>>) {
+		if (!$filterListBeingEdited) {
+			throw new Error(
+				"Failed saving bookmark because it seems like no bookmark is being edited."
+			);
+		}
+
+		filterLists.patch($filterListBeingEdited.id, event.detail);
+		$entityBeingEdited = null;
+	}
+
 	function onCancelEditing() {
 		$entityBeingEdited = null;
 	}
@@ -80,6 +94,17 @@
 		}
 
 		lists.delete($listBeingEdited.id);
+		$entityBeingEdited = null;
+	}
+
+	function onDeleteEditedFilterList() {
+		if (!$filterListBeingEdited) {
+			throw new Error(
+				"Failed deleting filterList because it seems like no filterList is being edited."
+			);
+		}
+
+		filterLists.delete($filterListBeingEdited.id);
 		$entityBeingEdited = null;
 	}
 </script>
@@ -146,6 +171,21 @@
 					/>
 				{/key}
 			</aside>
+		{:else if !!$filterListBeingEdited}
+			<aside class="page__sidebar">
+				{#key $filterListBeingEdited.id}
+					<FilterListForm
+						title={$filterListBeingEdited.title}
+						description={$filterListBeingEdited.description}
+						shouldIncludeArchived={$filterListBeingEdited.shouldIncludeArchived}
+						filters={$filterListBeingEdited.filters}
+						on:save={onSaveEditedFilterList}
+						on:cancel={onCancelEditing}
+						on:delete={onDeleteEditedFilterList}
+						canDelete
+					/>
+				{/key}
+			</aside>
 		{/if}
 	{:else if !!$bookmarkBeingEdited}
 		<Modal>
@@ -173,6 +213,21 @@
 					on:save={onSaveEditedList}
 					on:cancel={onCancelEditing}
 					on:delete={onDeleteEditedList}
+					canDelete
+				/>
+			{/key}
+		</Modal>
+	{:else if !!$filterListBeingEdited}
+		<Modal>
+			{#key $filterListBeingEdited.id}
+				<FilterListForm
+					title={$filterListBeingEdited.title}
+					description={$filterListBeingEdited.description}
+					shouldIncludeArchived={$filterListBeingEdited.shouldIncludeArchived}
+					filters={$filterListBeingEdited.filters}
+					on:save={onSaveEditedFilterList}
+					on:cancel={onCancelEditing}
+					on:delete={onDeleteEditedFilterList}
 					canDelete
 				/>
 			{/key}
@@ -244,7 +299,7 @@
 	.page__sidebar {
 		grid-column: 3 / -1;
 		grid-row: 2 / 3;
-		width: 320px;
+		width: 400px;
 
 		@media (min-width: 641px) {
 			border-left: 1px solid var(--border-color-ui-secondary);

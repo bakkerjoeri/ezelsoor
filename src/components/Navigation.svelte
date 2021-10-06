@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { navigate } from "svelte-routing";
+	import { createNewFilterList, filterLists } from "../store/filters";
 	import { lists, createNewList } from "../store/lists";
 	import { createLocalStore } from "../store/localStore";
-	import { isLoggedIn } from "../store/session";
 	import { entityBeingEdited } from "../store/ui";
 	import { bookmarksToRead, tagCount } from "./../store/bookmarks";
 	import ActionRow from "./ActionRow.svelte";
@@ -19,23 +19,23 @@
 		true
 	);
 
-	let isListNavigationVisible = createLocalStore(
+	let isFilterListNavigationVisible = createLocalStore(
 		"isListNavigationVisible",
 		true
 	);
 
-	$: listActions = (() => {
+	$: filterListActions = (() => {
 		const actions = [
 			{
 				label: "create",
-				callback: onClickCreateNewList,
+				callback: onClickCreateNewFilterList,
 			},
 		];
 
-		if (sortedLists.length > 0) {
+		if (sortedFilterLists.length > 0) {
 			actions.push({
-				label: $isListNavigationVisible ? "hide" : "show",
-				callback: toggleListNavigationVisibility,
+				label: $isFilterListNavigationVisible ? "hide" : "show",
+				callback: toggleFilterListNavigationVisibility,
 			});
 		}
 
@@ -85,9 +85,9 @@
 		return tags;
 	})();
 
-	$: sortedLists = (() => {
+	$: sortedFilterLists = (() => {
 		if (listsSortedBy === "alphabetically") {
-			return [...$lists].sort((a, b) => {
+			return [...$filterLists].sort((a, b) => {
 				if (a.title > b.title) {
 					return 1;
 				}
@@ -100,30 +100,26 @@
 			});
 		}
 
-		return $lists;
+		return $filterLists;
 	})();
 
 	function toggleTagNavigationVisibility() {
 		$isTagNavigationVisible = !$isTagNavigationVisible;
 	}
 
-	function toggleListNavigationVisibility() {
-		$isListNavigationVisible = !$isListNavigationVisible;
+	function toggleFilterListNavigationVisibility() {
+		$isFilterListNavigationVisible = !$isFilterListNavigationVisible;
 	}
 
-	function onClickCreateNewList() {
-		const newList = createNewList();
-		$lists = [...$lists, newList];
-		$entityBeingEdited = { type: "list", id: newList.id };
-		navigate(`/list/${newList.id}`);
+	function onClickCreateNewFilterList() {
+		const newFilterList = createNewFilterList();
+		filterLists.add(newFilterList);
+		$entityBeingEdited = { type: "filterList", id: newFilterList.id };
+		navigate(`/filter/${newFilterList.id}`);
 	}
 </script>
 
 <ul class="navigation__list">
-	{#if !$isLoggedIn}
-		<NavigationItem on:navigate to="/login">Log in</NavigationItem>
-	{/if}
-
 	<NavigationItem on:navigate to="/">Home</NavigationItem>
 	<NavigationItem on:navigate to="/toread" count={$bookmarksToRead.length}>
 		Read later
@@ -133,19 +129,19 @@
 </ul>
 
 <header class="navigation__heading">
-	<h2>Lists</h2>
+	<h2>Filters</h2>
 
-	<ActionRow actions={listActions} />
+	<ActionRow actions={filterListActions} />
 </header>
 
-{#if $isListNavigationVisible && sortedLists.length > 0}
+{#if $isFilterListNavigationVisible && sortedFilterLists.length > 0}
 	<ul class="navigation__list">
-		{#each sortedLists as list (list.id)}
-			<NavigationItem on:navigate to={`/list/${list.id}`}>
-				{#if list.title}
-					{list.title}
+		{#each sortedFilterLists as filterList (filterList.id)}
+			<NavigationItem on:navigate to={`/filter/${filterList.id}`}>
+				{#if filterList.title}
+					{filterList.title}
 				{:else}
-					New list
+					New filter
 				{/if}
 			</NavigationItem>
 		{/each}
