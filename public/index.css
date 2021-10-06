@@ -18,7 +18,7 @@ ol {
 }
 
 h1 {
-	font-size: var(--font-size-body);
+	font-size: var(--font-size-heading);
 	line-height: calc(2 * var(--baseline));
 }
 

@@ -24,7 +24,7 @@
 </div>
 
 <style lang="scss">
-	div {
+	div:not(:last-child) {
 		margin-bottom: 15px;
 	}
 

@@ -1,11 +1,21 @@
 <script lang="ts">
+	import { createEventDispatcher } from "svelte";
+
 	import { Link } from "svelte-routing";
 	export let to: string;
 	export let count: number | undefined = undefined;
+
+	const dispatch = createEventDispatcher<{ navigate: string }>();
 </script>
 
 <li class="navigation-item">
-	<Link {to} class="navigation-item__link">
+	<Link
+		{to}
+		class="navigation-item__link"
+		on:click={() => {
+			dispatch("navigate", to);
+		}}
+	>
 		<slot />
 	</Link>
 

@@ -1,13 +1,40 @@
 <script lang="ts">
-	import { bookmarkBeingEdited, bookmarks } from "../store/bookmarks";
-	import type { Bookmark } from "../store/bookmarks";
-
+	import {
+		bookmarkBeingEdited,
+		bookmarks,
+		createNewBookmark,
+	} from "../store/bookmarks";
+	import { get } from "svelte/store";
+	import { listBeingEdited, lists } from "../store/lists";
+	import { isPhabletUp, isTabletUp } from "../store/mediaquery";
+	import { entityBeingEdited, isNavigationOpen } from "../store/ui";
 	import BookmarkForm from "../components/BookmarkForm.svelte";
 	import Navigation from "../components/Navigation.svelte";
-	import { entityBeingEdited } from "../store/ui";
-	import { listBeingEdited, lists } from "../store/lists";
 	import ListForm from "../components/ListForm.svelte";
+	import Button from "../components/Button.svelte";
+	import MediaQuery from "../components/MediaQuery.svelte";
+	import Modal from "../components/Modal.svelte";
+	import type { Bookmark } from "../store/bookmarks";
 	import type { List } from "../store/lists";
+
+	function onNavigate() {
+		$isNavigationOpen = get(isTabletUp);
+		$entityBeingEdited = null;
+		window.scrollTo({ top: 0, left: 0 });
+	}
+
+	function toggleNavigation() {
+		$isNavigationOpen = !$isNavigationOpen;
+	}
+
+	function onClickCreateNewBookmark() {
+		const newBookmark = createNewBookmark();
+		bookmarks.add(newBookmark);
+		$entityBeingEdited = {
+			id: newBookmark.id,
+			type: "bookmark",
+		};
+	}
 
 	function onSaveEditedBookmark(event: CustomEvent<Partial<Bookmark>>) {
 		if (!$bookmarkBeingEdited) {
@@ -59,16 +86,70 @@
 </script>
 
 <div class="page">
-	<nav class="page__navigation">
-		<Navigation />
-	</nav>
+	<div class="page__main-header">
+		<Button on:click={toggleNavigation} variant="text">
+			{#if $isNavigationOpen}
+				Close menu
+			{:else}
+				Open menu
+			{/if}
+		</Button>
+
+		<Button on:click={onClickCreateNewBookmark} variant="text">New</Button>
+	</div>
+
+	{#if $isNavigationOpen}
+		{#if !$isPhabletUp}
+			<div class="page__navigation-header">
+				<Button on:click={toggleNavigation} variant="text">
+					Close
+				</Button>
+			</div>
+		{/if}
+
+		<nav class="page__navigation">
+			<Navigation on:navigate={onNavigate} />
+		</nav>
+	{/if}
 
 	<main class="page__main">
 		<slot />
 	</main>
 
-	{#if !!$bookmarkBeingEdited}
-		<aside class="page__sidebar">
+	{#if $isTabletUp}
+		{#if !!$bookmarkBeingEdited}
+			<aside class="page__sidebar">
+				{#key $bookmarkBeingEdited.id}
+					<BookmarkForm
+						title={$bookmarkBeingEdited.title}
+						url={$bookmarkBeingEdited.url}
+						tags={$bookmarkBeingEdited.tags}
+						isFavorite={$bookmarkBeingEdited.isFavorite}
+						isToRead={$bookmarkBeingEdited.isToRead}
+						isArchived={$bookmarkBeingEdited.isArchived}
+						on:save={onSaveEditedBookmark}
+						on:cancel={onCancelEditing}
+						on:delete={onDeleteEditedBookmark}
+						canDelete
+					/>
+				{/key}
+			</aside>
+		{:else if !!$listBeingEdited}
+			<aside class="page__sidebar">
+				{#key $listBeingEdited.id}
+					<ListForm
+						title={$listBeingEdited.title}
+						description={$listBeingEdited.description}
+						on:save={onSaveEditedList}
+						on:cancel={onCancelEditing}
+						on:delete={onDeleteEditedList}
+						canDelete
+					/>
+				{/key}
+			</aside>
+		{/if}
+	{:else if !!$bookmarkBeingEdited}
+		<Modal>
 			{#key $bookmarkBeingEdited.id}
 				<BookmarkForm
 					title={$bookmarkBeingEdited.title}
@@ -83,9 +164,9 @@
 					canDelete
 				/>
 			{/key}
-		</aside>
+		</Modal>
 	{:else if !!$listBeingEdited}
-		<aside class="page__sidebar">
+		<Modal>
 			{#key $listBeingEdited.id}
 				<ListForm
 					title={$listBeingEdited.title}
@@ -96,42 +177,82 @@
 					canDelete
 				/>
 			{/key}
-		</aside>
+		</Modal>
 	{/if}
 </div>
 
 <style lang="scss">
 	.page {
 		display: grid;
-		grid-template-columns: 240px 1fr fit-content(480px);
-		grid-template-rows: 1fr 100px;
+		grid-template-columns: auto 1fr auto;
+		grid-template-rows: calc(2 * var(--baseline)) 1fr;
 	}
 
-	.page__navigation {
+	.page__main-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		grid-column: 2 / 3;
+		grid-row: 1 / 2;
+
+		@media (min-width: 641px) {
+			grid-column: 1 / -1;
+		}
+	}
+
+	.page__navigation-header {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
 		grid-column: 1 / 2;
-		border-right: 1px solid var(--border-color-ui-secondary);
+		grid-row: 1 / 2;
+	}
+
+	.page__main-header,
+	.page__navigation-header {
+		position: sticky;
+		top: 0;
+		height: calc(2 * var(--baseline));
+		grid-row: 1;
+		padding: 0 var(--baseline);
+		background-color: var(--background-color-ui-primary);
+		border-bottom: 1px solid var(--border-color-ui-secondary);
 	}
 
 	.page__main {
 		grid-column: 2 / 3;
-	}
-
-	.page__sidebar {
-		grid-column: 3 / 4;
-		border-left: 1px solid var(--border-color-ui-secondary);
-	}
-
-	.page__navigation,
-	.page__sidebar {
-		overflow: scroll;
-		position: sticky;
-		top: 0;
-		height: 100vh;
-	}
-
-	.page__navigation,
-	.page__sidebar {
 		padding: var(--baseline);
-		// padding-bottom: 0;
+	}
+
+	.page__navigation {
+		grid-column: 1 / 2;
+		grid-row: 2 / 3;
+		width: 100vw;
+
+		@media (min-width: 641px) {
+			width: 240px;
+			border-right: 1px solid var(--border-color-ui-secondary);
+		}
+	}
+
+	.page__sidebar {
+		grid-column: 3 / -1;
+		grid-row: 2 / 3;
+		width: 320px;
+
+		@media (min-width: 641px) {
+			border-left: 1px solid var(--border-color-ui-secondary);
+		}
+	}
+
+	.page__sidebar,
+	.page__navigation {
+		position: sticky;
+		overflow: scroll;
+		top: calc(2 * var(--baseline));
+		padding: var(--baseline);
+
+		height: calc(100vh - 2 * var(--baseline));
+		border-left: 1px solid var(--border-color-ui-secondary);
 	}
 </style>

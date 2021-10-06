@@ -86,11 +86,11 @@
 		<TagInput bind:tags id="bookmarkTags" />
 	</FormItem>
 
-	<Checkbox label="Favorite" bind:checked={isFavorite} />
-
-	<Checkbox label="To read" bind:checked={isToRead} />
-
-	<Checkbox label="Archived" bind:checked={isArchived} />
+	<FormItem>
+		<Checkbox label="Favorite" bind:checked={isFavorite} />
+		<Checkbox label="To read" bind:checked={isToRead} />
+		<Checkbox label="Archived" bind:checked={isArchived} />
+	</FormItem>
 
 	<FormItem>
 		<Button type="submit">Save</Button>
@@ -100,9 +100,3 @@
 		{/if}
 	</FormItem>
 </form>
-
-<style lang="scss">
-	form {
-		margin-bottom: var(--baseline);
-	}
-</style>

@@ -93,7 +93,7 @@
 		grid-template-columns: var(--baseline) 1fr;
 		grid-template-rows: min-content min-content min-content;
 
-		@media (min-width: 720px) {
+		@media (min-width: 721px) {
 			grid-template-columns: var(--baseline) 1fr max-content;
 			grid-template-rows: min-content min-content;
 		}
@@ -112,7 +112,7 @@
 			color: var(--color-text-soft);
 		}
 
-		@media (min-width: 720px) {
+		@media (min-width: 721px) {
 			grid-column: 2 / 3;
 		}
 	}
@@ -121,7 +121,7 @@
 		grid-row: 3;
 		grid-column: 1 / -1;
 
-		@media (min-width: 720px) {
+		@media (min-width: 721px) {
 			grid-row: 1;
 			grid-column: 3;
 			margin-left: 15px;
@@ -132,7 +132,7 @@
 		grid-row: 2;
 		grid-column: 1 / -1;
 
-		@media (min-width: 720px) {
+		@media (min-width: 721px) {
 			grid-row: 2 / 2;
 			grid-column: 2 / -1;
 		}

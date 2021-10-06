@@ -17,6 +17,7 @@
 <style lang="scss">
 	ul {
 		display: flex;
+		flex-wrap: wrap;
 	}
 
 	li {

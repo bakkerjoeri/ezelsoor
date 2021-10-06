@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { navigate } from "svelte-routing";
-
 	import { lists, createNewList } from "../store/lists";
 	import { createLocalStore } from "../store/localStore";
 	import { isLoggedIn } from "../store/session";
@@ -122,15 +121,15 @@
 
 <ul class="navigation__list">
 	{#if !$isLoggedIn}
-		<NavigationItem to="/login">Log in</NavigationItem>
+		<NavigationItem on:navigate to="/login">Log in</NavigationItem>
 	{/if}
 
-	<NavigationItem to="/">Home</NavigationItem>
-	<NavigationItem to="/toread" count={$bookmarksToRead.length}
-		>Read later</NavigationItem
-	>
-	<NavigationItem to="/favorites">Favorites</NavigationItem>
-	<NavigationItem to="/archive">Archive</NavigationItem>
+	<NavigationItem on:navigate to="/">Home</NavigationItem>
+	<NavigationItem on:navigate to="/toread" count={$bookmarksToRead.length}>
+		Read later
+	</NavigationItem>
+	<NavigationItem on:navigate to="/favorites">Favorites</NavigationItem>
+	<NavigationItem on:navigate to="/archive">Archive</NavigationItem>
 </ul>
 
 <header class="navigation__heading">
@@ -142,7 +141,7 @@
 {#if $isListNavigationVisible && sortedLists.length > 0}
 	<ul class="navigation__list">
 		{#each sortedLists as list (list.id)}
-			<NavigationItem to={`/list/${list.id}`}>
+			<NavigationItem on:navigate to={`/list/${list.id}`}>
 				{#if list.title}
 					{list.title}
 				{:else}
@@ -170,7 +169,11 @@
 	{#if $isTagNavigationVisible}
 		<ul class="navigation__list">
 			{#each sortedTags as [tagName, tagAmount] (tagName)}
-				<NavigationItem to={`/tag/${tagName}`} count={tagAmount}>
+				<NavigationItem
+					on:navigate
+					to={`/tag/${tagName}`}
+					count={tagAmount}
+				>
 					{tagName}
 				</NavigationItem>
 			{/each}
