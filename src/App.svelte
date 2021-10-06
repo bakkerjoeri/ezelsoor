@@ -1,17 +1,12 @@
 <script lang="ts">
 	import { Route, Router } from "svelte-routing";
-	import {
-		bookmarksToRead,
-		favoriteBookmarks,
-		archivedBookmarks,
-		untaggedBookmarks,
-	} from "./store/bookmarks.js";
-	import Page from "./pages/Page.svelte";
-	import BookmarkList from "./components/BookmarkList.svelte";
 	import Login from "./pages/Login.svelte";
 	import HomePage from "./pages/HomePage.svelte";
-	import TaggedWith from "./pages/TaggedWith.svelte";
+	import TagPage from "./pages/TagPage.svelte";
 	import ListPage from "./pages/ListPage.svelte";
+	import ToReadPage from "./pages/ToReadPage.svelte";
+	import FavoritesPage from "./pages/FavoritesPage.svelte";
+	import ArchivePage from "./pages/ArchivePage.svelte";
 </script>
 
 <Router>
@@ -20,31 +15,15 @@
 	</Route>
 
 	<Route path="toread">
-		<Page>
-			<h1>Read later</h1>
-			<BookmarkList bookmarks={$bookmarksToRead} />
-		</Page>
+		<ToReadPage />
 	</Route>
 
 	<Route path="favorites">
-		<Page>
-			<h1>Favorites</h1>
-			<BookmarkList bookmarks={$favoriteBookmarks} />
-		</Page>
+		<FavoritesPage />
 	</Route>
 
 	<Route path="archive">
-		<Page>
-			<h1>Archived bookmarks</h1>
-			<BookmarkList bookmarks={$archivedBookmarks} />
-		</Page>
-	</Route>
-
-	<Route path="untagged">
-		<Page>
-			<h1>Untagged bookmarks</h1>
-			<BookmarkList bookmarks={$untaggedBookmarks} />
-		</Page>
+		<ArchivePage />
 	</Route>
 
 	<Route path="/list/:listId" let:params>
@@ -52,7 +31,7 @@
 	</Route>
 
 	<Route path="/tag/:tagName" let:params>
-		<TaggedWith tagName={params.tagName} />
+		<TagPage tagName={params.tagName} />
 	</Route>
 
 	<Route path="/login">
