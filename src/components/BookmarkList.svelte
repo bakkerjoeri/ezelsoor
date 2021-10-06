@@ -11,6 +11,10 @@
 
 	let currentPage = 1;
 
+	$: loadMoreMargin = Math.ceil(pageSize / 4);
+	$: amountToShow = pageSize * currentPage;
+	$: positionOfObserver = amountToShow - loadMoreMargin;
+
 	$: sortedBookmarks = (() => {
 		if (sortedBy === "date") {
 			return [...bookmarks].sort((a, b) => b.createdAt - a.createdAt);
@@ -18,10 +22,6 @@
 
 		return bookmarks;
 	})();
-
-	$: loadMoreMargin = Math.ceil(pageSize / 4);
-	$: amountToShow = pageSize * currentPage;
-	$: positionOfObserver = amountToShow - loadMoreMargin;
 
 	$: visibleBookmarks = (() => {
 		if (!lazyLoad) {

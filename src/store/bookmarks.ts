@@ -4,6 +4,7 @@ import { createLocalStore } from "./localStore";
 import type { Readable, Writable } from "svelte/store";
 import { createFireStore } from "./firestore";
 import { entityBeingEdited } from "./ui";
+import { removeDiacretics } from "../utils/removeDiacretics";
 
 export interface Bookmark {
 	readonly id: string;
@@ -53,7 +54,6 @@ function createBookmarkStore(
 }
 
 const localStore = createLocalStore<Bookmark[]>("bookmarks", []);
-const fireStore = createFireStore(null);
 export const bookmarks = createBookmarkStore(localStore);
 export const activeBookmarks = derived(bookmarks, (bookmarks) =>
 	bookmarks.filter((bookmark) => !bookmark.isArchived)
@@ -136,18 +136,31 @@ export const bookmarkBeingEdited: Readable<Bookmark | null> = derived(
 	}
 );
 
-// bookmarks.update((value) => {
-// 	return value.map((bookmark) => {
-// 		return {
-// 			id: bookmark.id,
-// 			url: bookmark.url,
-// 			title: bookmark.title,
-// 			notes: bookmark.summary || bookmark.notes,
-// 			tags: bookmark.tags,
-// 			isFavorite: bookmark.isFavorite,
-// 			isArchived: bookmark.isArchived,
-// 			isToRead: bookmark.isToRead,
-// 			createdAt: bookmark.dateCreated || bookmark.createdAt,
-// 		};
-// 	});
-// });
+export function searchBookmarks(bookmarks: Bookmark[], query: string) {
+	if (!query) {
+		return bookmarks;
+	}
+
+	return bookmarks.filter((bookmark) =>
+		doesBookmarkMatchQuery(bookmark, query)
+	);
+}
+
+function doesBookmarkMatchQuery(bookmark: Bookmark, query: string) {
+	const normalizedQuery = removeDiacretics(query.toLowerCase());
+
+	const normalizedBookmarkTitle = removeDiacretics(
+		bookmark.title.toLowerCase()
+	);
+	const normalizedSummary = removeDiacretics(bookmark.notes.toLowerCase());
+	const normalizedTags = removeDiacretics(bookmark.tags.join().toLowerCase());
+
+	return normalizedQuery.split(" ").every((queryPart) => {
+		return (
+			normalizedBookmarkTitle.indexOf(queryPart) >= 0 ||
+			normalizedSummary.indexOf(queryPart) >= 0 ||
+			normalizedTags.indexOf(queryPart) >= 0 ||
+			bookmark.url.indexOf(queryPart) > 0
+		);
+	});
+}
