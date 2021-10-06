@@ -2,7 +2,6 @@ import uuid from "@bakkerjoeri/uuid";
 import { derived, get, writable } from "svelte/store";
 import { createLocalStore } from "./localStore";
 import type { Readable, Writable } from "svelte/store";
-import { createFireStore } from "./firestore";
 import { entityBeingEdited } from "./ui";
 import { removeDiacretics } from "../utils/removeDiacretics";
 
