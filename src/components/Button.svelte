@@ -19,16 +19,12 @@
 
 <style lang="scss">
 	button {
-		--border-color-button: gray;
-		--text-color-button: #000000;
-		--color-button: #ffffff;
-
 		display: inline-block;
 		line-height: var(--baseline);
 		white-space: nowrap;
 		border: 0;
 		background-color: transparent;
-		color: var(--text-color-button);
+		color: var(--color-text);
 
 		&:not(:disabled) {
 			cursor: pointer;
@@ -38,7 +34,7 @@
 	.variant-outline {
 		padding: 0 10px;
 		border-radius: 5px;
-		border: 1px solid var(--border-color-button);
+		border: 1px solid var(--border-color-ui-primary);
 	}
 
 	.variant-text {

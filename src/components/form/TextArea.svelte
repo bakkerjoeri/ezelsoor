@@ -38,7 +38,9 @@
 		font-family: inherit;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
-		border: 1px solid lightgray;
+		border: 1px solid var(--border-color-ui-secondary);
 		border-radius: 5px;
+		background-color: var(--background-color-ui-secondary);
+		color: var(--color-text);
 	}
 </style>

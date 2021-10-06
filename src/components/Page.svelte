@@ -104,11 +104,12 @@
 	.page {
 		display: grid;
 		grid-template-columns: 240px 1fr fit-content(480px);
+		grid-template-rows: 1fr 100px;
 	}
 
 	.page__navigation {
 		grid-column: 1 / 2;
-		border-right: 1px solid lightgrey;
+		border-right: 1px solid var(--border-color-ui-secondary);
 	}
 
 	.page__main {
@@ -117,7 +118,7 @@
 
 	.page__sidebar {
 		grid-column: 3 / 4;
-		border-left: 1px solid lightgrey;
+		border-left: 1px solid var(--border-color-ui-secondary);
 	}
 
 	.page__navigation,
@@ -129,8 +130,8 @@
 	}
 
 	.page__navigation,
-	.page__main,
 	.page__sidebar {
 		padding: var(--baseline);
+		// padding-bottom: 0;
 	}
 </style>

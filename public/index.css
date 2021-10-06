@@ -8,6 +8,8 @@
 
 body {
 	font-family: sans-serif;
+	background-color: var(--background-color-ui-primary);
+	color: var(--color-text);
 }
 
 ul,

@@ -77,7 +77,7 @@
 	}
 
 	.Bookmark__link {
-		color: #0044ab;
+		color: var(--color-link);
 	}
 
 	.BookmarkItem__actionList {
@@ -86,19 +86,6 @@
 
 	.BookmarkItem__actionItem + .BookmarkItem__actionItem {
 		margin-left: 10px;
-	}
-
-	.BookmarkItem__action {
-		cursor: pointer;
-		font-size: 14px;
-		line-height: var(--baseline);
-		background-color: transparent;
-		border: 0;
-
-		&:hover,
-		&:focus {
-			text-decoration: underline;
-		}
 	}
 
 	.TagList {

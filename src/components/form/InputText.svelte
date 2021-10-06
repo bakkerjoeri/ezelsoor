@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let value: string;
-	export let type: 'text' | 'url' | 'email' = 'text';
+	export let type: "text" | "url" | "email" = "text";
 	export let state: boolean | null = null;
 	export let autocomplete: string = null;
 	export let required: boolean = false;
@@ -14,12 +14,12 @@
 
 <input
 	on:input={handleInput}
-	value={value}
-	type={type}
-	autocomplete={autocomplete}
-	required={required}
-	disabled={disabled}
-	id={id}
+	{value}
+	{type}
+	{autocomplete}
+	{required}
+	{disabled}
+	{id}
 	class:has-error={state === false}
 	class:is-valid={state === true}
 />
@@ -31,8 +31,10 @@
 		padding: 10px;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
-		border: 1px solid lightgray;
+		border: 1px solid var(--border-color-ui-secondary);
 		border-radius: 5px;
+		background-color: var(--background-color-ui-secondary);
+		color: var(--color-text);
 
 		&.has-error {
 			border-color: red;

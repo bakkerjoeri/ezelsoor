@@ -8,12 +8,12 @@
 </script>
 
 <input
-	bind:value={value}
+	bind:value
 	type="password"
-	autocomplete={autocomplete}
-	required={required}
-	disabled={disabled}
-	id={id}
+	{autocomplete}
+	{required}
+	{disabled}
+	{id}
 	class:has-error={state === false}
 	class:is-valid={state === true}
 />
@@ -25,8 +25,10 @@
 		padding: 10px;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
-		border: 1px solid lightgray;
+		border: 1px solid var(--border-color-ui-secondary);
 		border-radius: 5px;
+		background-color: var(--background-color-ui-secondary);
+		color: var(--color-text);
 
 		&.has-error {
 			border-color: red;

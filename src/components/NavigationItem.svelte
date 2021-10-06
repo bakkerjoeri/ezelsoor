@@ -42,6 +42,6 @@
 
 	.count {
 		margin-left: 6px;
-		opacity: 0.5;
+		color: var(--color-text-soft);
 	}
 </style>

@@ -1,8 +1,8 @@
 <script lang="ts">
-	export let id = '';
+	export let id = "";
 	export let tags = [];
 
-	$: tagString = tags.join(' ');
+	$: tagString = tags.join(" ");
 
 	function handleInput(event: any) {
 		tags = transformTagstringIntoTags(event.target.value);
@@ -15,16 +15,11 @@
 			return [];
 		}
 
-		return trimmedTagString.split(' ');
+		return trimmedTagString.split(" ");
 	}
 </script>
 
-<input
-	type="text"
-	id={id}
-	value={tagString}
-	on:input={handleInput}
->
+<input type="text" {id} value={tagString} on:input={handleInput} />
 
 <style lang="scss">
 	input {
@@ -33,7 +28,9 @@
 		padding: 10px;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
-		border: 1px solid lightgray;
+		border: 1px solid var(--border-color-ui-secondary);
 		border-radius: 5px;
+		background-color: var(--background-color-ui-secondary);
+		color: var(--color-text);
 	}
 </style>
