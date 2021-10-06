@@ -12,13 +12,12 @@
 	import Navigation from "../components/Navigation.svelte";
 	import ListForm from "../components/ListForm.svelte";
 	import Button from "../components/Button.svelte";
-	import MediaQuery from "../components/MediaQuery.svelte";
 	import Modal from "../components/Modal.svelte";
 	import type { Bookmark } from "../store/bookmarks";
 	import type { List } from "../store/lists";
 
 	function onNavigate() {
-		$isNavigationOpen = get(isTabletUp);
+		$isNavigationOpen = get(isPhabletUp);
 		$entityBeingEdited = null;
 		window.scrollTo({ top: 0, left: 0 });
 	}
@@ -85,7 +84,7 @@
 	}
 </script>
 
-<div class="page">
+<div class="page" class:is-navigation-open={$isNavigationOpen}>
 	<div class="page__main-header">
 		<Button on:click={toggleNavigation} variant="text">
 			{#if $isNavigationOpen}
@@ -186,6 +185,13 @@
 		display: grid;
 		grid-template-columns: auto 1fr auto;
 		grid-template-rows: calc(2 * var(--baseline)) 1fr;
+
+		@media (max-width: 640px) {
+			&.is-navigation-open {
+				height: 100vh;
+				overflow: hidden;
+			}
+		}
 	}
 
 	.page__main-header {
@@ -251,8 +257,6 @@
 		overflow: scroll;
 		top: calc(2 * var(--baseline));
 		padding: var(--baseline);
-
 		height: calc(100vh - 2 * var(--baseline));
-		border-left: 1px solid var(--border-color-ui-secondary);
 	}
 </style>
