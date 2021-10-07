@@ -1,4 +1,4 @@
-import { writable, get, StartStopNotifier } from "svelte/store";
+import { writable, get } from "svelte/store";
 import type { Writable } from "svelte/store";
 
 export function createLocalStore<TValue>(
@@ -27,7 +27,7 @@ export function createLocalStore<TValue>(
 	};
 }
 
-export function save(key: string, value: any): void {
+function save(key: string, value: any): void {
 	if (typeof localStorage === "undefined") {
 		return;
 	}
