@@ -69,6 +69,7 @@
 
 	.placeholder {
 		color: var(--color-text-soft);
+		font-weight: normal;
 	}
 
 	h1 {
