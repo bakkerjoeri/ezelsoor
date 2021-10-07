@@ -8,8 +8,6 @@
 	import TextArea from "./form/TextArea.svelte";
 	import Checkbox from "./form/Checkbox.svelte";
 	import Button from "./Button.svelte";
-	import { lists } from "../store/lists.js";
-	import type { List } from "../store/lists.js";
 
 	export let url = "";
 	export let title = "";
@@ -44,28 +42,6 @@
 
 	function handleClickDelete() {
 		dispatch("delete");
-	}
-
-	function toggleBookmarkInList(
-		bookmarkId: Bookmark["id"],
-		listId: List["id"],
-		isInList: boolean
-	) {
-		if (isInList) {
-			lists.updateList(listId, (list) => {
-				return {
-					...list,
-					bookmarks: unique([...list.bookmarks, bookmarkId]),
-				};
-			});
-		} else {
-			lists.updateList(listId, (list) => {
-				return {
-					...list,
-					bookmarks: list.bookmarks.filter((id) => id !== bookmarkId),
-				};
-			});
-		}
 	}
 </script>
 
