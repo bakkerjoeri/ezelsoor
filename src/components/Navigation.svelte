@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { navigate } from "svelte-routing";
 	import { createNewFilterList, filterLists } from "../store/filters";
-	import { lists, createNewList } from "../store/lists";
 	import { createLocalStore } from "../store/localStore";
 	import { entityBeingEdited } from "../store/ui";
 	import { bookmarksToRead, tagCount } from "./../store/bookmarks";
