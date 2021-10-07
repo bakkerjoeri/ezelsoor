@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { text } from "svelte/internal";
-
 	export let id: string;
 	export let value: string;
 	export let minRows: number = 1;
@@ -38,9 +36,9 @@
 		font-family: inherit;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
+		color: var(--color-text);
 		border: 1px solid var(--border-color-ui-secondary);
 		border-radius: 5px;
 		background-color: var(--background-color-ui-secondary);
-		color: var(--color-text);
 	}
 </style>
