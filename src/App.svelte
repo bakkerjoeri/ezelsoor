@@ -8,11 +8,21 @@
 	import FavoritesPage from "./pages/FavoritesPage.svelte";
 	import ArchivePage from "./pages/ArchivePage.svelte";
 	import { hasFilterList } from "./store/filters";
+	import LoginPage from "./pages/LoginPage.svelte";
+	import SignupPage from "./pages/SignupPage.svelte";
 </script>
 
 <Router>
 	<Route path="/">
 		<HomePage />
+	</Route>
+
+	<Route path="/login">
+		<LoginPage />
+	</Route>
+
+	<Route path="/signup">
+		<SignupPage />
 	</Route>
 
 	<Route path="toread">

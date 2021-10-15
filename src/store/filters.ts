@@ -1,11 +1,10 @@
 import { derived, get, Readable, writable } from "svelte/store";
-import type { Writable } from "svelte/store";
-
-import { createLocalStore } from "./localStore";
 import { navigate } from "svelte-routing";
 import uuid from "@bakkerjoeri/uuid";
 import { entityBeingEdited } from "./ui";
 import { Bookmark, doesBookmarkMatchQuery } from "./bookmarks";
+import { userCollectionStore } from "./firestore";
+import type { Writable } from "svelte/store";
 
 export interface FilterList {
 	id: string;
@@ -82,8 +81,9 @@ function createFilterListStore(
 	};
 }
 
-const localStore = createLocalStore("filterLists", []);
-export const filterLists = createFilterListStore(localStore);
+export const filterLists = createFilterListStore(
+	userCollectionStore("filters")
+);
 
 export function hasFilterList(filterListId: FilterList["id"]): boolean {
 	return get(filterLists).some(

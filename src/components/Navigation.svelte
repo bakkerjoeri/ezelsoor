@@ -2,9 +2,12 @@
 	import { navigate } from "svelte-routing";
 	import { createNewFilterList, filterLists } from "../store/filters";
 	import { createLocalStore } from "../store/localStore";
+	import { isLoggedIn } from "../store/session";
 	import { entityBeingEdited } from "../store/ui";
+	import { auth } from "../utils/firebase";
 	import { bookmarksToRead, tagCount } from "./../store/bookmarks";
 	import ActionRow from "./ActionRow.svelte";
+	import Button from "./Button.svelte";
 	import NavigationItem from "./NavigationItem.svelte";
 
 	type ListSortingMethod = "alphabetically" | "bookmarkCount";
@@ -102,6 +105,10 @@
 		return $filterLists;
 	})();
 
+	function logout() {
+		auth.signOut();
+	}
+
 	function toggleTagNavigationVisibility() {
 		$isTagNavigationVisible = !$isTagNavigationVisible;
 	}
@@ -117,6 +124,13 @@
 		navigate(`/filter/${newFilterList.id}`);
 	}
 </script>
+
+{#if !$isLoggedIn}
+	<ul class="navigation__list">
+		<NavigationItem on:navigate to="/login">Log in</NavigationItem>
+		<NavigationItem on:navigate to="/signup">Sign up</NavigationItem>
+	</ul>
+{/if}
 
 <ul class="navigation__list">
 	<NavigationItem on:navigate to="/">Home</NavigationItem>
@@ -176,6 +190,12 @@
 	{/if}
 {/if}
 
+{#if $isLoggedIn}
+	<footer>
+		<Button on:click={logout}>Log out</Button>
+	</footer>
+{/if}
+
 <style lang="scss">
 	.navigation__list {
 		&:not(:last-child) {
@@ -187,5 +207,15 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+	}
+
+	footer {
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		width: 239px;
+		padding: 15px var(--baseline);
+		background-color: var(--background-color-ui-primary);
+		border-top: 1px solid var(--border-color-ui-secondary);
 	}
 </style>

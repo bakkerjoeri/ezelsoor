@@ -36,7 +36,7 @@
 	}
 
 	function markAsRead() {
-		bookmarks.patch(bookmark.id, { isToRead: true });
+		bookmarks.patch(bookmark.id, { isToRead: false });
 	}
 
 	function toggleIsFavorite() {

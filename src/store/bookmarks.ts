@@ -1,9 +1,9 @@
 import uuid from "@bakkerjoeri/uuid";
 import { derived, get, writable } from "svelte/store";
-import { createLocalStore } from "./localStore";
 import type { Readable, Writable } from "svelte/store";
 import { entityBeingEdited } from "./ui";
 import { removeDiacretics } from "../utils/removeDiacretics";
+import { userCollectionStore } from "./firestore";
 
 export interface Bookmark {
 	readonly id: string;
@@ -52,8 +52,10 @@ function createBookmarkStore(
 	};
 }
 
-const localStore = createLocalStore<Bookmark[]>("bookmarks", []);
-export const bookmarks = createBookmarkStore(localStore);
+export const bookmarks = createBookmarkStore(
+	userCollectionStore<Bookmark>(`bookmarks`)
+);
+
 export const activeBookmarks = derived(bookmarks, (bookmarks) =>
 	bookmarks.filter((bookmark) => !bookmark.isArchived)
 );
