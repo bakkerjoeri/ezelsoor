@@ -7,5 +7,6 @@
 		"jsx": "preserve",
 		"baseUrl": "./",
 		"noEmit": true,
+		"allowJs": true
 	}
 }
