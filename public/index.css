@@ -1,0 +1,34 @@
+@import "./theme.css";
+
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	font-family: sans-serif;
+	background-color: var(--background-color-ui-primary);
+	color: var(--color-text);
+}
+
+ul,
+ol {
+	list-style: none;
+}
+
+h1 {
+	font-size: var(--font-size-heading);
+	line-height: calc(2 * var(--baseline));
+}
+
+h2 {
+	font-size: var(--font-size-body);
+	line-height: calc(2 * var(--baseline));
+}
+
+p {
+	margin-bottom: var(--baseline);
+	font-size: var(--font-size-body);
+	line-height: var(--baseline);
+}
