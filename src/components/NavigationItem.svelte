@@ -41,7 +41,14 @@
 		text-overflow: ellipsis;
 	}
 
-	:global(.navigation-item__link:hover),
+	:global(.navigation-item__link:hover) {
+		text-decoration: underline;
+	}
+
+	/*
+	We're putting focus-visible by itself because Safari doesn't
+	support it and throws the entire selector set out otherwise.
+	*/
 	:global(.navigation-item__link:focus-visible) {
 		text-decoration: underline;
 	}

@@ -21,7 +21,14 @@
 		transition: 0.2s color;
 
 		&.is-favorite,
-		&:hover,
+		&:hover {
+			color: #ff9b00;
+		}
+
+		/*
+		We're putting focus-visible by itself because Safari doesn't
+		support it and throws the entire selector set out otherwise.
+		*/
 		&:focus-visible {
 			color: #ff9b00;
 		}
