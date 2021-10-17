@@ -228,8 +228,7 @@
 
 <style lang="scss">
 	nav {
-		padding: var(--baseline);
-		padding-bottom: 0;
+		margin: var(--baseline);
 	}
 
 	.navigation__list {
