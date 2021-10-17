@@ -41,34 +41,48 @@ export function userCollectionStore<TValue extends Document>(path: string) {
 
 	const store = writable<TValue[]>([], start);
 
-	const set = (value: TValue[]): void => {
+	const add = async (document: Document) => {
+		await setDoc(doc(reference, document.id), document);
+	};
+
+	const patch = async (id: string, newValue: any) => {
+		await updateDoc(doc(reference, id), newValue);
+	};
+
+	const remove = async (id: string) => {
+		deleteDoc(doc(reference, id));
+	};
+
+	const set = async (value: TValue[]): Promise<void> => {
 		if (reference === null) {
 			throw new Error("Can't access collection when not authenticated.");
 		}
 
 		const diff = findCollectionDiff(get(store), value);
 
-		diff.forEach((diffItem) => {
-			if (diffItem.operation === "added") {
-				setDoc(doc(reference, diffItem.id), diffItem.data);
-			}
+		await Promise.all(
+			diff.map((diffItem) => {
+				if (diffItem.operation === "added") {
+					return add(diffItem);
+				}
 
-			if (diffItem.operation === "modified") {
-				updateDoc(doc(reference, diffItem.id), diffItem.data);
-			}
+				if (diffItem.operation === "modified") {
+					return patch(diffItem.id, diffItem.data);
+				}
 
-			if (diffItem.operation === "removed") {
-				deleteDoc(doc(reference, diffItem.id));
-			}
-		});
+				if (diffItem.operation === "removed") {
+					return remove(diffItem.id);
+				}
+			})
+		);
 	};
 
-	const update = (updater: Updater<TValue[]>) => {
+	const update = async (updater: Updater<TValue[]>) => {
 		const value = updater(get(store));
-		set(value);
+		await set(value);
 	};
 
 	const { subscribe } = store;
 
-	return { subscribe, set, update };
+	return { subscribe, set, update, add, patch, remove };
 }
