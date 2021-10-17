@@ -310,7 +310,8 @@
 	}
 
 	.page__main {
-		grid-column: 2 / -1;
+		grid-row: 2 / -1;
+		grid-column: 2 / 3;
 		width: 100%;
 		max-width: 720px;
 		justify-self: center;
