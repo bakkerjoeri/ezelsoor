@@ -10,6 +10,21 @@
 	import { hasFilterList } from "./store/filters";
 	import LoginPage from "./pages/LoginPage.svelte";
 	import SignupPage from "./pages/SignupPage.svelte";
+	import SettingsPage from "./pages/SettingsPage.svelte";
+	import { preferredColorScheme } from "./store/ui";
+
+	$: {
+		document.body.classList.remove("color-scheme-light");
+		document.body.classList.remove("color-scheme-dark");
+
+		if ($preferredColorScheme === "light") {
+			document.body.classList.add("color-scheme-light");
+		}
+
+		if ($preferredColorScheme === "dark") {
+			document.body.classList.add("color-scheme-dark");
+		}
+	}
 </script>
 
 <Router>
@@ -25,7 +40,11 @@
 		<SignupPage />
 	</Route>
 
-	<Route path="toread">
+	<Route path="/settings">
+		<SettingsPage />
+	</Route>
+
+	<Route path="/toread">
 		<ToReadPage />
 	</Route>
 

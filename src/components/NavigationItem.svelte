@@ -1,23 +1,14 @@
 <script lang="ts">
-	import { createEventDispatcher } from "svelte";
+	import NavigationLink from "./NavigationLink.svelte";
 
-	import { Link } from "svelte-routing";
 	export let to: string;
 	export let count: number | undefined = undefined;
-
-	const dispatch = createEventDispatcher<{ navigate: string }>();
 </script>
 
 <li class="navigation-item">
-	<Link
-		{to}
-		class="navigation-item__link"
-		on:click={() => {
-			dispatch("navigate", to);
-		}}
-	>
+	<NavigationLink {to} on:navigate>
 		<slot />
-	</Link>
+	</NavigationLink>
 
 	{#if count !== undefined || count > 0}
 		<span class="count">
@@ -32,29 +23,6 @@
 		display: flex;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
-	}
-
-	:global(.navigation-item__link) {
-		color: inherit;
-		text-decoration: none;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	:global(.navigation-item__link:hover) {
-		text-decoration: underline;
-	}
-
-	/*
-	We're putting focus-visible by itself because Safari doesn't
-	support it and throws the entire selector set out otherwise.
-	*/
-	:global(.navigation-item__link:focus-visible) {
-		text-decoration: underline;
-	}
-
-	:global(.navigation-item__link[aria-current="page"]) {
-		color: var(--color-highlight);
 	}
 
 	.count {

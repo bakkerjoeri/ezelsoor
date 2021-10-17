@@ -6,10 +6,12 @@
 </script>
 
 <div>
-	{#if label}
-		<label for={labelFor}>
+	{#if label && labelFor}
+		<label for={labelFor} class="label">
 			{label}
 		</label>
+	{:else if label}
+		<span class="label">{label}</span>
 	{/if}
 
 	<slot />
@@ -28,7 +30,7 @@
 		margin-bottom: var(--baseline);
 	}
 
-	label {
+	.label {
 		display: block;
 		line-height: var(--baseline);
 

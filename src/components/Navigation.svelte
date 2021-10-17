@@ -3,18 +3,19 @@
 	import { createNewFilterList, filterLists } from "../store/filters";
 	import { createLocalStore } from "../store/localStore";
 	import { isLoggedIn } from "../store/session";
-	import { entityBeingEdited } from "../store/ui";
-	import { auth } from "../utils/firebase";
+	import {
+		entityBeingEdited,
+		showReadLaterCount,
+		showTagCount,
+		tagSortingMethod,
+	} from "../store/ui";
 	import { bookmarksToRead, tagCount } from "./../store/bookmarks";
 	import ActionRow from "./ActionRow.svelte";
-	import Button from "./Button.svelte";
 	import NavigationItem from "./NavigationItem.svelte";
 
 	type ListSortingMethod = "alphabetically" | "bookmarkCount";
-	type TagSortingMethod = "alphabetically" | "bookmarkCount";
 
 	let listsSortedBy: ListSortingMethod = "alphabetically";
-	let tagsSortedBy: TagSortingMethod = "bookmarkCount";
 
 	let isTagNavigationVisible = createLocalStore(
 		"isTagNavigationVisible",
@@ -46,7 +47,7 @@
 
 	$: sortedTags = (() => {
 		const tags = Object.entries($tagCount);
-		if (tagsSortedBy === "alphabetically") {
+		if ($tagSortingMethod === "alphabetically") {
 			return tags.sort(([tagNameA], [tagNameB]) => {
 				if (tagNameA > tagNameB) {
 					return 1;
@@ -60,7 +61,7 @@
 			});
 		}
 
-		if (tagsSortedBy === "bookmarkCount") {
+		if ($tagSortingMethod === "bookmarkCount") {
 			return tags.sort(
 				([tagNameA, bookmarkCountA], [tagNameB, bookmarkCountB]) => {
 					if (bookmarkCountB > bookmarkCountA) {
@@ -105,10 +106,6 @@
 		return $filterLists;
 	})();
 
-	function logout() {
-		auth.signOut();
-	}
-
 	function toggleTagNavigationVisibility() {
 		$isTagNavigationVisible = !$isTagNavigationVisible;
 	}
@@ -134,7 +131,11 @@
 
 <ul class="navigation__list">
 	<NavigationItem on:navigate to="/">Home</NavigationItem>
-	<NavigationItem on:navigate to="/toread" count={$bookmarksToRead.length}>
+	<NavigationItem
+		on:navigate
+		to="/toread"
+		count={$showReadLaterCount ? $bookmarksToRead.length : undefined}
+	>
 		Read later
 	</NavigationItem>
 	<NavigationItem on:navigate to="/favorites">Favorites</NavigationItem>
@@ -181,7 +182,7 @@
 				<NavigationItem
 					on:navigate
 					to={`/tag/${tagName}`}
-					count={tagAmount}
+					count={$showTagCount ? tagAmount : undefined}
 				>
 					{tagName}
 				</NavigationItem>
@@ -190,16 +191,17 @@
 	{/if}
 {/if}
 
-{#if $isLoggedIn}
-	<footer>
-		<Button on:click={logout}>Log out</Button>
-	</footer>
-{/if}
-
 <style lang="scss">
 	.navigation__list {
+		padding-right: var(--baseline);
+		padding-left: var(--baseline);
+
 		&:not(:last-child) {
 			margin-bottom: var(--baseline);
+		}
+
+		&:first-child {
+			margin-top: var(--baseline);
 		}
 	}
 
@@ -208,19 +210,11 @@
 		align-items: center;
 		justify-content: space-between;
 		margin-bottom: var(--baseline);
+		padding-right: var(--baseline);
+		padding-left: var(--baseline);
 	}
 
 	h2 {
 		margin-bottom: 0;
-	}
-
-	footer {
-		position: fixed;
-		left: 0;
-		bottom: 0;
-		width: 239px;
-		padding: 15px var(--baseline);
-		background-color: var(--background-color-ui-primary);
-		border-top: 1px solid var(--border-color-ui-secondary);
 	}
 </style>

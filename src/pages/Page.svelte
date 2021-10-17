@@ -13,11 +13,14 @@
 	import ListForm from "../components/ListForm.svelte";
 	import Button from "../components/Button.svelte";
 	import Modal from "../components/Modal.svelte";
+	import { filterListBeingEdited, filterLists } from "../store/filters";
+	import FilterListForm from "../components/FilterListForm.svelte";
+	import { isLoggedIn } from "../store/session";
+	import { auth } from "../utils/firebase";
 	import type { Bookmark } from "../store/bookmarks";
 	import type { List } from "../store/lists";
 	import type { FilterList } from "../store/filters";
-	import { filterListBeingEdited, filterLists } from "../store/filters";
-	import FilterListForm from "../components/FilterListForm.svelte";
+	import NavigationLink from "../components/NavigationLink.svelte";
 
 	function onNavigate() {
 		$isNavigationOpen = get(isPhabletUp);
@@ -27,6 +30,10 @@
 
 	function toggleNavigation() {
 		$isNavigationOpen = !$isNavigationOpen;
+	}
+
+	function logout() {
+		auth.signOut();
 	}
 
 	function onClickCreateNewBookmark() {
@@ -133,6 +140,15 @@
 
 		<nav class="page__navigation">
 			<Navigation on:navigate={onNavigate} />
+
+			{#if $isLoggedIn}
+				<footer class="page__navigation-footer">
+					<NavigationLink to="settings" on:navigate={onNavigate}>
+						Settings
+					</NavigationLink>
+					<Button on:click={logout} variant="text">Log out</Button>
+				</footer>
+			{/if}
 		</nav>
 	{/if}
 
@@ -269,6 +285,19 @@
 		grid-row: 1 / 2;
 	}
 
+	.page__navigation-footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		position: sticky;
+		bottom: 0;
+		height: calc(2 * var(--baseline));
+		padding-left: var(--baseline);
+		padding-right: var(--baseline);
+		border-top: 1px solid var(--border-color-ui-secondary);
+		background-color: var(--background-color-ui-primary);
+	}
+
 	.page__main-header,
 	.page__navigation-header {
 		position: sticky;
@@ -281,7 +310,7 @@
 	}
 
 	.page__main {
-		grid-column: 2 / 3;
+		grid-column: 2 / -1;
 		width: 100%;
 		max-width: 720px;
 		justify-self: center;
@@ -303,6 +332,7 @@
 		grid-column: 3 / -1;
 		grid-row: 2 / 3;
 		width: 400px;
+		padding: var(--baseline);
 
 		@media (min-width: 641px) {
 			border-left: 1px solid var(--border-color-ui-secondary);
@@ -314,7 +344,6 @@
 		position: sticky;
 		overflow: scroll;
 		top: calc(2 * var(--baseline));
-		padding: var(--baseline);
 		height: calc(100vh - 2 * var(--baseline));
 	}
 </style>

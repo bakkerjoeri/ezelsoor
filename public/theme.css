@@ -2,14 +2,19 @@
 	--baseline: 26px;
 	--font-size-body: 17px;
 	--font-size-heading: 21px;
-	--color-text: #000;
-	--color-text-soft: #777;
-	--color-highlight: #de0053;
-	--color-link: #0044ab;
-	--background-color-ui-primary: #fff;
-	--background-color-ui-secondary: #fff;
-	--border-color-ui-primary: gray;
-	--border-color-ui-secondary: lightgray;
+}
+
+@media (prefers-color-scheme: light) {
+	:root {
+		--color-text: #000;
+		--color-text-soft: #777;
+		--color-highlight: #de0053;
+		--color-link: #0044ab;
+		--background-color-ui-primary: #fff;
+		--background-color-ui-secondary: #fff;
+		--border-color-ui-primary: gray;
+		--border-color-ui-secondary: lightgray;
+	}
 }
 
 @media (prefers-color-scheme: dark) {
@@ -23,4 +28,26 @@
 		--border-color-ui-primary: #aaa;
 		--border-color-ui-secondary: #888;
 	}
+}
+
+body.color-scheme-light {
+	--color-text: #000;
+	--color-text-soft: #777;
+	--color-highlight: #de0053;
+	--color-link: #0044ab;
+	--background-color-ui-primary: #fff;
+	--background-color-ui-secondary: #fff;
+	--border-color-ui-primary: gray;
+	--border-color-ui-secondary: lightgray;
+}
+
+body.color-scheme-dark {
+	--color-text: #eee;
+	--color-text-soft: #aaa;
+	--color-highlight: #f8cb00;
+	--color-link: #81b3ff;
+	--background-color-ui-primary: #222;
+	--background-color-ui-secondary: #333;
+	--border-color-ui-primary: #aaa;
+	--border-color-ui-secondary: #888;
 }
