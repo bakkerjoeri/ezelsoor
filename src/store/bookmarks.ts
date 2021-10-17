@@ -19,42 +19,7 @@ export interface Bookmark {
 	summary?: string;
 }
 
-function createBookmarkStore(
-	baseStore: Writable<Bookmark[]> = writable<Bookmark[]>([])
-) {
-	const { subscribe, set, update } = baseStore;
-
-	return {
-		subscribe,
-		set,
-		update,
-		patch(id: Bookmark["id"], newData: Partial<Bookmark>): void {
-			update((bookmarks) => {
-				return bookmarks.map((bookmark) => {
-					if (bookmark.id === id) {
-						return { ...bookmark, ...newData };
-					}
-
-					return bookmark;
-				});
-			});
-		},
-		add: (bookmark: Bookmark): void => {
-			update((bookmarks) => {
-				return [...bookmarks, bookmark];
-			});
-		},
-		delete: (id: Bookmark["id"]): void => {
-			update((bookmarks) =>
-				bookmarks.filter((bookmark) => bookmark.id !== id)
-			);
-		},
-	};
-}
-
-export const bookmarks = createBookmarkStore(
-	userCollectionStore<Bookmark>(`bookmarks`)
-);
+export const bookmarks = userCollectionStore<Bookmark>(`bookmarks`);
 
 export const activeBookmarks = derived(bookmarks, (bookmarks) =>
 	bookmarks.filter((bookmark) => !bookmark.isArchived)
@@ -163,5 +128,14 @@ export function doesBookmarkMatchQuery(bookmark: Bookmark, query: string) {
 			normalizedTags.indexOf(queryPart) >= 0 ||
 			bookmark.url.indexOf(queryPart) > 0
 		);
+	});
+}
+
+export function doesTagMatchQuery(tagName: string, query: string) {
+	const normalizedQuery = removeDiacretics(query.toLowerCase());
+	const normalizedTagName = removeDiacretics(tagName.toLowerCase());
+
+	return normalizedQuery.split(" ").every((queryPart) => {
+		return normalizedTagName.indexOf(queryPart) >= 0;
 	});
 }

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Route, Router } from "svelte-routing";
+	import { navigate, Route, Router } from "svelte-routing";
 	import HomePage from "./pages/HomePage.svelte";
 	import TagPage from "./pages/TagPage.svelte";
 	import ListPage from "./pages/ListPage.svelte";
@@ -7,7 +7,7 @@
 	import ToReadPage from "./pages/ToReadPage.svelte";
 	import FavoritesPage from "./pages/FavoritesPage.svelte";
 	import ArchivePage from "./pages/ArchivePage.svelte";
-	import { hasFilterList } from "./store/filters";
+	import { filterLists, hasFilterList } from "./store/filters";
 	import LoginPage from "./pages/LoginPage.svelte";
 	import SignupPage from "./pages/SignupPage.svelte";
 	import SettingsPage from "./pages/SettingsPage.svelte";
@@ -48,11 +48,11 @@
 		<ToReadPage />
 	</Route>
 
-	<Route path="favorites">
+	<Route path="/favorites">
 		<FavoritesPage />
 	</Route>
 
-	<Route path="archive">
+	<Route path="/archive">
 		<ArchivePage />
 	</Route>
 
@@ -61,7 +61,7 @@
 	</Route>
 
 	<Route path="/filter/:filterListId" let:params>
-		{#if hasFilterList(params.filterListId)}
+		{#if $filterLists.some((filterList) => filterList.id === params.filterListId)}
 			<FilterListPage filterListId={params.filterListId} />
 		{/if}
 	</Route>

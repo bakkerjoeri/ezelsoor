@@ -15,12 +15,10 @@
 	import Modal from "../components/Modal.svelte";
 	import { filterListBeingEdited, filterLists } from "../store/filters";
 	import FilterListForm from "../components/FilterListForm.svelte";
-	import { isLoggedIn } from "../store/session";
-	import { auth } from "../utils/firebase";
 	import type { Bookmark } from "../store/bookmarks";
 	import type { List } from "../store/lists";
 	import type { FilterList } from "../store/filters";
-	import NavigationLink from "../components/NavigationLink.svelte";
+	import { navigate } from "svelte-routing";
 
 	function onNavigate() {
 		$isNavigationOpen = get(isPhabletUp);
@@ -30,10 +28,6 @@
 
 	function toggleNavigation() {
 		$isNavigationOpen = !$isNavigationOpen;
-	}
-
-	function logout() {
-		auth.signOut();
 	}
 
 	function onClickCreateNewBookmark() {
@@ -89,7 +83,7 @@
 			);
 		}
 
-		bookmarks.delete($bookmarkBeingEdited.id);
+		bookmarks.remove($bookmarkBeingEdited.id);
 		$entityBeingEdited = null;
 	}
 
@@ -111,7 +105,14 @@
 			);
 		}
 
-		filterLists.delete($filterListBeingEdited.id);
+		if (
+			window.location.pathname.includes(
+				`/filter/${$filterListBeingEdited.id}`
+			)
+		) {
+			navigate("/");
+		}
+		filterLists.remove($filterListBeingEdited.id);
 		$entityBeingEdited = null;
 	}
 </script>

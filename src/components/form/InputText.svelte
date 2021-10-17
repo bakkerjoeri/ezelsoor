@@ -5,9 +5,11 @@
 	export let type: "text" | "url" | "email" = "text";
 	export let state: boolean | null = null;
 	export let autocomplete: string = null;
+	export let placeholder: string = null;
 	export let required: boolean = false;
 	export let disabled: boolean = false;
 	export let id: string = uuid();
+	export let size: "normal" | "small" = "normal";
 
 	function handleInput(event: any) {
 		value = event.target.value;
@@ -20,11 +22,14 @@
 	{value}
 	{type}
 	{autocomplete}
+	{placeholder}
 	{required}
 	{disabled}
 	{id}
 	class:has-error={state === false}
 	class:is-valid={state === true}
+	class:size-normal={size === "normal"}
+	class:size-small={size === "small"}
 />
 
 <style lang="scss">
@@ -46,5 +51,10 @@
 		&.is-valid {
 			border-color: green;
 		}
+	}
+
+	input.size-small {
+		line-height: calc(var(--baseline) - 2px);
+		padding: 0 4px;
 	}
 </style>

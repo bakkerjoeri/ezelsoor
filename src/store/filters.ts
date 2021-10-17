@@ -1,10 +1,8 @@
-import { derived, get, Readable, writable } from "svelte/store";
-import { navigate } from "svelte-routing";
+import { derived, get, Readable } from "svelte/store";
 import uuid from "@bakkerjoeri/uuid";
 import { entityBeingEdited } from "./ui";
 import { Bookmark, doesBookmarkMatchQuery } from "./bookmarks";
 import { userCollectionStore } from "./firestore";
-import type { Writable } from "svelte/store";
 
 export interface FilterList {
 	id: string;
@@ -30,60 +28,7 @@ export type FilterType =
 	| "orTags"
 	| "untagged";
 
-function createFilterListStore(
-	baseStore: Writable<FilterList[]> = writable<FilterList[]>([])
-) {
-	const { subscribe, set, update } = baseStore;
-
-	return {
-		subscribe,
-		set,
-		update,
-		add(filterList: FilterList): void {
-			update((filterLists) => {
-				return [...filterLists, filterList];
-			});
-		},
-		updateFilterList(
-			id: FilterList["id"],
-			updater: (filterList: FilterList) => FilterList
-		): void {
-			update((filterLists) => {
-				return filterLists.map((filterList) => {
-					if (filterList.id === id) {
-						return updater(filterList);
-					}
-
-					return filterList;
-				});
-			});
-		},
-		patch(id: FilterList["id"], newData: Partial<FilterList>): void {
-			update((filterLists) => {
-				return filterLists.map((filterList) => {
-					if (filterList.id === id) {
-						return { ...filterList, ...newData };
-					}
-
-					return filterList;
-				});
-			});
-		},
-		delete: (id: FilterList["id"]): void => {
-			if (window.location.pathname.startsWith("/filter/")) {
-				navigate("/");
-			}
-
-			update((filterLists) =>
-				filterLists.filter((filterList) => filterList.id !== id)
-			);
-		},
-	};
-}
-
-export const filterLists = createFilterListStore(
-	userCollectionStore("filters")
-);
+export const filterLists = userCollectionStore<FilterList>("filters");
 
 export function hasFilterList(filterListId: FilterList["id"]): boolean {
 	return get(filterLists).some(
