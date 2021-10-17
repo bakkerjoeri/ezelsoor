@@ -25,12 +25,12 @@
 
 <style lang="scss">
 	div:not(:last-child) {
-		margin-bottom: 15px;
+		margin-bottom: var(--baseline);
 	}
 
 	label {
 		display: block;
-		margin-bottom: 5px;
+		line-height: var(--baseline);
 
 		&[for] {
 			cursor: pointer;

@@ -9,6 +9,7 @@
 
 <input
 	bind:value
+	on:input
 	type="password"
 	{autocomplete}
 	{required}

@@ -44,6 +44,8 @@
 	}
 </script>
 
+<h2>Filter</h2>
+
 <form on:submit|preventDefault={handleSubmitForm}>
 	<FormItem label="Title" labelFor="listTitle">
 		<InputText bind:value={title} type="text" id="listTitle" />

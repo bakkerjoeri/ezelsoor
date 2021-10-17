@@ -32,7 +32,7 @@
 		resize: none;
 		width: 100%;
 		max-height: calc(5 * var(--baseline) + 2 * 12px);
-		padding: 10px;
+		padding: 12px;
 		font-family: inherit;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);

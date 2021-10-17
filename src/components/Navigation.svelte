@@ -207,6 +207,11 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		margin-bottom: var(--baseline);
+	}
+
+	h2 {
+		margin-bottom: 0;
 	}
 
 	footer {

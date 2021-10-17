@@ -7,11 +7,7 @@
 </script>
 
 <div>
-	<input
-		bind:checked={checked}
-		type="checkbox"
-		id={labelFor}
-	>
+	<input bind:checked type="checkbox" id={labelFor} />
 
 	<label for={labelFor}>
 		{label}
@@ -19,16 +15,12 @@
 </div>
 
 <style lang="scss">
-	div {
-		margin-bottom: 5px;
-	}
-
 	input {
 		cursor: pointer;
 	}
 
 	label {
 		cursor: pointer;
-		padding-left: 5px;
+		line-height: var(--baseline);
 	}
 </style>

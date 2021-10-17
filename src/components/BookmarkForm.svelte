@@ -45,6 +45,8 @@
 	}
 </script>
 
+<h2>Bookmark</h2>
+
 <form on:submit|preventDefault={handleSubmitForm}>
 	<FormItem label="Link" labelFor="bookmarkUrl">
 		<InputText bind:value={url} type="url" id="bookmarkUrl" />

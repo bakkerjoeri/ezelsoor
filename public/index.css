@@ -19,12 +19,14 @@ ol {
 
 h1 {
 	font-size: var(--font-size-heading);
-	line-height: calc(2 * var(--baseline));
+	line-height: var(--baseline);
+	margin-bottom: var(--baseline);
 }
 
 h2 {
 	font-size: var(--font-size-body);
-	line-height: calc(2 * var(--baseline));
+	line-height: var(--baseline);
+	margin-bottom: var(--baseline);
 }
 
 p {
