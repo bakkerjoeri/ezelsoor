@@ -9,26 +9,33 @@
 		showTagCount,
 		tagSortingMethod,
 	} from "../store/ui";
-	import { bookmarksToRead, tagCount } from "./../store/bookmarks";
+	import { auth } from "../utils/firebase";
+	import {
+		bookmarksToRead,
+		doesTagMatchQuery,
+		tagCount,
+	} from "./../store/bookmarks";
 	import ActionRow from "./ActionRow.svelte";
+	import Button from "./Button.svelte";
+	import InputText from "./form/InputText.svelte";
 	import NavigationItem from "./NavigationItem.svelte";
+	import NavigationLink from "./NavigationLink.svelte";
 
 	type ListSortingMethod = "alphabetically" | "bookmarkCount";
 
+	let tagSearchQuery: string = "";
 	let listsSortedBy: ListSortingMethod = "alphabetically";
-
 	let isTagNavigationVisible = createLocalStore(
 		"isTagNavigationVisible",
 		true
 	);
-
 	let isFilterListNavigationVisible = createLocalStore(
 		"isListNavigationVisible",
 		true
 	);
 
 	$: filterListActions = (() => {
-		const actions = [
+		const actions: Array<{ label: string; callback: () => any }> = [
 			{
 				label: "create",
 				callback: onClickCreateNewFilterList,
@@ -45,10 +52,13 @@
 		return actions;
 	})();
 
-	$: sortedTags = (() => {
-		const tags = Object.entries($tagCount);
+	$: tags = Object.entries($tagCount);
+	$: filteredTags = tags.filter(([tagName]) => {
+		return doesTagMatchQuery(tagName, tagSearchQuery);
+	});
+	$: sortedAndFilteredTags = (() => {
 		if ($tagSortingMethod === "alphabetically") {
-			return tags.sort(([tagNameA], [tagNameB]) => {
+			return filteredTags.sort(([tagNameA], [tagNameB]) => {
 				if (tagNameA > tagNameB) {
 					return 1;
 				}
@@ -62,7 +72,7 @@
 		}
 
 		if ($tagSortingMethod === "bookmarkCount") {
-			return tags.sort(
+			return filteredTags.sort(
 				([tagNameA, bookmarkCountA], [tagNameB, bookmarkCountB]) => {
 					if (bookmarkCountB > bookmarkCountA) {
 						return 1;
@@ -85,7 +95,7 @@
 			);
 		}
 
-		return tags;
+		return filteredTags;
 	})();
 
 	$: sortedFilterLists = (() => {
@@ -106,6 +116,10 @@
 		return $filterLists;
 	})();
 
+	function logout() {
+		auth.signOut();
+	}
+
 	function toggleTagNavigationVisibility() {
 		$isTagNavigationVisible = !$isTagNavigationVisible;
 	}
@@ -114,71 +128,83 @@
 		$isFilterListNavigationVisible = !$isFilterListNavigationVisible;
 	}
 
-	function onClickCreateNewFilterList() {
+	async function onClickCreateNewFilterList() {
 		const newFilterList = createNewFilterList();
-		filterLists.add(newFilterList);
+		await filterLists.add(newFilterList);
 		$entityBeingEdited = { type: "filterList", id: newFilterList.id };
 		navigate(`/filter/${newFilterList.id}`);
 	}
 </script>
 
-{#if !$isLoggedIn}
+<nav>
+	{#if !$isLoggedIn}
+		<ul class="navigation__list">
+			<NavigationItem on:navigate to="/login">Log in</NavigationItem>
+			<NavigationItem on:navigate to="/signup">Sign up</NavigationItem>
+		</ul>
+	{/if}
+
 	<ul class="navigation__list">
-		<NavigationItem on:navigate to="/login">Log in</NavigationItem>
-		<NavigationItem on:navigate to="/signup">Sign up</NavigationItem>
+		<NavigationItem on:navigate to="/">Home</NavigationItem>
+		<NavigationItem
+			on:navigate
+			to="/toread"
+			count={$showReadLaterCount ? $bookmarksToRead.length : undefined}
+		>
+			Read later
+		</NavigationItem>
+		<NavigationItem on:navigate to="/favorites">Favorites</NavigationItem>
+		<NavigationItem on:navigate to="/archive">Archive</NavigationItem>
 	</ul>
-{/if}
 
-<ul class="navigation__list">
-	<NavigationItem on:navigate to="/">Home</NavigationItem>
-	<NavigationItem
-		on:navigate
-		to="/toread"
-		count={$showReadLaterCount ? $bookmarksToRead.length : undefined}
-	>
-		Read later
-	</NavigationItem>
-	<NavigationItem on:navigate to="/favorites">Favorites</NavigationItem>
-	<NavigationItem on:navigate to="/archive">Archive</NavigationItem>
-</ul>
-
-<header class="navigation__heading">
-	<h2>Filters</h2>
-
-	<ActionRow actions={filterListActions} />
-</header>
-
-{#if $isFilterListNavigationVisible && sortedFilterLists.length > 0}
-	<ul class="navigation__list">
-		{#each sortedFilterLists as filterList (filterList.id)}
-			<NavigationItem on:navigate to={`/filter/${filterList.id}`}>
-				{#if filterList.title}
-					{filterList.title}
-				{:else}
-					New filter
-				{/if}
-			</NavigationItem>
-		{/each}
-	</ul>
-{/if}
-
-{#if sortedTags.length > 0}
 	<header class="navigation__heading">
-		<h2>Tags</h2>
+		<h2>Filters</h2>
 
-		<ActionRow
-			actions={[
-				{
-					label: $isTagNavigationVisible ? "hide" : "show",
-					callback: toggleTagNavigationVisibility,
-				},
-			]}
-		/>
+		<ActionRow actions={filterListActions} />
 	</header>
 
-	{#if $isTagNavigationVisible}
+	{#if $isFilterListNavigationVisible && sortedFilterLists.length > 0}
 		<ul class="navigation__list">
-			{#each sortedTags as [tagName, tagAmount] (tagName)}
+			{#each sortedFilterLists as filterList (filterList.id)}
+				<NavigationItem on:navigate to={`/filter/${filterList.id}`}>
+					{#if filterList.title}
+						{filterList.title}
+					{:else}
+						New filter
+					{/if}
+				</NavigationItem>
+			{/each}
+		</ul>
+	{/if}
+
+	{#if tags.length > 0}
+		<header class="navigation__heading">
+			<h2>Tags</h2>
+
+			<ActionRow
+				actions={[
+					{
+						label: $isTagNavigationVisible ? "hide" : "show",
+						callback: toggleTagNavigationVisibility,
+					},
+				]}
+			/>
+		</header>
+	{/if}
+
+	{#if tags.length > 0 && $isTagNavigationVisible}
+		<div class="navigation__search">
+			<InputText
+				bind:value={tagSearchQuery}
+				size="small"
+				placeholder="Filter tags"
+			/>
+		</div>
+	{/if}
+
+	{#if sortedAndFilteredTags.length > 0 && $isTagNavigationVisible}
+		<ul class="navigation__list">
+			{#each sortedAndFilteredTags as [tagName, tagAmount] (tagName)}
 				<NavigationItem
 					on:navigate
 					to={`/tag/${tagName}`}
@@ -188,20 +214,27 @@
 				</NavigationItem>
 			{/each}
 		</ul>
+	{:else if !!tagSearchQuery}
+		<p>No tags found.</p>
 	{/if}
+</nav>
+
+{#if $isLoggedIn}
+	<footer class="navigation__footer">
+		<NavigationLink to="settings" on:navigate>Settings</NavigationLink>
+		<Button on:click={logout} variant="text">Log out</Button>
+	</footer>
 {/if}
 
 <style lang="scss">
-	.navigation__list {
-		padding-right: var(--baseline);
-		padding-left: var(--baseline);
+	nav {
+		padding: var(--baseline);
+		padding-bottom: 0;
+	}
 
+	.navigation__list {
 		&:not(:last-child) {
 			margin-bottom: var(--baseline);
-		}
-
-		&:first-child {
-			margin-top: var(--baseline);
 		}
 	}
 
@@ -210,8 +243,23 @@
 		align-items: center;
 		justify-content: space-between;
 		margin-bottom: var(--baseline);
-		padding-right: var(--baseline);
+	}
+
+	.navigation__search {
+		margin-bottom: var(--baseline);
+	}
+
+	.navigation__footer {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		position: sticky;
+		bottom: 0;
+		height: calc(2 * var(--baseline));
 		padding-left: var(--baseline);
+		padding-right: var(--baseline);
+		border-top: 1px solid var(--border-color-ui-secondary);
+		background-color: var(--background-color-ui-primary);
 	}
 
 	h2 {

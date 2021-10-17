@@ -138,18 +138,9 @@
 			</div>
 		{/if}
 
-		<nav class="page__navigation">
+		<div class="page__navigation">
 			<Navigation on:navigate={onNavigate} />
-
-			{#if $isLoggedIn}
-				<footer class="page__navigation-footer">
-					<NavigationLink to="settings" on:navigate={onNavigate}>
-						Settings
-					</NavigationLink>
-					<Button on:click={logout} variant="text">Log out</Button>
-				</footer>
-			{/if}
-		</nav>
+		</div>
 	{/if}
 
 	<main class="page__main">
@@ -283,19 +274,6 @@
 		align-items: center;
 		grid-column: 1 / 2;
 		grid-row: 1 / 2;
-	}
-
-	.page__navigation-footer {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		position: sticky;
-		bottom: 0;
-		height: calc(2 * var(--baseline));
-		padding-left: var(--baseline);
-		padding-right: var(--baseline);
-		border-top: 1px solid var(--border-color-ui-secondary);
-		background-color: var(--background-color-ui-primary);
 	}
 
 	.page__main-header,
