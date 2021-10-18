@@ -23,7 +23,7 @@
 	input {
 		display: block;
 		width: 100%;
-		padding: 10px;
+		padding: 12px;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
 		border: 1px solid var(--border-color-ui-secondary);
