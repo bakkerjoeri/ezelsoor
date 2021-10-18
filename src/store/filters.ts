@@ -13,20 +13,75 @@ export interface FilterList {
 	createdAt: number;
 }
 
-export interface Filter {
-	type: FilterType;
-	value?: string;
+export type Filter =
+	| MatchesSearchTermsFilter
+	| FromSourceFilter
+	| HasSourceFilter
+	| IsFavoriteFilter
+	| IsToReadFilter
+	| IsArchivedFilter
+	| AndTagsFilter
+	| OrTagsFilter
+	| UntaggedFilter;
+
+export type FilterWithValue =
+	| MatchesSearchTermsFilter
+	| FromSourceFilter
+	| AndTagsFilter
+	| OrTagsFilter;
+
+export type FilterType = Filter["type"];
+
+export interface MatchesSearchTermsFilter {
+	type: "matchesSearchTerms";
+	value: string;
 }
 
-export type FilterType =
-	| "matchesSearchTerms"
-	| "fromSource"
-	| "isFavorite"
-	| "isToRead"
-	| "isArchived"
-	| "andTags"
-	| "orTags"
-	| "untagged";
+export interface FromSourceFilter {
+	type: "fromSource";
+	value: string;
+}
+
+export interface HasSourceFilter {
+	type: "hasSource";
+}
+
+export interface IsFavoriteFilter {
+	type: "isFavorite";
+}
+
+export interface IsToReadFilter {
+	type: "isToRead";
+}
+
+export interface IsArchivedFilter {
+	type: "isArchived";
+}
+
+export interface AndTagsFilter {
+	type: "andTags";
+	value: string;
+}
+
+export interface OrTagsFilter {
+	type: "orTags";
+	value: string;
+}
+
+export interface UntaggedFilter {
+	type: "untagged";
+}
+
+export const filterTypesWithValue = [
+	"matchesSearchTerms",
+	"fromSource",
+	"andTags",
+	"orTags",
+];
+
+export function doesFilterHaveValue(filter: Filter): filter is FilterWithValue {
+	return filterTypesWithValue.includes(filter.type);
+}
 
 export const filterLists = userCollectionStore<FilterList>("filters");
 
@@ -85,27 +140,19 @@ export function filterBookmarks(bookmarks: Bookmark[], filters: Filter[]) {
 	return bookmarks.filter((bookmark) => {
 		return filters.every((filter) => {
 			if (filter.type === "matchesSearchTerms") {
-				if (!filter.hasOwnProperty("value")) {
-					throw Error(
-						'Filter of type "matchesSearchTerms" is missing "value" parameter.'
-					);
-				}
-
 				return doesBookmarkMatchQuery(bookmark, filter.value);
 			}
 
 			if (filter.type === "fromSource") {
-				if (!filter.hasOwnProperty("value")) {
-					throw Error(
-						'Filter of type "fromSource" is missing "value" parameter.'
-					);
-				}
-
 				if (!bookmark.url) {
 					return false;
 				}
 
 				return new URL(bookmark.url).host.indexOf(filter.value) >= 0;
+			}
+
+			if (filter.type === "hasSource") {
+				return !!bookmark.url;
 			}
 
 			if (filter.type === "isFavorite") {
@@ -121,12 +168,6 @@ export function filterBookmarks(bookmarks: Bookmark[], filters: Filter[]) {
 			}
 
 			if (filter.type === "andTags") {
-				if (!filter.value) {
-					throw Error(
-						'Filter of type "andTags" is missing "value" parameter.'
-					);
-				}
-
 				if (bookmark.tags.length === 0) {
 					return false;
 				}
@@ -137,12 +178,6 @@ export function filterBookmarks(bookmarks: Bookmark[], filters: Filter[]) {
 			}
 
 			if (filter.type === "orTags") {
-				if (!filter.value) {
-					throw Error(
-						'Filter of type "orTags" is missing "value" parameter.'
-					);
-				}
-
 				if (bookmark.tags.length === 0) {
 					return false;
 				}

@@ -4,9 +4,10 @@
 	import InputText from "./form/InputText.svelte";
 	import TextArea from "./form/TextArea.svelte";
 	import Button from "./Button.svelte";
-	import type { Filter, FilterList } from "./../store/filters.js";
+	import { doesFilterHaveValue } from "./../store/filters.js";
 	import Checkbox from "./form/Checkbox.svelte";
 	import FilterInput from "./FilterInput.svelte";
+	import type { FilterList, Filter } from "./../store/filters.js";
 
 	export let title = "";
 	export let description = "";
@@ -69,13 +70,22 @@
 	{#if filters.length > 0}
 		{#each filters as filter}
 			<FormItem>
-				<FilterInput
-					bind:value={filter.value}
-					bind:type={filter.type}
-					on:delete={() => {
-						deleteFilter(filter);
-					}}
-				/>
+				{#if doesFilterHaveValue(filter)}
+					<FilterInput
+						bind:value={filter.value}
+						bind:type={filter.type}
+						on:delete={() => {
+							deleteFilter(filter);
+						}}
+					/>
+				{:else}
+					<FilterInput
+						bind:type={filter.type}
+						on:delete={() => {
+							deleteFilter(filter);
+						}}
+					/>
+				{/if}
 			</FormItem>
 		{/each}
 	{/if}

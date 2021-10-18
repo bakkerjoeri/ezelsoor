@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { createEventDispatcher } from "svelte";
 	import Button from "./Button.svelte";
+	import { filterTypesWithValue } from "../store/filters";
 	import type { FilterType } from "../store/filters";
 
 	const dispatch = createEventDispatcher<{ delete: undefined }>();
@@ -8,8 +9,12 @@
 	export let type: FilterType | null = null;
 	export let value: string = "";
 
-	const filterOptions = [
+	const filterOptions: Array<{
+		text: string;
+		value: FilterType;
+	}> = [
 		{ text: "Matches search", value: "matchesSearchTerms" },
+		{ text: "Has source", value: "hasSource" },
 		{ text: "From source", value: "fromSource" },
 		{ text: "Favorite", value: "isFavorite" },
 		{ text: "Read later", value: "isToRead" },
@@ -17,13 +22,6 @@
 		{ text: "Tagged with all of", value: "andTags" },
 		{ text: "Tagged with any of", value: "orTags" },
 		{ text: "Untagged", value: "untagged" },
-	];
-
-	const filterTypesWithValue = [
-		"matchesSearchTerms",
-		"fromSource",
-		"andTags",
-		"orTags",
 	];
 </script>
 
