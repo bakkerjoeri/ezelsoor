@@ -21,4 +21,11 @@
 	}
 </script>
 
-<InputText type="text" {id} value={tagString} on:input={handleInput} />
+<InputText
+	type="text"
+	{id}
+	value={tagString}
+	on:input={handleInput}
+	autocomplete="off"
+	autocapitalize="off"
+/>

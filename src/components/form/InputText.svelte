@@ -5,6 +5,7 @@
 	export let type: "text" | "url" | "email" = "text";
 	export let state: boolean | null = null;
 	export let autocomplete: string = null;
+	export let autocapitalize: string = null;
 	export let placeholder: string = null;
 	export let required: boolean = false;
 	export let disabled: boolean = false;
@@ -22,6 +23,7 @@
 	{value}
 	{type}
 	{autocomplete}
+	{autocapitalize}
 	{placeholder}
 	{required}
 	{disabled}
