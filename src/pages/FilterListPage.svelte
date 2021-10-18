@@ -45,7 +45,14 @@
 				<span class="placeholder">New filter</span>
 			{/if}
 		</h1>
-		<Button on:click={onClickEditFilterList} variant="text">edit</Button>
+
+		<div class="filter-list-actions">
+			<Button on:click={onClickEditFilterList} variant="text">
+				edit
+			</Button>
+		</div>
+
+		<span class="bookmark-count">{bookmarks.length} bookmarks</span>
 	</header>
 
 	{#if filterList.description}
@@ -65,6 +72,12 @@
 	header {
 		display: flex;
 		align-items: baseline;
+		flex-wrap: wrap;
+		margin-bottom: var(--baseline);
+
+		> *:not(:last-child) {
+			margin-right: 15px;
+		}
 	}
 
 	.placeholder {
@@ -73,6 +86,10 @@
 	}
 
 	h1 {
-		margin-right: 15px;
+		margin-bottom: 0;
+	}
+
+	.bookmark-count {
+		color: var(--color-text-soft);
 	}
 </style>

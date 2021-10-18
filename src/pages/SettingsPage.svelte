@@ -38,12 +38,12 @@
 
 	<section>
 		<Checkbox
-			label="Show bookmark count for read later"
+			label="Show bookmark count for read later in navigation"
 			bind:checked={$showReadLaterCount}
 		/>
 
 		<Checkbox
-			label="Show bookmark count for tags"
+			label="Show bookmark count for tags in navigation"
 			bind:checked={$showTagCount}
 		/>
 	</section>

@@ -14,7 +14,10 @@
 </script>
 
 <Page>
-	<h1>{title}</h1>
+	<header>
+		<h1>{title}</h1>
+		<span>{bookmarks.length} bookmarks</span>
+	</header>
 
 	{#if description}
 		<p>{description}</p>
@@ -28,3 +31,22 @@
 
 	<BookmarkList bookmarks={filteredBookmarks} />
 </Page>
+
+<style lang="scss">
+	header {
+		display: flex;
+		align-items: baseline;
+		flex-wrap: wrap;
+		margin-bottom: var(--baseline);
+	}
+
+	h1 {
+		margin-bottom: 0;
+		margin-right: 15px;
+	}
+
+	span {
+		margin-right: 15px;
+		color: var(--color-text-soft);
+	}
+</style>
