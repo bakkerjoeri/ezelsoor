@@ -20,15 +20,15 @@
 				bind:value={$preferredColorScheme}
 				options={[
 					{
-						text: "Sync with OS settings",
+						text: "sync with OS settings",
 						value: "system",
 					},
 					{
-						text: "☀️ Light",
+						text: "☀️ light",
 						value: "light",
 					},
 					{
-						text: "🌘 Dark",
+						text: "🌘 dark",
 						value: "dark",
 					},
 				]}
@@ -54,11 +54,11 @@
 				bind:value={$tagSortingMethod}
 				options={[
 					{
-						text: "By amount of bookmarks",
+						text: "by amount of bookmarks",
 						value: "bookmarkCount",
 					},
 					{
-						text: "Alphabetically",
+						text: "alphabetically",
 						value: "alphabetically",
 					},
 				]}
