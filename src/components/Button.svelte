@@ -35,6 +35,7 @@
 	.variant-outline {
 		padding: 0 10px;
 		border-radius: 5px;
+		line-height: calc(var(--baseline) - 2px);
 		border: 1px solid var(--border-color-ui-primary);
 	}
 

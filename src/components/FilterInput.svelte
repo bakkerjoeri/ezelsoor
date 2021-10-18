@@ -66,7 +66,7 @@
 		position: relative;
 		grid-column: 1 / 3;
 		appearance: none;
-		padding: 10px;
+		padding: 12px;
 		width: 100%;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
@@ -95,7 +95,7 @@
 
 	.filter-input__value {
 		min-width: 0;
-		padding: 10px;
+		padding: 12px;
 		font-size: var(--font-size-body);
 		line-height: var(--baseline);
 		color: var(--text-color);
