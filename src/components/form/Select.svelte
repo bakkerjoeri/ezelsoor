@@ -41,7 +41,6 @@
 		--select-font-size: var(--font-size-body);
 
 		cursor: pointer;
-		position: relative;
 		appearance: none;
 		font-size: var(--select-font-size);
 		color: var(--color-text);
