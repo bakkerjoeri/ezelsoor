@@ -4,6 +4,8 @@ import { compare, sortObjects } from "../utils/sorting";
 import { activeBookmarks } from "./bookmarks";
 import type { SortOrder } from "../utils/sorting";
 
+export type TagSortBy = "name" | "amount";
+
 export const tagCount: Readable<{ [tagName: string]: number }> = derived(
 	activeBookmarks,
 	(bookmarks) => {
@@ -26,8 +28,6 @@ export function doesTagMatchQuery(tagName: string, query: string) {
 		return normalizedTagName.indexOf(queryPart) >= 0;
 	});
 }
-
-export type TagSortBy = "name" | "amount";
 
 export function sortTagCount(
 	tagCount: [tagName: string, amount: number][],

@@ -84,30 +84,21 @@ export const filterTypesWithValue = [
 	"orTags",
 ];
 
-export function doesFilterHaveValue(filter: Filter): filter is FilterWithValue {
-	return filterTypesWithValue.includes(filter.type);
+export function createNewFilterList(
+	properties: Partial<FilterList> = {}
+): FilterList {
+	return {
+		id: uuid(),
+		title: "",
+		description: "",
+		shouldIncludeArchived: false,
+		filters: [],
+		createdAt: Date.now().valueOf(),
+		...properties,
+	};
 }
 
 export const filterLists = userCollectionStore<FilterList>("filters");
-
-export function hasFilterList(filterListId: FilterList["id"]): boolean {
-	return get(filterLists).some(
-		(filterList) => filterList.id === filterListId
-	);
-}
-
-export function getFilterList(filterListId: FilterList["id"]): FilterList {
-	const filterList = get(filterLists).find(
-		(filterList) => filterList.id === filterListId
-	);
-
-	if (!filterList) {
-		throw new Error(`Couldn't find filterList with ID ${filterListId}`);
-	}
-
-	return filterList;
-}
-
 export const filterListBeingEdited: Readable<FilterList | null> = derived(
 	[filterLists, entityBeingEdited],
 	([$filterLists, $entityBeingEdited]) => {
@@ -127,18 +118,22 @@ export const filterListBeingEdited: Readable<FilterList | null> = derived(
 	}
 );
 
-export function createNewFilterList(
-	properties: Partial<FilterList> = {}
-): FilterList {
-	return {
-		id: uuid(),
-		title: "",
-		description: "",
-		shouldIncludeArchived: false,
-		filters: [],
-		createdAt: Date.now().valueOf(),
-		...properties,
-	};
+export function hasFilterList(filterListId: FilterList["id"]): boolean {
+	return get(filterLists).some(
+		(filterList) => filterList.id === filterListId
+	);
+}
+
+export function getFilterList(filterListId: FilterList["id"]): FilterList {
+	const filterList = get(filterLists).find(
+		(filterList) => filterList.id === filterListId
+	);
+
+	if (!filterList) {
+		throw new Error(`Couldn't find filterList with ID ${filterListId}`);
+	}
+
+	return filterList;
 }
 
 export function filterBookmarks(bookmarks: Bookmark[], filters: Filter[]) {
@@ -203,4 +198,8 @@ export function filterBookmarks(bookmarks: Bookmark[], filters: Filter[]) {
 			return false;
 		});
 	});
+}
+
+export function doesFilterHaveValue(filter: Filter): filter is FilterWithValue {
+	return filterTypesWithValue.includes(filter.type);
 }

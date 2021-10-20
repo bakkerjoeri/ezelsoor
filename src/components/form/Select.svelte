@@ -69,11 +69,12 @@
 	}
 
 	select.variant-text {
-		line-height: var(--select-height);
 		padding-top: 0;
 		padding-right: calc(8px + 4px + (2 * var(--select-horizontal-padding)));
 		padding-bottom: 0;
 		padding-left: 0;
+		line-height: var(--select-height);
+		margin-left: -4px;
 		background-color: transparent;
 		border: 0;
 

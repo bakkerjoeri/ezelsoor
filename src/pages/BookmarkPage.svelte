@@ -43,7 +43,7 @@
 	{/if}
 
 	<div class="sorting">
-		<label for="sort-bookmarks">Sort </label>
+		<label for="sortBookmarks">Sort order:</label>
 
 		<Select
 			variant="text"
@@ -52,7 +52,7 @@
 				{ text: "oldest first", value: "ascending" },
 			]}
 			bind:value={sortOrder}
-			id="sort-bookmarks"
+			id="sortBookmarks"
 		/>
 	</div>
 

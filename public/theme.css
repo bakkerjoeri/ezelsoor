@@ -7,7 +7,7 @@
 @media (prefers-color-scheme: light) {
 	:root {
 		--color-text: #000;
-		--color-text-soft: #777;
+		--color-text-soft: #767676;
 		--color-highlight: #de0053;
 		--color-link: #0044ab;
 		--background-color-ui-primary: #fff;
@@ -32,7 +32,7 @@
 
 body.color-scheme-light {
 	--color-text: #000;
-	--color-text-soft: #777;
+	--color-text-soft: #767676;
 	--color-highlight: #de0053;
 	--color-link: #0044ab;
 	--background-color-ui-primary: #fff;

@@ -14,7 +14,10 @@ export const loggedInUserId = readable<string | null | undefined>(
 		});
 	}
 );
-
+export const isLoadingAuth = derived(
+	loggedInUserId,
+	(value) => value === undefined
+);
 export const isLoggedIn = derived(
 	loggedInUserId,
 	(value) => typeof value === "string"

@@ -34,3 +34,13 @@ p {
 	font-size: var(--font-size-body);
 	line-height: var(--baseline);
 }
+
+small {
+	font-size: 14px;
+	line-height: var(--baseline);
+}
+
+input::placeholder {
+	color: var(--color-text-soft);
+	opacity: 1;
+}

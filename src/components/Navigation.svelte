@@ -144,16 +144,19 @@
 			/>
 		</div>
 
-		<Select
-			size="small"
-			variant="text"
-			options={[
-				{ text: "sort by name", value: "name" },
-				{ text: "sort by amount", value: "amount" },
-			]}
-			bind:value={$tagSortBy}
-			id="sort-bookmarks"
-		/>
+		<small>
+			<label for="tagSort">sort by</label>
+			<Select
+				id="tagSort"
+				size="small"
+				variant="text"
+				options={[
+					{ text: "name", value: "name" },
+					{ text: "amount", value: "amount" },
+				]}
+				bind:value={$tagSortBy}
+			/>
+		</small>
 	{/if}
 
 	{#if sortedAndFilteredTags.length > 0 && $isTagNavigationVisible}

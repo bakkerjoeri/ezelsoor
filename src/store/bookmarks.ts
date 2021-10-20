@@ -17,39 +17,7 @@ export interface Bookmark {
 	createdAt: number;
 }
 
-export const bookmarks = userCollectionStore<Bookmark>(`bookmarks`);
-
-export const activeBookmarks = derived(bookmarks, (bookmarks) =>
-	bookmarks.filter((bookmark) => !bookmark.isArchived)
-);
-export const bookmarksToRead = derived(bookmarks, (bookmarks) =>
-	bookmarks.filter((bookmark) => bookmark.isToRead)
-);
-export const favoriteBookmarks = derived(bookmarks, (bookmarks) =>
-	bookmarks.filter((bookmark) => bookmark.isFavorite)
-);
-export const archivedBookmarks = derived(bookmarks, (bookmarks) =>
-	bookmarks.filter((bookmark) => bookmark.isArchived)
-);
-export const untaggedBookmarks = derived(bookmarks, (bookmarks) =>
-	bookmarks.filter((bookmark) => bookmark.tags.length === 0)
-);
-
-export function hasBookmark(bookmarkId: Bookmark["id"]): boolean {
-	return get(bookmarks).some((bookmark) => bookmark.id === bookmarkId);
-}
-
-export function getBookmark(bookmarkId: Bookmark["id"]): Bookmark {
-	const bookmark = get(bookmarks).find(
-		(bookmark) => bookmark.id === bookmarkId
-	);
-
-	if (!bookmark) {
-		throw new Error(`Couldn't find bookmark with ID ${bookmarkId}`);
-	}
-
-	return bookmark;
-}
+export type BookmarksSortedBy = "title" | "createdAt";
 
 export function createNewBookmark(
 	properties: Partial<Bookmark> = {}
@@ -68,6 +36,22 @@ export function createNewBookmark(
 	};
 }
 
+export const bookmarks = userCollectionStore<Bookmark>(`bookmarks`);
+export const activeBookmarks = derived(bookmarks, (bookmarks) =>
+	bookmarks.filter((bookmark) => !bookmark.isArchived)
+);
+export const bookmarksToRead = derived(bookmarks, (bookmarks) =>
+	bookmarks.filter((bookmark) => bookmark.isToRead)
+);
+export const favoriteBookmarks = derived(bookmarks, (bookmarks) =>
+	bookmarks.filter((bookmark) => bookmark.isFavorite)
+);
+export const archivedBookmarks = derived(bookmarks, (bookmarks) =>
+	bookmarks.filter((bookmark) => bookmark.isArchived)
+);
+export const untaggedBookmarks = derived(bookmarks, (bookmarks) =>
+	bookmarks.filter((bookmark) => bookmark.tags.length === 0)
+);
 export const bookmarkBeingEdited: Readable<Bookmark | null> = derived(
 	[bookmarks, entityBeingEdited],
 	([$bookmarks, $entityBeingEdited]) => {
@@ -86,6 +70,22 @@ export const bookmarkBeingEdited: Readable<Bookmark | null> = derived(
 		return getBookmark($entityBeingEdited.id);
 	}
 );
+
+export function hasBookmark(bookmarkId: Bookmark["id"]): boolean {
+	return get(bookmarks).some((bookmark) => bookmark.id === bookmarkId);
+}
+
+export function getBookmark(bookmarkId: Bookmark["id"]): Bookmark {
+	const bookmark = get(bookmarks).find(
+		(bookmark) => bookmark.id === bookmarkId
+	);
+
+	if (!bookmark) {
+		throw new Error(`Couldn't find bookmark with ID ${bookmarkId}`);
+	}
+
+	return bookmark;
+}
 
 export function searchBookmarks(bookmarks: Bookmark[], query: string) {
 	if (!query) {
@@ -115,5 +115,3 @@ export function doesBookmarkMatchQuery(bookmark: Bookmark, query: string) {
 		);
 	});
 }
-
-export type BookmarksSortedBy = "title" | "createdAt";
