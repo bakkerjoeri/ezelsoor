@@ -42,12 +42,15 @@
 
 		cursor: pointer;
 		appearance: none;
+		-moz-appearance: none;
+		-webkit-appearance: none;
 		font-size: var(--select-font-size);
 		color: var(--color-text);
 		fill: var(--color-text);
 		background-image: url("data:image/svg+xml,<svg viewBox='0 -2 24 22' xmlns='http://www.w3.org/2000/svg'><path style='fill: var(--color-text);' d='m0,6l12,12l12,-12l-24,0z'/><path fill='none' d='m0,0l24,0l0,24l-24,0l0,-24z'/></svg>");
-		background-position-x: right
-			calc(4px + var(--select-horizontal-padding));
+		background-position-x: calc(
+			100% - (4px + var(--select-horizontal-padding))
+		);
 		background-position-y: center;
 		background-size: 8px;
 		background-repeat: no-repeat;
@@ -74,7 +77,6 @@
 		padding-bottom: 0;
 		padding-left: 0;
 		line-height: var(--select-height);
-		margin-left: -4px;
 		background-color: transparent;
 		border: 0;
 
