@@ -41,9 +41,9 @@
 		--select-font-size: var(--font-size-body);
 
 		cursor: pointer;
-		appearance: none;
-		-moz-appearance: none;
 		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
 		font-size: var(--select-font-size);
 		color: var(--color-text);
 		fill: var(--color-text);
