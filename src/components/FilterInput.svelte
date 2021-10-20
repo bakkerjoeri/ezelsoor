@@ -14,7 +14,8 @@
 		value: FilterType;
 	}> = [
 		{ text: "Matches search", value: "matchesSearchTerms" },
-		{ text: "Has source", value: "hasSource" },
+		{ text: "Has a link", value: "hasSource" },
+		{ text: "Has no link", value: "hasNoSource" },
 		{ text: "From source", value: "fromSource" },
 		{ text: "Favorite", value: "isFavorite" },
 		{ text: "Read later", value: "isToRead" },

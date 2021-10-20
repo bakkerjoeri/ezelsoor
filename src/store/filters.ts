@@ -17,6 +17,7 @@ export type Filter =
 	| MatchesSearchTermsFilter
 	| FromSourceFilter
 	| HasSourceFilter
+	| HasNoSourceFilter
 	| IsFavoriteFilter
 	| IsToReadFilter
 	| IsArchivedFilter
@@ -44,6 +45,10 @@ export interface FromSourceFilter {
 
 export interface HasSourceFilter {
 	type: "hasSource";
+}
+
+export interface HasNoSourceFilter {
+	type: "hasNoSource";
 }
 
 export interface IsFavoriteFilter {
@@ -152,7 +157,11 @@ export function filterBookmarks(bookmarks: Bookmark[], filters: Filter[]) {
 			}
 
 			if (filter.type === "hasSource") {
-				return !!bookmark.url;
+				return bookmark.url.length > 0;
+			}
+
+			if (filter.type === "hasNoSource") {
+				return bookmark.url === "";
 			}
 
 			if (filter.type === "isFavorite") {
