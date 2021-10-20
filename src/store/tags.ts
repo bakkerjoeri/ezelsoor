@@ -1,6 +1,8 @@
 import { Readable, derived } from "svelte/store";
 import { removeDiacretics } from "../utils/removeDiacretics";
+import { compare, sortObjects } from "../utils/sorting";
 import { activeBookmarks } from "./bookmarks";
+import type { SortOrder } from "../utils/sorting";
 
 export const tagCount: Readable<{ [tagName: string]: number }> = derived(
 	activeBookmarks,
@@ -30,43 +32,26 @@ export type TagSortBy = "name" | "amount";
 export function sortTagCount(
 	tagCount: [tagName: string, amount: number][],
 	sortBy: TagSortBy,
-	sortOrder: "ascending" | "descending"
+	sortOrder: SortOrder
 ) {
-	const sortFactor = sortOrder === "ascending" ? 1 : -1;
 	if (sortBy === "name") {
-		return [...tagCount].sort(([tagNameA], [tagNameB]) => {
-			if (tagNameB > tagNameA) {
-				return sortFactor;
-			}
-
-			if (tagNameB < tagNameA) {
-				return sortFactor * -1;
-			}
-
-			return 0;
-		});
+		return sortObjects(tagCount, 0, sortOrder);
 	}
 
 	if (sortBy === "amount") {
 		return [...tagCount].sort(
 			([tagNameA, bookmarkCountA], [tagNameB, bookmarkCountB]) => {
-				if (bookmarkCountB > bookmarkCountA) {
-					return sortFactor;
+				const resultForAmount = compare(
+					bookmarkCountA,
+					bookmarkCountB,
+					sortOrder
+				);
+
+				if (resultForAmount !== 0) {
+					return resultForAmount;
 				}
 
-				if (bookmarkCountB < bookmarkCountA) {
-					return sortFactor * -1;
-				}
-
-				if (tagNameA > tagNameB) {
-					return 1;
-				}
-
-				if (tagNameA < tagNameB) {
-					return -1;
-				}
-
-				return 0;
+				return compare(tagNameA, tagNameB, "ascending");
 			}
 		);
 	}

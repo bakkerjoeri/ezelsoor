@@ -1,9 +1,9 @@
 import uuid from "@bakkerjoeri/uuid";
-import { derived, get, writable } from "svelte/store";
-import type { Readable, Writable } from "svelte/store";
+import { derived, get } from "svelte/store";
 import { entityBeingEdited } from "./ui";
 import { removeDiacretics } from "../utils/removeDiacretics";
 import { userCollectionStore } from "./firestore";
+import type { Readable } from "svelte/store";
 
 export interface Bookmark {
 	readonly id: string;
@@ -115,3 +115,5 @@ export function doesBookmarkMatchQuery(bookmark: Bookmark, query: string) {
 		);
 	});
 }
+
+export type BookmarksSortedBy = "title" | "createdAt";

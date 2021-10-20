@@ -2,17 +2,17 @@
 	import { searchBookmarks } from "../store/bookmarks";
 	import Page from "./Page.svelte";
 	import BookmarkList from "../components/BookmarkList.svelte";
-	import type { Bookmark } from "../store/bookmarks";
 	import SearchBar from "../components/SearchBar.svelte";
 	import Select from "../components/form/Select.svelte";
+	import type { Bookmark, BookmarksSortedBy } from "../store/bookmarks";
+	import type { SortOrder } from "../utils/sorting";
 
 	export let title: string = "";
 	export let description: string = "";
 	export let bookmarks: Bookmark[];
 	export let searchQuery: string = "";
-
-	let sortedBy: "createdAt" = "createdAt";
-	let sortOrder: "ascending" | "descending" = "descending";
+	export let sortedBy: BookmarksSortedBy = "createdAt";
+	export let sortOrder: SortOrder = "descending";
 
 	$: filteredBookmarks = searchBookmarks(bookmarks, searchQuery);
 </script>
@@ -56,7 +56,7 @@
 		/>
 	</div>
 
-	<BookmarkList bookmarks={filteredBookmarks} {sortOrder} {sortedBy} />
+	<BookmarkList bookmarks={filteredBookmarks} bind:sortOrder bind:sortedBy />
 </Page>
 
 <style lang="scss">

@@ -1,10 +1,11 @@
 <script lang="ts">
+	import { navigate } from "svelte-routing";
+	import { get } from "svelte/store";
 	import {
 		bookmarkBeingEdited,
 		bookmarks,
 		createNewBookmark,
 	} from "../store/bookmarks";
-	import { get } from "svelte/store";
 	import { listBeingEdited, lists } from "../store/lists";
 	import { isPhabletUp, isTabletUp } from "../store/mediaquery";
 	import { entityBeingEdited, isNavigationOpen } from "../store/ui";
@@ -18,7 +19,6 @@
 	import type { Bookmark } from "../store/bookmarks";
 	import type { List } from "../store/lists";
 	import type { FilterList } from "../store/filters";
-	import { navigate } from "svelte-routing";
 
 	function onNavigate() {
 		$isNavigationOpen = get(isPhabletUp);

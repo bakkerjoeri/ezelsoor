@@ -1,11 +1,13 @@
 <script lang="ts">
-	import type { Bookmark } from "./../store/bookmarks.js";
+	import { sortObjects } from "../utils/sorting.js";
 	import BookmarkItem from "./BookmarkItem.svelte";
 	import Observer from "./Observer.svelte";
+	import type { SortOrder } from "../utils/sorting.js";
+	import type { Bookmark, BookmarksSortedBy } from "./../store/bookmarks.js";
 
 	export let bookmarks: Bookmark[] = [];
-	export let sortedBy: "createdAt" = "createdAt";
-	export let sortOrder: "ascending" | "descending" = "descending";
+	export let sortedBy: BookmarksSortedBy = "createdAt";
+	export let sortOrder: SortOrder = "descending";
 	export let lazyLoad: boolean = true;
 	export let pageSize = 40;
 
@@ -14,21 +16,7 @@
 	$: loadMoreMargin = Math.ceil(pageSize / 4);
 	$: amountToShow = pageSize * currentPage;
 	$: positionOfObserver = amountToShow - loadMoreMargin;
-
-	$: sortFactor = sortOrder === "ascending" ? 1 : -1;
-	$: sortedBookmarks = (() => {
-		return [...bookmarks].sort((a, b) => {
-			if (a[sortedBy] > b[sortedBy]) {
-				return sortFactor;
-			}
-
-			if (a[sortedBy] < b[sortedBy]) {
-				return sortFactor * -1;
-			}
-
-			return 0;
-		});
-	})();
+	$: sortedBookmarks = sortObjects(bookmarks, sortedBy, sortOrder);
 
 	$: visibleBookmarks = (() => {
 		if (!lazyLoad) {

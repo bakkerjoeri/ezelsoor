@@ -11,6 +11,7 @@
 		tagSortBy,
 	} from "../store/ui";
 	import { auth } from "../utils/firebase";
+	import { sortObjects } from "../utils/sorting";
 	import { bookmarksToRead } from "./../store/bookmarks";
 	import ActionRow from "./ActionRow.svelte";
 	import Button from "./Button.svelte";
@@ -19,10 +20,7 @@
 	import NavigationItem from "./NavigationItem.svelte";
 	import NavigationLink from "./NavigationLink.svelte";
 
-	type ListSortingMethod = "alphabetically" | "bookmarkCount";
-
 	let tagSearchQuery: string = "";
-	let listsSortedBy: ListSortingMethod = "alphabetically";
 	let isTagNavigationVisible = createLocalStore(
 		"isTagNavigationVisible",
 		true
@@ -57,25 +55,9 @@
 	$: sortedAndFilteredTags = sortTagCount(
 		filteredTags,
 		$tagSortBy,
-		$tagSortBy === "name" ? "descending" : "ascending"
+		$tagSortBy === "name" ? "ascending" : "descending"
 	);
-	$: sortedFilterLists = (() => {
-		if (listsSortedBy === "alphabetically") {
-			return [...$filterLists].sort((a, b) => {
-				if (a.title > b.title) {
-					return 1;
-				}
-
-				if (a.title < b.title) {
-					return -1;
-				}
-
-				return 0;
-			});
-		}
-
-		return $filterLists;
-	})();
+	$: sortedFilterLists = sortObjects($filterLists, "title", "ascending");
 
 	function logout() {
 		auth.signOut();

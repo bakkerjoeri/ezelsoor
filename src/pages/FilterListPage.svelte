@@ -5,9 +5,11 @@
 		bookmarks as allBookmarks,
 		activeBookmarks,
 	} from "../store/bookmarks";
+	import { createLocalStore } from "../store/localStore";
 	import Button from "../components/Button.svelte";
 	import BookmarkPage from "./BookmarkPage.svelte";
 	import type { FilterList } from "../store/filters";
+	import type { SortOrder } from "../utils/sorting";
 
 	export let filterListId: FilterList["id"];
 
@@ -16,6 +18,10 @@
 		? $allBookmarks
 		: $activeBookmarks;
 	$: bookmarks = filterBookmarks(bookmarksToFilter, filterList.filters);
+	$: sortOrder = createLocalStore<SortOrder>(
+		`filterList-${filterListId}-sortOrder`,
+		"descending"
+	);
 
 	function onClickEditFilterList() {
 		$entityBeingEdited = {
@@ -25,7 +31,7 @@
 	}
 </script>
 
-<BookmarkPage {bookmarks}>
+<BookmarkPage {bookmarks} bind:sortOrder={$sortOrder}>
 	<span slot="title">
 		{#if filterList.title}
 			{filterList.title}
