@@ -40,17 +40,14 @@ export const bookmarks = userCollectionStore<Bookmark>(`bookmarks`);
 export const activeBookmarks = derived(bookmarks, (bookmarks) =>
 	bookmarks.filter((bookmark) => !bookmark.isArchived)
 );
-export const bookmarksToRead = derived(bookmarks, (bookmarks) =>
+export const bookmarksToRead = derived(activeBookmarks, (bookmarks) =>
 	bookmarks.filter((bookmark) => bookmark.isToRead)
 );
-export const favoriteBookmarks = derived(bookmarks, (bookmarks) =>
+export const favoriteBookmarks = derived(activeBookmarks, (bookmarks) =>
 	bookmarks.filter((bookmark) => bookmark.isFavorite)
 );
 export const archivedBookmarks = derived(bookmarks, (bookmarks) =>
 	bookmarks.filter((bookmark) => bookmark.isArchived)
-);
-export const untaggedBookmarks = derived(bookmarks, (bookmarks) =>
-	bookmarks.filter((bookmark) => bookmark.tags.length === 0)
 );
 export const bookmarkBeingEdited: Readable<Bookmark | null> = derived(
 	[bookmarks, entityBeingEdited],
