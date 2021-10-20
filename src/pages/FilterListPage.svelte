@@ -4,29 +4,18 @@
 	import {
 		bookmarks as allBookmarks,
 		activeBookmarks,
-		searchBookmarks,
 	} from "../store/bookmarks";
-	import Page from "./Page.svelte";
-	import BookmarkList from "../components/BookmarkList.svelte";
-	import SearchBar from "../components/SearchBar.svelte";
 	import Button from "../components/Button.svelte";
+	import BookmarkPage from "./BookmarkPage.svelte";
 	import type { FilterList } from "../store/filters";
-	import type { Bookmark } from "../store/bookmarks";
 
 	export let filterListId: FilterList["id"];
 
-	let bookmarks: Bookmark[];
-	let searchQuery: string = "";
-
-	$: filterList = $filterLists.find((value) => {
-		return value.id === filterListId;
-	});
+	$: filterList = $filterLists.find((value) => value.id === filterListId);
 	$: bookmarksToFilter = filterList.shouldIncludeArchived
 		? $allBookmarks
 		: $activeBookmarks;
-
 	$: bookmarks = filterBookmarks(bookmarksToFilter, filterList.filters);
-	$: filteredBookmarks = searchBookmarks(bookmarks, searchQuery);
 
 	function onClickEditFilterList() {
 		$entityBeingEdited = {
@@ -36,60 +25,23 @@
 	}
 </script>
 
-<Page>
-	<header>
-		<h1>
-			{#if filterList.title}
-				{filterList.title}
-			{:else}
-				<span class="placeholder">New filter</span>
-			{/if}
-		</h1>
+<BookmarkPage {bookmarks}>
+	<span slot="title">
+		{#if filterList.title}
+			{filterList.title}
+		{:else}
+			<span class="placeholder">New filter</span>
+		{/if}
+	</span>
 
-		<div class="filter-list-actions">
-			<Button on:click={onClickEditFilterList} variant="text">
-				edit
-			</Button>
-		</div>
-
-		<span class="bookmark-count">{bookmarks.length} bookmarks</span>
-	</header>
-
-	{#if filterList.description}
-		<p>{filterList.description}</p>
-	{/if}
-
-	<SearchBar bind:query={searchQuery} />
-
-	{#if searchQuery}
-		<p>Found {filteredBookmarks.length} bookmarks</p>
-	{/if}
-
-	<BookmarkList bookmarks={filteredBookmarks} />
-</Page>
+	<div slot="actions">
+		<Button on:click={onClickEditFilterList} variant="text">edit</Button>
+	</div>
+</BookmarkPage>
 
 <style lang="scss">
-	header {
-		display: flex;
-		align-items: baseline;
-		flex-wrap: wrap;
-		margin-bottom: var(--baseline);
-
-		> *:not(:last-child) {
-			margin-right: 15px;
-		}
-	}
-
 	.placeholder {
 		color: var(--color-text-soft);
 		font-weight: normal;
-	}
-
-	h1 {
-		margin-bottom: 0;
-	}
-
-	.bookmark-count {
-		color: var(--color-text-soft);
 	}
 </style>

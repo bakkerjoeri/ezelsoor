@@ -3,21 +3,19 @@
 	import { createNewFilterList, filterLists } from "../store/filters";
 	import { createLocalStore } from "../store/localStore";
 	import { isLoggedIn } from "../store/session";
+	import { doesTagMatchQuery, sortTagCount, tagCount } from "../store/tags";
 	import {
 		entityBeingEdited,
 		showReadLaterCount,
 		showTagCount,
-		tagSortingMethod,
+		tagSortBy,
 	} from "../store/ui";
 	import { auth } from "../utils/firebase";
-	import {
-		bookmarksToRead,
-		doesTagMatchQuery,
-		tagCount,
-	} from "./../store/bookmarks";
+	import { bookmarksToRead } from "./../store/bookmarks";
 	import ActionRow from "./ActionRow.svelte";
 	import Button from "./Button.svelte";
 	import InputText from "./form/InputText.svelte";
+	import Select from "./form/Select.svelte";
 	import NavigationItem from "./NavigationItem.svelte";
 	import NavigationLink from "./NavigationLink.svelte";
 
@@ -56,48 +54,11 @@
 	$: filteredTags = tags.filter(([tagName]) => {
 		return doesTagMatchQuery(tagName, tagSearchQuery);
 	});
-	$: sortedAndFilteredTags = (() => {
-		if ($tagSortingMethod === "alphabetically") {
-			return filteredTags.sort(([tagNameA], [tagNameB]) => {
-				if (tagNameA > tagNameB) {
-					return 1;
-				}
-
-				if (tagNameA < tagNameB) {
-					return -1;
-				}
-
-				return 0;
-			});
-		}
-
-		if ($tagSortingMethod === "bookmarkCount") {
-			return filteredTags.sort(
-				([tagNameA, bookmarkCountA], [tagNameB, bookmarkCountB]) => {
-					if (bookmarkCountB > bookmarkCountA) {
-						return 1;
-					}
-
-					if (bookmarkCountB < bookmarkCountA) {
-						return -1;
-					}
-
-					if (tagNameA > tagNameB) {
-						return 1;
-					}
-
-					if (tagNameA < tagNameB) {
-						return -1;
-					}
-
-					return 0;
-				}
-			);
-		}
-
-		return filteredTags;
-	})();
-
+	$: sortedAndFilteredTags = sortTagCount(
+		filteredTags,
+		$tagSortBy,
+		$tagSortBy === "name" ? "descending" : "ascending"
+	);
 	$: sortedFilterLists = (() => {
 		if (listsSortedBy === "alphabetically") {
 			return [...$filterLists].sort((a, b) => {
@@ -200,6 +161,17 @@
 				placeholder="Filter tags"
 			/>
 		</div>
+
+		<Select
+			size="small"
+			variant="text"
+			options={[
+				{ text: "sort by name", value: "name" },
+				{ text: "sort by amount", value: "amount" },
+			]}
+			bind:value={$tagSortBy}
+			id="sort-bookmarks"
+		/>
 	{/if}
 
 	{#if sortedAndFilteredTags.length > 0 && $isTagNavigationVisible}
@@ -232,6 +204,9 @@
 	}
 
 	.navigation__list {
+		&:not(:first-child) {
+			margin-top: var(--baseline);
+		}
 		&:not(:last-child) {
 			margin-bottom: var(--baseline);
 		}
@@ -241,11 +216,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		margin-bottom: var(--baseline);
-	}
-
-	.navigation__search {
-		margin-bottom: var(--baseline);
 	}
 
 	.navigation__footer {

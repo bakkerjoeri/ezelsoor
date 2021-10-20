@@ -8,7 +8,7 @@ interface EntityReference {
 }
 
 export type ColorScheme = "system" | "light" | "dark";
-export type TagSortingMethod = "alphabetically" | "bookmarkCount";
+export type TagSortBy = "name" | "amount";
 
 export const entityBeingEdited = writable<EntityReference | null>(null);
 export const isNavigationOpen = writable<boolean>(
@@ -22,7 +22,4 @@ export const preferredColorScheme = createLocalStore<ColorScheme>(
 	"system"
 );
 
-export const tagSortingMethod = createLocalStore<TagSortingMethod>(
-	"tagSortingMethod",
-	"bookmarkCount"
-);
+export const tagSortBy = createLocalStore<TagSortBy>("tagSortBy", "amount");

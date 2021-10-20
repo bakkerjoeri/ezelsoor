@@ -3,9 +3,9 @@
 	import BookmarkItem from "./BookmarkItem.svelte";
 	import Observer from "./Observer.svelte";
 
-	type SortingMethod = "date";
 	export let bookmarks: Bookmark[] = [];
-	export let sortedBy: SortingMethod = "date";
+	export let sortedBy: "createdAt" = "createdAt";
+	export let sortOrder: "ascending" | "descending" = "descending";
 	export let lazyLoad: boolean = true;
 	export let pageSize = 40;
 
@@ -15,12 +15,19 @@
 	$: amountToShow = pageSize * currentPage;
 	$: positionOfObserver = amountToShow - loadMoreMargin;
 
+	$: sortFactor = sortOrder === "ascending" ? 1 : -1;
 	$: sortedBookmarks = (() => {
-		if (sortedBy === "date") {
-			return [...bookmarks].sort((a, b) => b.createdAt - a.createdAt);
-		}
+		return [...bookmarks].sort((a, b) => {
+			if (a[sortedBy] > b[sortedBy]) {
+				return sortFactor;
+			}
 
-		return bookmarks;
+			if (a[sortedBy] < b[sortedBy]) {
+				return sortFactor * -1;
+			}
+
+			return 0;
+		});
 	})();
 
 	$: visibleBookmarks = (() => {

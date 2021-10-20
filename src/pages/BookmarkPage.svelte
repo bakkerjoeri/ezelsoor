@@ -4,19 +4,32 @@
 	import BookmarkList from "../components/BookmarkList.svelte";
 	import type { Bookmark } from "../store/bookmarks";
 	import SearchBar from "../components/SearchBar.svelte";
+	import Select from "../components/form/Select.svelte";
 
-	export let title: string;
+	export let title: string = "";
 	export let description: string = "";
 	export let bookmarks: Bookmark[];
 	export let searchQuery: string = "";
+
+	let sortedBy: "createdAt" = "createdAt";
+	let sortOrder: "ascending" | "descending" = "descending";
 
 	$: filteredBookmarks = searchBookmarks(bookmarks, searchQuery);
 </script>
 
 <Page>
 	<header>
-		<h1>{title}</h1>
+		{#if $$slots.title}
+			<h1><slot name="title" /></h1>
+		{:else if title}
+			<h1>{title}</h1>
+		{/if}
+
 		<span>{bookmarks.length} bookmarks</span>
+
+		{#if $$slots.actions}
+			<slot name="actions" />
+		{/if}
 	</header>
 
 	{#if description}
@@ -29,7 +42,21 @@
 		<p>Found {filteredBookmarks.length} bookmarks</p>
 	{/if}
 
-	<BookmarkList bookmarks={filteredBookmarks} />
+	<div class="sorting">
+		<label for="sort-bookmarks">Sort </label>
+
+		<Select
+			variant="text"
+			options={[
+				{ text: "newest first", value: "descending" },
+				{ text: "oldest first", value: "ascending" },
+			]}
+			bind:value={sortOrder}
+			id="sort-bookmarks"
+		/>
+	</div>
+
+	<BookmarkList bookmarks={filteredBookmarks} {sortOrder} {sortedBy} />
 </Page>
 
 <style lang="scss">
@@ -48,5 +75,9 @@
 	span {
 		margin-right: 15px;
 		color: var(--color-text-soft);
+	}
+
+	.sorting {
+		margin-bottom: var(--baseline);
 	}
 </style>

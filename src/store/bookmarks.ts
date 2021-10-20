@@ -34,19 +34,6 @@ export const archivedBookmarks = derived(bookmarks, (bookmarks) =>
 export const untaggedBookmarks = derived(bookmarks, (bookmarks) =>
 	bookmarks.filter((bookmark) => bookmark.tags.length === 0)
 );
-export const tagCount: Readable<{ [tagName: string]: number }> = derived(
-	activeBookmarks,
-	(bookmarks) => {
-		return bookmarks.reduce((tags, bookmark) => {
-			return bookmark.tags.reduce((tags, tag) => {
-				return {
-					...tags,
-					[tag]: tags.hasOwnProperty(tag) ? tags[tag] + 1 : 1,
-				};
-			}, tags);
-		}, {});
-	}
-);
 
 export function hasBookmark(bookmarkId: Bookmark["id"]): boolean {
 	return get(bookmarks).some((bookmark) => bookmark.id === bookmarkId);
@@ -126,14 +113,5 @@ export function doesBookmarkMatchQuery(bookmark: Bookmark, query: string) {
 			normalizedTags.indexOf(queryPart) >= 0 ||
 			bookmark.url.indexOf(queryPart) > 0
 		);
-	});
-}
-
-export function doesTagMatchQuery(tagName: string, query: string) {
-	const normalizedQuery = removeDiacretics(query.toLowerCase());
-	const normalizedTagName = removeDiacretics(tagName.toLowerCase());
-
-	return normalizedQuery.split(" ").every((queryPart) => {
-		return normalizedTagName.indexOf(queryPart) >= 0;
 	});
 }

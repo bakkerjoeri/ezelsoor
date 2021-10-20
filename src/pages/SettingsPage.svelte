@@ -6,7 +6,6 @@
 		preferredColorScheme,
 		showReadLaterCount,
 		showTagCount,
-		tagSortingMethod,
 	} from "../store/ui";
 	import Page from "./Page.svelte";
 </script>
@@ -46,24 +45,6 @@
 			label="Show bookmark count for tags in navigation"
 			bind:checked={$showTagCount}
 		/>
-	</section>
-
-	<section>
-		<FormItem label="Sort tags">
-			<RadioGroup
-				bind:value={$tagSortingMethod}
-				options={[
-					{
-						text: "by amount of bookmarks",
-						value: "bookmarkCount",
-					},
-					{
-						text: "alphabetically",
-						value: "alphabetically",
-					},
-				]}
-			/>
-		</FormItem>
 	</section>
 </Page>
 
