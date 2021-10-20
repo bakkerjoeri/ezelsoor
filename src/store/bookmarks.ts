@@ -15,8 +15,6 @@ export interface Bookmark {
 	isArchived: boolean;
 	isToRead: boolean;
 	createdAt: number;
-	dateCreated?: number;
-	summary?: string;
 }
 
 export const bookmarks = userCollectionStore<Bookmark>(`bookmarks`);
