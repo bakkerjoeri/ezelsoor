@@ -46,6 +46,6 @@
 	<Button on:click={handleClickCancel}>Cancel</Button>
 
 	{#if canDelete}
-		<Button on:click={handleClickDelete}>Delete</Button>
+		<Button on:click={handleClickDelete} color="danger">Delete</Button>
 	{/if}
 </form>

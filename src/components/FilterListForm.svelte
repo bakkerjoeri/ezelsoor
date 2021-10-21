@@ -100,9 +100,12 @@
 
 	{#if canDelete}
 		<Button
+			color="danger"
 			on:click={() => {
 				dispatch("delete");
-			}}>Delete</Button
+			}}
 		>
+			Delete
+		</Button>
 	{/if}
 </form>
