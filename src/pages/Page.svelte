@@ -155,6 +155,7 @@
 					<BookmarkForm
 						title={$bookmarkBeingEdited.title}
 						url={$bookmarkBeingEdited.url}
+						notes={$bookmarkBeingEdited.notes}
 						tags={$bookmarkBeingEdited.tags}
 						isFavorite={$bookmarkBeingEdited.isFavorite}
 						isToRead={$bookmarkBeingEdited.isToRead}
@@ -201,6 +202,7 @@
 				<BookmarkForm
 					title={$bookmarkBeingEdited.title}
 					url={$bookmarkBeingEdited.url}
+					notes={$bookmarkBeingEdited.notes}
 					tags={$bookmarkBeingEdited.tags}
 					isFavorite={$bookmarkBeingEdited.isFavorite}
 					isToRead={$bookmarkBeingEdited.isToRead}
