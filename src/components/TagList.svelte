@@ -18,6 +18,7 @@
 	ul {
 		display: flex;
 		flex-wrap: wrap;
+		list-style: none;
 	}
 
 	li {

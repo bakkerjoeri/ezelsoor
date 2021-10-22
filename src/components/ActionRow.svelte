@@ -27,6 +27,7 @@
 <style lang="scss">
 	ul {
 		display: flex;
+		list-style: none;
 	}
 
 	li + li {

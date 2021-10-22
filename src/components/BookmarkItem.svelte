@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { micromark } from "micromark";
 	import { bookmarkBeingEdited, bookmarks } from "../store/bookmarks";
 	import { entityBeingEdited } from "../store/ui.js";
 	import ActionRow from "./ActionRow.svelte";
@@ -27,6 +28,8 @@
 
 		return actions;
 	})();
+
+	$: notesMarkup = micromark(bookmark.notes);
 
 	function startEditing() {
 		$entityBeingEdited = {
@@ -73,22 +76,30 @@
 		{/if}
 	</h3>
 
-	<div class="actions">
-		<ActionRow {actions} />
-	</div>
+	{#if actions.length > 0}
+		<div class="actions">
+			<ActionRow {actions} />
+		</div>
+	{/if}
 
-	<div class="tags">
-		{#if bookmark.tags.length > 0}
+	{#if bookmark.tags.length > 0}
+		<div class="tags">
 			<TagList tags={bookmark.tags} />
-		{/if}
-	</div>
+		</div>
+	{/if}
+
+	{#if bookmark.notes}
+		<div class="notes">
+			{@html notesMarkup}
+		</div>
+	{/if}
 </div>
 
 <style lang="scss">
 	.bookmark-item {
 		display: grid;
 		grid-template-columns: var(--baseline) 1fr;
-		grid-template-rows: min-content min-content min-content;
+		grid-template-rows: min-content min-content min-content min-content;
 
 		@media (min-width: 721px) {
 			grid-template-columns: var(--baseline) 1fr max-content;
@@ -142,5 +153,31 @@
 
 	.link {
 		color: var(--color-link);
+	}
+
+	.notes {
+		grid-column: 1 / 3;
+		grid-row: 4;
+
+		@media (min-width: 721px) {
+			grid-column: 2 / 3;
+		}
+
+		:global(*:last-child) {
+			margin-bottom: 0;
+		}
+
+		:global(ul),
+		:global(ol) {
+			padding-left: 1.25em;
+		}
+
+		:global(ul) {
+			list-style: disc;
+		}
+
+		:global(ol) {
+			list-style: decimal;
+		}
 	}
 </style>

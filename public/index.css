@@ -7,14 +7,11 @@
 }
 
 body {
+	font-size: var(--font-size-body);
 	font-family: sans-serif;
+	line-height: var(--baseline);
 	background-color: var(--background-color-ui-primary);
 	color: var(--color-text);
-}
-
-ul,
-ol {
-	list-style: none;
 }
 
 h1 {
@@ -37,7 +34,6 @@ p {
 
 small {
 	font-size: 14px;
-	line-height: var(--baseline);
 }
 
 input::placeholder {

@@ -189,6 +189,8 @@
 	}
 
 	.navigation__list {
+		list-style: none;
+
 		&:not(:first-child) {
 			margin-top: var(--baseline);
 		}
