@@ -68,9 +68,9 @@
 		$isFilterListNavigationVisible = !$isFilterListNavigationVisible;
 	}
 
-	async function onClickCreateNewFilterList() {
+	function onClickCreateNewFilterList() {
 		const newFilterList = createNewFilterList();
-		await filterLists.add(newFilterList);
+		filterLists.add(newFilterList);
 		$entityBeingEdited = { type: "filterList", id: newFilterList.id };
 		navigate(`/filter/${newFilterList.id}`);
 	}
