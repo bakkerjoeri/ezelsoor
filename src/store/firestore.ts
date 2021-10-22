@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { get, Writable, writable } from "svelte/store";
 import { isEqual } from "lodash-es";
 import {
 	collection,
@@ -12,10 +12,123 @@ import { findCollectionDiff } from "../utils/findCollectionDiff";
 import { database } from "../utils/firebase";
 import { loggedInUserId } from "./session";
 import type { CollectionReference, DocumentData } from "firebase/firestore";
+import { compare } from "../utils/sorting";
 
 interface ObjectWithId {
 	id: string;
 	[key: string]: any;
+}
+
+/**
+ * Creates a svelte store that's connected to a firestore collection.
+ * This store will be able to fetch & persist data with firestore once the user is logged in.
+ */
+export function firestoreUserCollection<TValue extends ObjectWithId>(
+	path: string,
+	initial: TValue[] = []
+) {
+	let reference: CollectionReference<DocumentData> | null = null;
+	let snapshotUnsub = null;
+
+	const store = writable<TValue[]>(initial);
+	const { subscribe, set, update } = store;
+
+	loggedInUserId.subscribe((userId) => {
+		/**
+		 * I need to wait for the user to be fully logged in before I can start
+		 * watching for changes on the firestore's side.
+		 */
+		if (userId) {
+			reference = collection(database, `users/${userId}/${path}`);
+			snapshotUnsub = subscribeToCollectionSnapshot(reference, store);
+
+			return snapshotUnsub;
+		}
+
+		/**
+		 * Once the user logs out, I need to make sure that firestore watchers are cleaned up,
+		 * otherwise we get that we have insufficient permissions to listen to snapshots.
+		 */
+		if (!userId) {
+			if (snapshotUnsub) {
+				snapshotUnsub();
+				snapshotUnsub = null;
+			}
+
+			reference = null;
+			set([]);
+		}
+	});
+
+	let oldValue: TValue[] = initial;
+
+	/**
+	 * Data is pushed to the firestore as soon as changes are made locally.
+	 */
+	subscribe(async (value) => {
+		if (!reference) {
+			return;
+		}
+
+		/**
+		 * I need this check to ensure the first wave of remote data isn't
+		 * immediately synced back to the server. If the initial value is `[]` and
+		 * the new value is an array of any size, it would otherwise be seen as a change.
+		 */
+		if (oldValue === initial) {
+			oldValue = value;
+			return;
+		}
+
+		persistCollectionChanges<TValue>(reference, oldValue, value);
+		oldValue = value;
+	});
+
+	const add = (item: TValue) => {
+		update((collection) => {
+			return [...collection, item];
+		});
+	};
+
+	const patch = (id: string, newValue: Partial<TValue>) => {
+		update((collection) => {
+			return collection.map((item) => {
+				if (item.id !== id) {
+					return item;
+				}
+
+				return {
+					...item,
+					...newValue,
+				};
+			});
+		});
+	};
+	const remove = (id: string) => {
+		update((collection) => {
+			return collection.filter((item) => {
+				return item.id !== id;
+			});
+		});
+	};
+
+	return { subscribe, set, update, add, patch, remove };
+}
+
+function subscribeToCollectionSnapshot<Item extends ObjectWithId>(
+	collectionReference: CollectionReference<DocumentData>,
+	store: Writable<Item[]>
+) {
+	const unsub = onSnapshot(collectionReference, (snapshot) => {
+		const oldValue = get(store);
+		const newValue = snapshot.docs.map((doc) => doc.data()) as Item[];
+
+		if (!isSameCollection(newValue, oldValue)) {
+			store.set(newValue);
+		}
+	});
+
+	return unsub;
 }
 
 async function persistCollectionChanges<Item extends ObjectWithId>(
@@ -23,8 +136,12 @@ async function persistCollectionChanges<Item extends ObjectWithId>(
 	oldCollection: Item[],
 	newCollection: Item[]
 ) {
-	const diff = findCollectionDiff(oldCollection, newCollection);
-	const operations = diff.map((diffItem) => {
+	if (isSameCollection(oldCollection, newCollection)) {
+		return;
+	}
+
+	const differences = findCollectionDiff(oldCollection, newCollection);
+	const operations = differences.map((diffItem) => {
 		if (diffItem.operation === "added") {
 			return addDocumentToCollection(collectionReference, diffItem.data);
 		}
@@ -70,87 +187,23 @@ async function removeDocumentFromCollection(
 	deleteDoc(doc(reference, id));
 }
 
-export function firestoreUserCollection<TValue extends ObjectWithId>(
-	path: string,
-	initial: TValue[] = []
+/**
+ * Does a deep comparison of two arrays.
+ *
+ * The arrays must contain objects with an `id` property, which is used to sort each arrays.
+ * This ensures we can check for deep equality without factoring in order.
+ */
+function isSameCollection<Item extends ObjectWithId>(
+	collection: Item[],
+	otherCollection: Item[]
 ) {
-	let reference: CollectionReference<DocumentData> | null = null;
-	let snapshotUnsub = null;
+	if (collection === otherCollection) {
+		return true;
+	}
 
-	const store = writable<TValue[]>(initial, (set) => {
-		return loggedInUserId.subscribe((userId) => {
-			if (userId) {
-				reference = collection(database, `users/${userId}/${path}`);
-				snapshotUnsub = onSnapshot(reference, (snapshot) => {
-					const newValue = snapshot.docs.map((doc) =>
-						doc.data()
-					) as TValue[];
+	function sortById(items: Item[]) {
+		return [...items].sort((a, b) => compare(a.id, b.id));
+	}
 
-					set(newValue);
-				});
-			}
-
-			if (!userId) {
-				if (snapshotUnsub) {
-					snapshotUnsub();
-					snapshotUnsub = null;
-				}
-
-				reference = null;
-				set([]);
-			}
-
-			if (snapshotUnsub) {
-				return snapshotUnsub;
-			}
-		});
-	});
-
-	const { subscribe, set, update } = store;
-
-	let oldValue: TValue[] = initial;
-
-	subscribe(async (value) => {
-		if (!reference) {
-			return;
-		}
-
-		if (isEqual(value, oldValue)) {
-			return;
-		}
-
-		persistCollectionChanges<TValue>(reference, oldValue, value);
-
-		oldValue = value;
-	});
-
-	const add = (item: TValue) => {
-		update((collection) => {
-			return [...collection, item];
-		});
-	};
-
-	const patch = (id: string, newValue: Partial<TValue>) => {
-		update((collection) => {
-			return collection.map((item) => {
-				if (item.id !== id) {
-					return item;
-				}
-
-				return {
-					...item,
-					...newValue,
-				};
-			});
-		});
-	};
-	const remove = (id: string) => {
-		update((collection) => {
-			return collection.filter((item) => {
-				return item.id !== id;
-			});
-		});
-	};
-
-	return { subscribe, set, update, add, patch, remove };
+	return isEqual(sortById(collection), sortById(otherCollection));
 }
