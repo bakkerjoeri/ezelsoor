@@ -1,21 +1,19 @@
-interface Document {
+interface ObjectWithId {
 	id: string;
 	[key: string]: any;
 }
 
-type Collection = Document[];
-
-interface Diff {
+interface Diff<Item extends ObjectWithId> {
 	id: string;
 	operation: "added" | "removed" | "modified";
-	data: Document;
+	data: Item;
 }
 
-export function findCollectionDiff(
-	oldCollection: Collection,
-	newCollection: Collection
-): Diff[] {
-	const diffs: Diff[] = [];
+export function findCollectionDiff<Item extends ObjectWithId>(
+	oldCollection: Item[],
+	newCollection: Item[]
+): Diff<Item>[] {
+	const diffs: Diff<Item>[] = [];
 
 	const oldCollectionIds = oldCollection.map((document) => document.id);
 	const newCollectionIds = newCollection.map((document) => document.id);

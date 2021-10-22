@@ -1,4 +1,5 @@
-import { get, writable } from "svelte/store";
+import { writable } from "svelte/store";
+import { isEqual } from "lodash-es";
 import {
 	collection,
 	deleteDoc,
@@ -9,80 +10,147 @@ import {
 } from "firebase/firestore";
 import { findCollectionDiff } from "../utils/findCollectionDiff";
 import { database } from "../utils/firebase";
-import { loggedInUserId } from "./session";
-import type { StartStopNotifier, Updater } from "svelte/store";
+import { isLoggedIn } from "./session";
 import type { CollectionReference, DocumentData } from "firebase/firestore";
 
-interface Document {
+interface ObjectWithId {
 	id: string;
 	[key: string]: any;
 }
 
-export function userCollectionStore<TValue extends Document>(path: string) {
-	let reference: CollectionReference<DocumentData> | null = null;
+async function saveCollectionChanges<Item extends ObjectWithId>(
+	collectionReference: CollectionReference<DocumentData>,
+	oldCollection: Item[],
+	newCollection: Item[]
+) {
+	const diff = findCollectionDiff(oldCollection, newCollection);
+	const operations = diff.map((diffItem) => {
+		if (diffItem.operation === "added") {
+			return addDocumentToCollection(collectionReference, diffItem.data);
+		}
 
-	const start: StartStopNotifier<TValue[]> = (set) => {
-		return loggedInUserId.subscribe((userId) => {
-			if (!userId) {
-				return;
+		if (diffItem.operation === "modified") {
+			return patchDocumentInCollection(
+				collectionReference,
+				diffItem.id,
+				diffItem.data
+			);
+		}
+
+		if (diffItem.operation === "removed") {
+			return removeDocumentFromCollection(
+				collectionReference,
+				diffItem.id
+			);
+		}
+	});
+
+	await Promise.all(operations);
+}
+
+async function addDocumentToCollection(
+	reference: CollectionReference<DocumentData>,
+	document: ObjectWithId
+) {
+	await setDoc(doc(reference, document.id), document);
+}
+
+async function patchDocumentInCollection(
+	reference: CollectionReference<DocumentData>,
+	id: string,
+	newValue: any
+) {
+	await updateDoc(doc(reference, id), newValue);
+}
+
+async function removeDocumentFromCollection(
+	reference: CollectionReference<DocumentData>,
+	id: string
+) {
+	deleteDoc(doc(reference, id));
+}
+
+export function userCollectionStore<TValue extends ObjectWithId>(
+	path: string,
+	initial: TValue[] = []
+) {
+	let reference: CollectionReference<DocumentData> | null = null;
+	let snapshotUnsub = null;
+
+	const store = writable<TValue[]>(initial, (set) => {
+		return isLoggedIn.subscribe((isLoggedIn) => {
+			if (isLoggedIn) {
+				reference = collection(database, `users/${isLoggedIn}/${path}`);
+				snapshotUnsub = onSnapshot(reference, (snapshot) => {
+					const newValue = snapshot.docs.map((doc) =>
+						doc.data()
+					) as TValue[];
+
+					set(newValue);
+				});
 			}
 
-			reference = collection(database, `users/${userId}/${path}`);
+			if (!isLoggedIn) {
+				if (snapshotUnsub) {
+					snapshotUnsub();
+				}
 
-			return onSnapshot(reference, (snapshot) => {
-				const newValue = snapshot.docs.map((doc) =>
-					doc.data()
-				) as TValue[];
+				snapshotUnsub = null;
+				reference = null;
+				set([]);
+			}
 
-				set(newValue);
-			});
+			if (snapshotUnsub) {
+				return snapshotUnsub;
+			}
+		});
+	});
+
+	const { subscribe, set, update } = store;
+
+	let oldValue: TValue[] = initial;
+
+	subscribe(async (value) => {
+		if (!reference) {
+			return;
+		}
+
+		if (isEqual(value, oldValue)) {
+			return;
+		}
+
+		saveCollectionChanges<TValue>(reference, oldValue, value);
+
+		oldValue = value;
+	});
+
+	const add = (item: TValue) => {
+		update((collection) => {
+			return [...collection, item];
 		});
 	};
 
-	const store = writable<TValue[]>([], start);
-
-	const add = async (document: Document) => {
-		await setDoc(doc(reference, document.id), document);
-	};
-
-	const patch = async (id: string, newValue: any) => {
-		await updateDoc(doc(reference, id), newValue);
-	};
-
-	const remove = async (id: string) => {
-		deleteDoc(doc(reference, id));
-	};
-
-	const set = async (value: TValue[]): Promise<void> => {
-		if (reference === null) {
-			throw new Error("Can't access collection when not authenticated.");
-		}
-
-		const diff = findCollectionDiff(get(store), value);
-
-		await Promise.all(
-			diff.map((diffItem) => {
-				if (diffItem.operation === "added") {
-					return add(diffItem);
+	const patch = (id: string, newValue: Partial<TValue>) => {
+		update((collection) => {
+			return collection.map((item) => {
+				if (item.id !== id) {
+					return item;
 				}
 
-				if (diffItem.operation === "modified") {
-					return patch(diffItem.id, diffItem.data);
-				}
-
-				if (diffItem.operation === "removed") {
-					return remove(diffItem.id);
-				}
-			})
-		);
+				return {
+					...item,
+					...newValue,
+				};
+			});
+		});
 	};
-
-	const update = async (updater: Updater<TValue[]>) => {
-		const value = updater(get(store));
-		await set(value);
+	const remove = (id: string) => {
+		update((collection) => {
+			return collection.filter((item) => {
+				return item.id !== id;
+			});
+		});
 	};
-
-	const { subscribe } = store;
 
 	return { subscribe, set, update, add, patch, remove };
 }
