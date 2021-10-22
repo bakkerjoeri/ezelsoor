@@ -10,7 +10,7 @@ import {
 } from "firebase/firestore";
 import { findCollectionDiff } from "../utils/findCollectionDiff";
 import { database } from "../utils/firebase";
-import { isLoggedIn } from "./session";
+import { loggedInUserId } from "./session";
 import type { CollectionReference, DocumentData } from "firebase/firestore";
 
 interface ObjectWithId {
@@ -18,7 +18,7 @@ interface ObjectWithId {
 	[key: string]: any;
 }
 
-async function saveCollectionChanges<Item extends ObjectWithId>(
+async function persistCollectionChanges<Item extends ObjectWithId>(
 	collectionReference: CollectionReference<DocumentData>,
 	oldCollection: Item[],
 	newCollection: Item[]
@@ -70,7 +70,7 @@ async function removeDocumentFromCollection(
 	deleteDoc(doc(reference, id));
 }
 
-export function userCollectionStore<TValue extends ObjectWithId>(
+export function firestoreUserCollection<TValue extends ObjectWithId>(
 	path: string,
 	initial: TValue[] = []
 ) {
@@ -78,9 +78,9 @@ export function userCollectionStore<TValue extends ObjectWithId>(
 	let snapshotUnsub = null;
 
 	const store = writable<TValue[]>(initial, (set) => {
-		return isLoggedIn.subscribe((isLoggedIn) => {
-			if (isLoggedIn) {
-				reference = collection(database, `users/${isLoggedIn}/${path}`);
+		return loggedInUserId.subscribe((userId) => {
+			if (userId) {
+				reference = collection(database, `users/${userId}/${path}`);
 				snapshotUnsub = onSnapshot(reference, (snapshot) => {
 					const newValue = snapshot.docs.map((doc) =>
 						doc.data()
@@ -90,12 +90,12 @@ export function userCollectionStore<TValue extends ObjectWithId>(
 				});
 			}
 
-			if (!isLoggedIn) {
+			if (!userId) {
 				if (snapshotUnsub) {
 					snapshotUnsub();
+					snapshotUnsub = null;
 				}
 
-				snapshotUnsub = null;
 				reference = null;
 				set([]);
 			}
@@ -119,7 +119,7 @@ export function userCollectionStore<TValue extends ObjectWithId>(
 			return;
 		}
 
-		saveCollectionChanges<TValue>(reference, oldValue, value);
+		persistCollectionChanges<TValue>(reference, oldValue, value);
 
 		oldValue = value;
 	});

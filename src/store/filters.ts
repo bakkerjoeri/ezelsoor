@@ -2,7 +2,7 @@ import { derived, get, Readable } from "svelte/store";
 import uuid from "@bakkerjoeri/uuid";
 import { entityBeingEdited } from "./ui";
 import { Bookmark, doesBookmarkMatchQuery } from "./bookmarks";
-import { userCollectionStore } from "./firestore";
+import { firestoreUserCollection } from "./firestore";
 
 export interface FilterList {
 	id: string;
@@ -98,7 +98,7 @@ export function createNewFilterList(
 	};
 }
 
-export const filterLists = userCollectionStore<FilterList>("filters");
+export const filterLists = firestoreUserCollection<FilterList>("filters");
 export const filterListBeingEdited: Readable<FilterList | null> = derived(
 	[filterLists, entityBeingEdited],
 	([$filterLists, $entityBeingEdited]) => {

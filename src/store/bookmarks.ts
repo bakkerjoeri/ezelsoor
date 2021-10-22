@@ -2,7 +2,7 @@ import uuid from "@bakkerjoeri/uuid";
 import { derived, get } from "svelte/store";
 import { entityBeingEdited } from "./ui";
 import { removeDiacretics } from "../utils/removeDiacretics";
-import { userCollectionStore } from "./firestore";
+import { firestoreUserCollection } from "./firestore";
 import type { Readable } from "svelte/store";
 
 export interface Bookmark {
@@ -36,7 +36,7 @@ export function createNewBookmark(
 	};
 }
 
-export const bookmarks = userCollectionStore<Bookmark>(`bookmarks`);
+export const bookmarks = firestoreUserCollection<Bookmark>(`bookmarks`);
 export const activeBookmarks = derived(bookmarks, (bookmarks) =>
 	bookmarks.filter((bookmark) => !bookmark.isArchived)
 );

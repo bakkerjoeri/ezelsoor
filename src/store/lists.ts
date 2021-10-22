@@ -1,4 +1,4 @@
-import { createLocalStore } from "./localStore";
+import { localStore } from "./localStore";
 import uuid from "@bakkerjoeri/uuid";
 import { derived, get, Readable, writable } from "svelte/store";
 import type { Bookmark } from "./bookmarks";
@@ -14,7 +14,6 @@ export interface List {
 	createdAt: number;
 }
 
-const localStore = createLocalStore("lists", []);
 function createListStore(baseStore: Writable<List[]> = writable<List[]>([])) {
 	const { subscribe, set, update } = baseStore;
 
@@ -54,7 +53,7 @@ function createListStore(baseStore: Writable<List[]> = writable<List[]>([])) {
 	};
 }
 
-export const lists = createListStore(localStore);
+export const lists = createListStore(localStore("lists", []));
 
 export function hasList(listId: List["id"]): boolean {
 	return get(lists).some((list) => list.id === listId);

@@ -5,7 +5,7 @@
 		bookmarks as allBookmarks,
 		activeBookmarks,
 	} from "../store/bookmarks";
-	import { createLocalStore } from "../store/localStore";
+	import { localStore } from "../store/localStore";
 	import Button from "../components/Button.svelte";
 	import BookmarkPage from "./BookmarkPage.svelte";
 	import type { FilterList } from "../store/filters";
@@ -18,7 +18,7 @@
 		? $allBookmarks
 		: $activeBookmarks;
 	$: bookmarks = filterBookmarks(bookmarksToFilter, filterList.filters);
-	$: sortOrder = createLocalStore<SortOrder>(
+	$: sortOrder = localStore<SortOrder>(
 		`filterList-${filterListId}-sortOrder`,
 		"descending"
 	);

@@ -1,7 +1,7 @@
 import { writable, get } from "svelte/store";
 import type { Writable } from "svelte/store";
 
-export function createLocalStore<TValue>(
+export function localStore<TValue>(
 	key: string,
 	initial?: TValue
 ): Writable<TValue> {

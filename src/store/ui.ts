@@ -1,5 +1,5 @@
 import { writable } from "svelte/store";
-import { createLocalStore } from "./localStore";
+import { localStore } from "./localStore";
 import { matches } from "./mediaquery";
 
 interface EntityReference {
@@ -15,11 +15,11 @@ export const isNavigationOpen = writable<boolean>(
 	matches("(min-width: 1021px)")
 );
 
-export const showReadLaterCount = createLocalStore("showReadLaterCount", true);
-export const showTagCount = createLocalStore("showTagCount", true);
-export const preferredColorScheme = createLocalStore<ColorScheme>(
+export const showReadLaterCount = localStore("showReadLaterCount", true);
+export const showTagCount = localStore("showTagCount", true);
+export const preferredColorScheme = localStore<ColorScheme>(
 	"preferredColorScheme",
 	"system"
 );
 
-export const tagSortBy = createLocalStore<TagSortBy>("tagSortBy", "amount");
+export const tagSortBy = localStore<TagSortBy>("tagSortBy", "amount");

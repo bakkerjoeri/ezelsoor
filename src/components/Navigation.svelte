@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { navigate } from "svelte-routing";
 	import { createNewFilterList, filterLists } from "../store/filters";
-	import { createLocalStore } from "../store/localStore";
+	import { localStore } from "../store/localStore";
 	import { isLoggedIn } from "../store/session";
 	import { doesTagMatchQuery, sortTagCount, tagCount } from "../store/tags";
 	import {
@@ -21,11 +21,8 @@
 	import NavigationLink from "./NavigationLink.svelte";
 
 	let tagSearchQuery: string = "";
-	let isTagNavigationVisible = createLocalStore(
-		"isTagNavigationVisible",
-		true
-	);
-	let isFilterListNavigationVisible = createLocalStore(
+	let isTagNavigationVisible = localStore("isTagNavigationVisible", true);
+	let isFilterListNavigationVisible = localStore(
 		"isListNavigationVisible",
 		true
 	);

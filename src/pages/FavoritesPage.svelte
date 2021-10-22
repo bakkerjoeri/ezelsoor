@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { favoriteBookmarks } from "../store/bookmarks";
-	import { createLocalStore } from "../store/localStore";
+	import { localStore } from "../store/localStore";
 	import BookmarkPage from "./BookmarkPage.svelte";
 	import type { SortOrder } from "../utils/sorting";
 
-	let sortOrder = createLocalStore<SortOrder>(
+	let sortOrder = localStore<SortOrder>(
 		"favoritesPageSortOrder",
 		"descending"
 	);
