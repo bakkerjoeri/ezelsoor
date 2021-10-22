@@ -9,7 +9,6 @@
 body {
 	font-size: var(--font-size-body);
 	font-family: sans-serif;
-	line-height: var(--baseline);
 	background-color: var(--background-color-ui-primary);
 	color: var(--color-text);
 }
@@ -30,6 +29,10 @@ p {
 	margin-bottom: var(--baseline);
 	font-size: var(--font-size-body);
 	line-height: var(--baseline);
+}
+
+code {
+	font-size: 15px;
 }
 
 small {

@@ -163,6 +163,11 @@
 			grid-column: 2 / 3;
 		}
 
+		:global(*) {
+			font-size: var(--font-size-body);
+			line-height: var(--baseline);
+		}
+
 		:global(*:last-child) {
 			margin-bottom: 0;
 		}
