@@ -3,6 +3,9 @@ import uuid from "@bakkerjoeri/uuid";
 import { entityBeingEdited } from "./ui";
 import { Bookmark, doesBookmarkMatchQuery } from "./bookmarks";
 import { firestoreUserCollection } from "./firestore";
+import { localStore } from "./localStore";
+import { collectionStore } from "./collectionStore";
+import { database } from "../utils/firebase";
 
 export interface FilterList {
 	id: string;
@@ -98,7 +101,19 @@ export function createNewFilterList(
 	};
 }
 
-export const filterLists = firestoreUserCollection<FilterList>("filters", true);
+function createFilterListStore() {
+	const local = localStore<FilterList[]>("filterLists", []);
+	const remote = firestoreUserCollection<FilterList>(
+		database,
+		"filterLists",
+		local
+	);
+	const collection = collectionStore<FilterList>(remote);
+
+	return collection;
+}
+
+export const filterLists = createFilterListStore();
 export const filterListBeingEdited: Readable<FilterList | null> = derived(
 	[filterLists, entityBeingEdited],
 	([$filterLists, $entityBeingEdited]) => {

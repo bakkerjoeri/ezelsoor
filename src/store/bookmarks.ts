@@ -4,6 +4,9 @@ import { entityBeingEdited } from "./ui";
 import { removeDiacretics } from "../utils/removeDiacretics";
 import { firestoreUserCollection } from "./firestore";
 import type { Readable } from "svelte/store";
+import { localStore } from "./localStore";
+import { collectionStore } from "./collectionStore";
+import { database } from "../utils/firebase";
 
 export interface Bookmark {
 	readonly id: string;
@@ -36,7 +39,20 @@ export function createNewBookmark(
 	};
 }
 
-export const bookmarks = firestoreUserCollection<Bookmark>("bookmarks", true);
+function createBookmarkStore() {
+	const local = localStore<Bookmark[]>("bookmarks", []);
+	const remote = firestoreUserCollection<Bookmark>(
+		database,
+		"bookmarks",
+		local
+	);
+	const collection = collectionStore<Bookmark>(remote);
+
+	return collection;
+}
+
+export const bookmarks = createBookmarkStore();
+
 export const activeBookmarks = derived(bookmarks, (bookmarks) =>
 	bookmarks.filter((bookmark) => !bookmark.isArchived)
 );
