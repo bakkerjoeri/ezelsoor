@@ -61,8 +61,7 @@ export function firestoreUserCollection<TValue extends ObjectWithId>(
 			);
 
 			const localData = get(store);
-			const snapshot = await getDocs(reference);
-			const remoteData = snapshot.docs.map((doc) =>
+			const remoteData = (await getDocs(reference)).docs.map((doc) =>
 				doc.data()
 			) as TValue[];
 			const allData = mergeCollections(remoteData, localData);
@@ -81,10 +80,10 @@ export function firestoreUserCollection<TValue extends ObjectWithId>(
 				snapshotUnsub();
 				snapshotUnsub = null;
 			}
+		}
 
-			if (previousState === "loggedIn") {
-				set([]);
-			}
+		if (state === "loggedOut" && previousState === "loggedIn") {
+			set([]);
 		}
 	});
 
