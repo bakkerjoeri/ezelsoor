@@ -1,7 +1,12 @@
 import { derived, get, Readable } from "svelte/store";
 import uuid from "@bakkerjoeri/uuid";
 import { entityBeingEdited } from "./ui";
-import { Bookmark, doesBookmarkMatchQuery } from "./bookmarks";
+import {
+	activeBookmarks,
+	Bookmark,
+	bookmarks,
+	doesBookmarkMatchQuery,
+} from "./bookmarks";
 import { firestoreUserCollection } from "./firestore";
 import { localStore } from "./localStore";
 import { collectionStore } from "./collectionStore";
@@ -12,6 +17,7 @@ export interface FilterList {
 	title: string;
 	description: string;
 	shouldIncludeArchived: boolean;
+	showBookmarkCount: boolean;
 	filters: Filter[];
 	createdAt: number;
 }
@@ -95,6 +101,7 @@ export function createNewFilterList(
 		title: "",
 		description: "",
 		shouldIncludeArchived: false,
+		showBookmarkCount: false,
 		filters: [],
 		createdAt: Date.now().valueOf(),
 		...properties,

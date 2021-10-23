@@ -186,6 +186,7 @@
 					<FilterListForm
 						title={$filterListBeingEdited.title}
 						description={$filterListBeingEdited.description}
+						showBookmarkCount={$filterListBeingEdited.showBookmarkCount}
 						shouldIncludeArchived={$filterListBeingEdited.shouldIncludeArchived}
 						filters={$filterListBeingEdited.filters}
 						on:save={onSaveEditedFilterList}
@@ -233,6 +234,7 @@
 				<FilterListForm
 					title={$filterListBeingEdited.title}
 					description={$filterListBeingEdited.description}
+					showBookmarkCount={$filterListBeingEdited.showBookmarkCount}
 					shouldIncludeArchived={$filterListBeingEdited.shouldIncludeArchived}
 					filters={$filterListBeingEdited.filters}
 					on:save={onSaveEditedFilterList}

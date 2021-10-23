@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { navigate } from "svelte-routing";
-	import { createNewFilterList, filterLists } from "../store/filters";
+	import {
+		createNewFilterList,
+		filterBookmarks,
+		filterLists,
+	} from "../store/filters";
 	import { localStore } from "../store/localStore";
 	import { isLoggedIn, logout } from "../store/session";
 	import { doesTagMatchQuery, sortTagCount, tagCount } from "../store/tags";
@@ -11,7 +15,11 @@
 		tagSortBy,
 	} from "../store/ui";
 	import { sortObjects } from "../utils/sorting";
-	import { bookmarksToRead } from "./../store/bookmarks";
+	import {
+		activeBookmarks,
+		bookmarks,
+		bookmarksToRead,
+	} from "./../store/bookmarks";
 	import ActionRow from "./ActionRow.svelte";
 	import Button from "./Button.svelte";
 	import InputText from "./form/InputText.svelte";
@@ -101,7 +109,18 @@
 	{#if $isFilterListNavigationVisible && sortedFilterLists.length > 0}
 		<ul class="navigation__list">
 			{#each sortedFilterLists as filterList (filterList.id)}
-				<NavigationItem on:navigate to={`/filter/${filterList.id}`}>
+				<NavigationItem
+					on:navigate
+					to={`/filter/${filterList.id}`}
+					count={filterList.showBookmarkCount
+						? filterBookmarks(
+								filterList.shouldIncludeArchived
+									? $bookmarks
+									: $activeBookmarks,
+								filterList.filters
+						  ).length
+						: undefined}
+				>
 					{#if filterList.title}
 						{filterList.title}
 					{:else}

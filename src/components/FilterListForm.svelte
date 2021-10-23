@@ -11,6 +11,7 @@
 
 	export let title = "";
 	export let description = "";
+	export let showBookmarkCount = false;
 	export let shouldIncludeArchived = false;
 	export let filters: Filter[] = [];
 	export let canDelete: boolean = false;
@@ -25,6 +26,7 @@
 		dispatch("save", {
 			title,
 			description,
+			showBookmarkCount,
 			shouldIncludeArchived,
 			filters,
 		});
@@ -89,6 +91,13 @@
 			</FormItem>
 		{/each}
 	{/if}
+
+	<FormItem>
+		<Checkbox
+			bind:checked={showBookmarkCount}
+			label="Show amount of bookmarks in navigation"
+		/>
+	</FormItem>
 
 	<Button type="submit">Save</Button>
 
