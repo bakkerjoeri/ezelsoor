@@ -7,6 +7,7 @@ import {
 	onSnapshot,
 	setDoc,
 	updateDoc,
+	getDocs,
 } from "firebase/firestore";
 import { findCollectionDiff } from "../utils/findCollectionDiff";
 import { database } from "../utils/firebase";
@@ -19,6 +20,7 @@ import type { CollectionReference, DocumentData } from "firebase/firestore";
 import { compare } from "../utils/sorting";
 import { localStore } from "./localStore";
 import type { Writable } from "svelte/store";
+import { mergeCollections } from "../utils/mergeCollections";
 
 interface ObjectWithId {
 	id: string;
@@ -49,29 +51,25 @@ export function firestoreUserCollection<TValue extends ObjectWithId>(
 	const initial = get(store);
 	const { subscribe, set, update } = store;
 
-	loggedInState.subscribe((state) => {
+	loggedInState.subscribe(async (state) => {
+		const previousState = get(previousLoggedInState);
+
 		if (state === "loggedIn") {
 			reference = collection(
 				database,
 				`users/${get(loggedInUserId)}/${path}`
 			);
-			snapshotUnsub = subscribeToCollectionSnapshot(reference, store);
 
-			if (get(previousLoggedInState) === "loading") {
-				/*
-				If the user went from auth loading to logged in, they were probably previously logged in. In that case, we should only persist changes that happened while auth was loading.
-				*/
-				persistCollectionChanges<TValue>(
-					reference,
-					initial,
-					get(store)
-				);
-			} else if (get(previousLoggedInState) === "loggedOut") {
-				/*
-				If the user went from logged in to logged out state, they could have been working on a persistent store over multiple sessions. This means we should persist everything that's in that store.
-				*/
-				persistCollectionChanges<TValue>(reference, [], get(store));
-			}
+			const localData = get(store);
+			const snapshot = await getDocs(reference);
+			const remoteData = snapshot.docs.map((doc) =>
+				doc.data()
+			) as TValue[];
+			const allData = mergeCollections(remoteData, localData);
+
+			set(allData);
+			await persistCollectionChanges(reference, remoteData, allData);
+			snapshotUnsub = subscribeToCollectionSnapshot(reference, store);
 
 			return snapshotUnsub;
 		}
@@ -84,7 +82,7 @@ export function firestoreUserCollection<TValue extends ObjectWithId>(
 				snapshotUnsub = null;
 			}
 
-			if (get(previousLoggedInState) === "loggedIn") {
+			if (previousState === "loggedIn") {
 				set([]);
 			}
 		}
