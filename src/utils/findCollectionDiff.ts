@@ -84,7 +84,6 @@ export function findCollectionDiffDeep<Item extends ObjectWithId>(
 			const documentWasModified = !isEqual(newDoc, oldDoc);
 
 			if (documentWasModified) {
-				debugger;
 				diffs.push({
 					id: newDoc.id,
 					operation: "modified",
