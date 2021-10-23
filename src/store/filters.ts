@@ -98,7 +98,7 @@ export function createNewFilterList(
 	};
 }
 
-export const filterLists = firestoreUserCollection<FilterList>("filters");
+export const filterLists = firestoreUserCollection<FilterList>("filters", true);
 export const filterListBeingEdited: Readable<FilterList | null> = derived(
 	[filterLists, entityBeingEdited],
 	([$filterLists, $entityBeingEdited]) => {

@@ -36,7 +36,7 @@ export function createNewBookmark(
 	};
 }
 
-export const bookmarks = firestoreUserCollection<Bookmark>(`bookmarks`);
+export const bookmarks = firestoreUserCollection<Bookmark>("bookmarks", true);
 export const activeBookmarks = derived(bookmarks, (bookmarks) =>
 	bookmarks.filter((bookmark) => !bookmark.isArchived)
 );

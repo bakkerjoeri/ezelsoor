@@ -2,7 +2,7 @@
 	import { navigate } from "svelte-routing";
 	import { createNewFilterList, filterLists } from "../store/filters";
 	import { localStore } from "../store/localStore";
-	import { isLoggedIn } from "../store/session";
+	import { isLoggedIn, logout } from "../store/session";
 	import { doesTagMatchQuery, sortTagCount, tagCount } from "../store/tags";
 	import {
 		entityBeingEdited,
@@ -10,7 +10,6 @@
 		showTagCount,
 		tagSortBy,
 	} from "../store/ui";
-	import { auth } from "../utils/firebase";
 	import { sortObjects } from "../utils/sorting";
 	import { bookmarksToRead } from "./../store/bookmarks";
 	import ActionRow from "./ActionRow.svelte";
@@ -55,10 +54,6 @@
 		$tagSortBy === "name" ? "ascending" : "descending"
 	);
 	$: sortedFilterLists = sortObjects($filterLists, "title", "ascending");
-
-	function logout() {
-		auth.signOut();
-	}
 
 	function toggleTagNavigationVisibility() {
 		$isTagNavigationVisible = !$isTagNavigationVisible;
@@ -176,7 +171,12 @@
 {#if $isLoggedIn}
 	<footer class="navigation__footer">
 		<NavigationLink to="settings" on:navigate>Settings</NavigationLink>
-		<Button on:click={logout} variant="text">Log out</Button>
+		<Button
+			on:click={() => {
+				logout();
+			}}
+			variant="text">Log out</Button
+		>
 	</footer>
 {/if}
 

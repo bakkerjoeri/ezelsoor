@@ -1,4 +1,4 @@
-import { get, Writable, writable } from "svelte/store";
+import { get, writable } from "svelte/store";
 import { isEqual } from "lodash-es";
 import {
 	collection,
@@ -10,9 +10,11 @@ import {
 } from "firebase/firestore";
 import { findCollectionDiff } from "../utils/findCollectionDiff";
 import { database } from "../utils/firebase";
-import { loggedInUserId } from "./session";
+import { onLoggedInStateChanged } from "./session";
 import type { CollectionReference, DocumentData } from "firebase/firestore";
 import { compare } from "../utils/sorting";
+import { localStore } from "./localStore";
+import type { Writable } from "svelte/store";
 
 interface ObjectWithId {
 	id: string;
@@ -20,61 +22,78 @@ interface ObjectWithId {
 }
 
 /**
- * Creates a svelte store that's connected to a firestore collection.
- * This store will be able to fetch & persist data with firestore once the user is logged in.
+ * Creates a svelte store that's connected to a firestore collection. This store will be able to fetch & persist data with firestore once the user is logged in.
+ *
+ * **This store currently has a fatal flaw that could cause data loss**: It is assumes any snapshot update represents the latest data. Consider this example:
+ *
+ * You've just saved an item and this change is synced to firestore. While waiting for the corresponding snapshot update, you change that item again. Then the snapshot update comes in from the server, which will override the newer, local version of the item.
+ *
+ * @param path The path relative to `users/:userId/` where the collection is found. Make sure you omit any leading `/`.
+ * @param shouldPersistLocally Whether or not to use localStorage to store data client side. This will also allow logged out persistance between sessions.
  */
 export function firestoreUserCollection<TValue extends ObjectWithId>(
 	path: string,
-	initial: TValue[] = []
+	shouldPersistLocally: boolean = false
 ) {
 	let reference: CollectionReference<DocumentData> | null = null;
 	let snapshotUnsub = null;
 
-	const store = writable<TValue[]>(initial);
+	const store = shouldPersistLocally
+		? localStore<TValue[]>(path, [])
+		: writable<TValue[]>([]);
+
+	const initial = get(store);
 	const { subscribe, set, update } = store;
 
-	loggedInUserId.subscribe((userId) => {
-		/**
-		 * I need to wait for the user to be fully logged in before I can start
-		 * watching for changes on the firestore's side.
-		 */
-		if (userId) {
+	onLoggedInStateChanged((current, previous, userId) => {
+		if (current === "loggedIn") {
 			reference = collection(database, `users/${userId}/${path}`);
 			snapshotUnsub = subscribeToCollectionSnapshot(reference, store);
+
+			if (previous === "loading") {
+				/*
+				If the user went from auth loading to logged in, they were probably previously logged in. In that case, we should only persist changes that happened while auth was loading.
+				*/
+				persistCollectionChanges<TValue>(
+					reference,
+					initial,
+					get(store)
+				);
+			} else if (previous === "loggedOut") {
+				/*
+				If the user went from logged in to logged out state, they could have been working on a persistent store over multiple sessions. This means we should persist everything that's in that store.
+				*/
+				persistCollectionChanges<TValue>(reference, [], get(store));
+			}
 
 			return snapshotUnsub;
 		}
 
-		/**
-		 * Once the user logs out, I need to make sure that firestore watchers are cleaned up,
-		 * otherwise we get that we have insufficient permissions to listen to snapshots.
-		 */
-		if (!userId) {
+		if (current === "loggedOut") {
+			reference = null;
+
 			if (snapshotUnsub) {
 				snapshotUnsub();
 				snapshotUnsub = null;
 			}
 
-			reference = null;
-			set([]);
+			if (previous === "loggedIn") {
+				set([]);
+			}
 		}
 	});
 
 	let oldValue: TValue[] = initial;
 
-	/**
-	 * Data is pushed to the firestore as soon as changes are made locally.
-	 */
+	// Data is pushed to the firestore as soon as changes are made locally.
 	subscribe(async (value) => {
 		if (!reference) {
 			return;
 		}
 
-		/**
-		 * I need this check to ensure the first wave of remote data isn't
-		 * immediately synced back to the server. If the initial value is `[]` and
-		 * the new value is an array of any size, it would otherwise be seen as a change.
-		 */
+		/*
+		I need this check to ensure the first wave of remote data isn't immediately synced back to the server. If the initial value is `[]` and the new value is an array of any size, it would otherwise be seen as a change.
+		*/
 		if (oldValue === initial) {
 			oldValue = value;
 			return;
@@ -190,8 +209,7 @@ async function removeDocumentFromCollection(
 /**
  * Does a deep comparison of two arrays.
  *
- * The arrays must contain objects with an `id` property, which is used to sort each arrays.
- * This ensures we can check for deep equality without factoring in order.
+ * The arrays must contain objects with an `id` property, which is used to sort each arrays. This ensures we can check for deep equality without factoring in order.
  */
 function isSameCollection<Item extends ObjectWithId>(
 	collection: Item[],
