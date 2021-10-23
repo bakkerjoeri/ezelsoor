@@ -1,12 +1,8 @@
-import { derived, readable } from "svelte/store";
+import { derived, get, readable } from "svelte/store";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./../utils/firebase";
 
-export function logout() {
-	if (auth) {
-		auth.signOut();
-	}
-}
+type LoggedInState = "loading" | "loggedIn" | "loggedOut";
 
 export const loggedInUserId = readable<string | null | undefined>(
 	undefined,
@@ -29,25 +25,42 @@ export const isLoggedIn = derived(
 	(value) => typeof value === "string"
 );
 
-type LoggedInState = "loading" | "loggedIn" | "loggedOut";
-let currentLoggedInState: LoggedInState = "loading";
+export const loggedInState = derived(loggedInUserId, (value) => {
+	if (value === null) {
+		return "loggedOut";
+	}
 
-export function onLoggedInStateChanged(
-	handler: (
-		current: LoggedInState,
-		previous: LoggedInState,
-		userId: string | null | undefined
-	) => any
-) {
-	loggedInUserId.subscribe((value) => {
-		if (value === null) {
-			const newState: LoggedInState = "loggedOut";
-			handler(newState, currentLoggedInState, value);
-			currentLoggedInState = newState;
-		} else if (typeof value === "string") {
-			const newState: LoggedInState = "loggedIn";
-			handler(newState, currentLoggedInState, value);
-			currentLoggedInState = newState;
-		}
-	});
+	if (typeof value === "string") {
+		return "loggedIn";
+	}
+
+	return "loading";
+});
+
+const stateHistory: LoggedInState[] = [];
+
+export const previousLoggedInState = readable<LoggedInState>(
+	"loading",
+	(set) => {
+		return loggedInState.subscribe((newState) => {
+			if (stateHistory.length === 0) {
+				stateHistory.push(get(previousLoggedInState));
+			}
+
+			const previousState = stateHistory[stateHistory.length - 1];
+
+			if (previousState !== newState) {
+				set(previousState);
+				stateHistory.push(newState);
+			}
+
+			console.log(stateHistory);
+		});
+	}
+);
+
+export function logout() {
+	if (auth) {
+		auth.signOut();
+	}
 }

@@ -10,7 +10,11 @@ import {
 } from "firebase/firestore";
 import { findCollectionDiff } from "../utils/findCollectionDiff";
 import { database } from "../utils/firebase";
-import { onLoggedInStateChanged } from "./session";
+import {
+	loggedInState,
+	loggedInUserId,
+	previousLoggedInState,
+} from "./session";
 import type { CollectionReference, DocumentData } from "firebase/firestore";
 import { compare } from "../utils/sorting";
 import { localStore } from "./localStore";
@@ -45,12 +49,15 @@ export function firestoreUserCollection<TValue extends ObjectWithId>(
 	const initial = get(store);
 	const { subscribe, set, update } = store;
 
-	onLoggedInStateChanged((current, previous, userId) => {
-		if (current === "loggedIn") {
-			reference = collection(database, `users/${userId}/${path}`);
+	loggedInState.subscribe((state) => {
+		if (state === "loggedIn") {
+			reference = collection(
+				database,
+				`users/${get(loggedInUserId)}/${path}`
+			);
 			snapshotUnsub = subscribeToCollectionSnapshot(reference, store);
 
-			if (previous === "loading") {
+			if (get(previousLoggedInState) === "loading") {
 				/*
 				If the user went from auth loading to logged in, they were probably previously logged in. In that case, we should only persist changes that happened while auth was loading.
 				*/
@@ -59,7 +66,7 @@ export function firestoreUserCollection<TValue extends ObjectWithId>(
 					initial,
 					get(store)
 				);
-			} else if (previous === "loggedOut") {
+			} else if (get(previousLoggedInState) === "loggedOut") {
 				/*
 				If the user went from logged in to logged out state, they could have been working on a persistent store over multiple sessions. This means we should persist everything that's in that store.
 				*/
@@ -69,7 +76,7 @@ export function firestoreUserCollection<TValue extends ObjectWithId>(
 			return snapshotUnsub;
 		}
 
-		if (current === "loggedOut") {
+		if (state === "loggedOut") {
 			reference = null;
 
 			if (snapshotUnsub) {
@@ -77,7 +84,7 @@ export function firestoreUserCollection<TValue extends ObjectWithId>(
 				snapshotUnsub = null;
 			}
 
-			if (previous === "loggedIn") {
+			if (get(previousLoggedInState) === "loggedIn") {
 				set([]);
 			}
 		}
