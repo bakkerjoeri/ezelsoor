@@ -1,11 +1,16 @@
 <script lang="ts">
-	import { searchBookmarks } from "../store/bookmarks";
+	import {
+		bookmarks as bookmarkStore,
+		createNewBookmark,
+		searchBookmarks,
+	} from "../store/bookmarks";
 	import Page from "./Page.svelte";
 	import BookmarkList from "../components/BookmarkList.svelte";
 	import SearchBar from "../components/SearchBar.svelte";
 	import Select from "../components/form/Select.svelte";
 	import type { Bookmark, BookmarksSortedBy } from "../store/bookmarks";
 	import type { SortOrder } from "../utils/sorting";
+	import { entityBeingEdited } from "../store/ui";
 
 	export let title: string = "";
 	export let description: string = "";
@@ -13,11 +18,26 @@
 	export let searchQuery: string = "";
 	export let sortedBy: BookmarksSortedBy = "createdAt";
 	export let sortOrder: SortOrder = "descending";
+	export let actions = [];
+
+	$: bookmarkPageActions = [
+		...actions,
+		{ label: "New", callback: onClickCreateNewBookmark },
+	];
 
 	$: filteredBookmarks = searchBookmarks(bookmarks, searchQuery);
+
+	function onClickCreateNewBookmark() {
+		const newBookmark = createNewBookmark();
+		bookmarkStore.add(newBookmark);
+		$entityBeingEdited = {
+			id: newBookmark.id,
+			type: "bookmark",
+		};
+	}
 </script>
 
-<Page>
+<Page actions={bookmarkPageActions}>
 	<header>
 		{#if $$slots.title}
 			<h1><slot name="title" /></h1>
