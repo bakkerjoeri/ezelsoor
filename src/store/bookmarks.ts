@@ -20,7 +20,7 @@ export interface Bookmark {
 	createdAt: number;
 }
 
-export type BookmarksSortedBy = "title" | "createdAt";
+export type BookmarksSortedBy = "title" | "createdAt" | "manual";
 
 export function createNewBookmark(
 	properties: Partial<Bookmark> = {}

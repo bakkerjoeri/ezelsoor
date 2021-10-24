@@ -12,6 +12,7 @@
 	import SignupPage from "./pages/SignupPage.svelte";
 	import SettingsPage from "./pages/SettingsPage.svelte";
 	import { preferredColorScheme } from "./store/ui";
+	import { lists } from "./store/lists";
 
 	$: {
 		document.body.classList.remove("color-scheme-light");
@@ -57,7 +58,9 @@
 	</Route>
 
 	<Route path="/list/:listId" let:params>
-		<ListPage listId={params.listId} />
+		{#if $lists.some((list) => list.id === params.listId)}
+			<ListPage listId={params.listId} />
+		{/if}
 	</Route>
 
 	<Route path="/filter/:filterListId" let:params>

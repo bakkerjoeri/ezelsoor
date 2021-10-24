@@ -7,6 +7,7 @@
 	}
 
 	export let actions: Action[];
+	export let size: "small" | "normal" = "small";
 </script>
 
 <ul>
@@ -16,7 +17,7 @@
 				type="button"
 				on:click={action.callback}
 				variant="text"
-				size="small"
+				{size}
 			>
 				{action.label}
 			</Button>

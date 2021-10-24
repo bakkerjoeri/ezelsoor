@@ -2,14 +2,19 @@
 	import { Link } from "svelte-routing";
 
 	export let tags: string[];
+	export let allowNavigation: boolean = false;
 </script>
 
 <ul>
 	{#each tags as tag}
 		<li>
-			<Link to={`/tag/${tag}`} class="taglist__link">
+			{#if allowNavigation}
+				<Link to={`/tag/${tag}`} class="taglist__link">
+					{tag}
+				</Link>
+			{:else}
 				{tag}
-			</Link>
+			{/if}
 		</li>
 	{/each}
 </ul>

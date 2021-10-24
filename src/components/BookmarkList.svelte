@@ -16,7 +16,10 @@
 	$: loadMoreMargin = Math.ceil(pageSize / 4);
 	$: amountToShow = pageSize * currentPage;
 	$: positionOfObserver = amountToShow - loadMoreMargin;
-	$: sortedBookmarks = sortObjects(bookmarks, sortedBy, sortOrder);
+	$: sortedBookmarks =
+		sortedBy === "manual"
+			? bookmarks
+			: sortObjects(bookmarks, sortedBy, sortOrder);
 
 	$: visibleBookmarks = (() => {
 		if (!lazyLoad) {

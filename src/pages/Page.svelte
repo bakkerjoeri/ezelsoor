@@ -94,7 +94,10 @@
 			);
 		}
 
-		lists.delete($listBeingEdited.id);
+		if (window.location.pathname.includes(`/list/${$listBeingEdited.id}`)) {
+			navigate("/");
+		}
+		lists.remove($listBeingEdited.id);
 		$entityBeingEdited = null;
 	}
 
@@ -173,6 +176,8 @@
 					<ListForm
 						title={$listBeingEdited.title}
 						description={$listBeingEdited.description}
+						showBookmarkCount={$listBeingEdited.showBookmarkCount}
+						bookmarks={$listBeingEdited.bookmarks}
 						on:save={onSaveEditedList}
 						on:cancel={onCancelEditing}
 						on:delete={onDeleteEditedList}
@@ -221,6 +226,8 @@
 				<ListForm
 					title={$listBeingEdited.title}
 					description={$listBeingEdited.description}
+					showBookmarkCount={$listBeingEdited.showBookmarkCount}
+					bookmarks={$listBeingEdited.bookmarks}
 					on:save={onSaveEditedList}
 					on:cancel={onCancelEditing}
 					on:delete={onDeleteEditedList}

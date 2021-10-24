@@ -1,59 +1,31 @@
 import { localStore } from "./localStore";
 import uuid from "@bakkerjoeri/uuid";
-import { derived, get, Readable, writable } from "svelte/store";
-import type { Bookmark } from "./bookmarks";
-import type { Writable } from "svelte/store";
+import { derived, get } from "svelte/store";
 import { entityBeingEdited } from "./ui";
-import { navigate } from "svelte-routing";
+import { firestoreUserCollection } from "./firestore";
+import { database } from "../utils/firebase";
+import { collectionStore } from "./collectionStore";
+import type { Readable } from "svelte/store";
+import type { Bookmark } from "./bookmarks";
 
 export interface List {
 	id: string;
 	title: string;
 	description: string;
+	showBookmarkCount: boolean;
 	bookmarks: Array<Bookmark["id"]>;
 	createdAt: number;
 }
 
-function createListStore(baseStore: Writable<List[]> = writable<List[]>([])) {
-	const { subscribe, set, update } = baseStore;
+function createListStore() {
+	const local = localStore<List[]>("lists", []);
+	const remote = firestoreUserCollection<List>(database, "lists", local);
+	const collection = collectionStore<List>(remote);
 
-	return {
-		subscribe,
-		set,
-		update,
-		updateList(id: List["id"], updater: (list: List) => List): void {
-			update((lists) => {
-				return lists.map((list) => {
-					if (list.id === id) {
-						return updater(list);
-					}
-
-					return list;
-				});
-			});
-		},
-		patch(id: List["id"], newData: Partial<List>): void {
-			update((lists) => {
-				return lists.map((list) => {
-					if (list.id === id) {
-						return { ...list, ...newData };
-					}
-
-					return list;
-				});
-			});
-		},
-		delete: (id: List["id"]): void => {
-			if (window.location.pathname.startsWith("/list/")) {
-				navigate("/");
-			}
-
-			update((lists) => lists.filter((list) => list.id !== id));
-		},
-	};
+	return collection;
 }
 
-export const lists = createListStore(localStore("lists", []));
+export const lists = createListStore();
 
 export function hasList(listId: List["id"]): boolean {
 	return get(lists).some((list) => list.id === listId);
@@ -93,6 +65,7 @@ export function createNewList(properties: Partial<List> = {}): List {
 		id: uuid(),
 		title: "",
 		description: "",
+		showBookmarkCount: false,
 		createdAt: Date.now().valueOf(),
 		bookmarks: [],
 		...properties,

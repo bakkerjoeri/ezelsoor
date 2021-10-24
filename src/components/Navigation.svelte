@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { filterLists } from "../store/filters";
+	import { lists } from "../store/lists";
 	import { isLoggedIn, logout } from "../store/session";
 	import { tagCount } from "../store/tags";
 	import { showReadLaterCount } from "../store/ui";
@@ -36,6 +37,7 @@
 		<NavigationItem on:navigate to="/archive">Archive</NavigationItem>
 	</NavigationSection>
 
+	<ListNavigation lists={$lists} on:navigate />
 	<FilterListNavigation filterLists={$filterLists} on:navigate />
 
 	{#if tags.length}

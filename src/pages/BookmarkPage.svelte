@@ -36,7 +36,7 @@
 		<p>{description}</p>
 	{/if}
 
-	<SearchBar bind:query={searchQuery} />
+	<SearchBar bind:query={searchQuery} label="Search here" />
 
 	{#if searchQuery}
 		<p>Found {filteredBookmarks.length} bookmarks</p>
