@@ -6,7 +6,7 @@ import { firestoreUserCollection } from "./firestore";
 import { database } from "../utils/firebase";
 import { collectionStore } from "./collectionStore";
 import type { Readable } from "svelte/store";
-import type { Bookmark } from "./bookmarks";
+import { Bookmark, bookmarks, hasBookmark } from "./bookmarks";
 
 export interface List {
 	id: string;
@@ -26,6 +26,18 @@ function createListStore() {
 }
 
 export const lists = createListStore();
+
+bookmarks.subscribe((value) => {
+	get(lists).forEach((list) => {
+		list.bookmarks.forEach((bookmarkId) => {
+			if (!value.some((bookmark) => bookmark.id === bookmarkId)) {
+				lists.patch(list.id, {
+					bookmarks: list.bookmarks.filter((id) => bookmarkId !== id),
+				});
+			}
+		});
+	});
+});
 
 export function hasList(listId: List["id"]): boolean {
 	return get(lists).some((list) => list.id === listId);
