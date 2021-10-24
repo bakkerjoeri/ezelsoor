@@ -19,6 +19,9 @@
 	import type { Bookmark } from "../store/bookmarks";
 	import type { List } from "../store/lists";
 	import type { FilterList } from "../store/filters";
+	import ActionRow from "../components/ActionRow.svelte";
+
+	export let actions = [];
 
 	function onNavigate() {
 		$isNavigationOpen = get(isPhabletUp);
@@ -28,15 +31,6 @@
 
 	function toggleNavigation() {
 		$isNavigationOpen = !$isNavigationOpen;
-	}
-
-	function onClickCreateNewBookmark() {
-		const newBookmark = createNewBookmark();
-		bookmarks.add(newBookmark);
-		$entityBeingEdited = {
-			id: newBookmark.id,
-			type: "bookmark",
-		};
 	}
 
 	function onSaveEditedBookmark(event: CustomEvent<Partial<Bookmark>>) {
@@ -130,7 +124,9 @@
 			{/if}
 		</Button>
 
-		<Button on:click={onClickCreateNewBookmark} variant="text">New</Button>
+		{#if actions.length}
+			<ActionRow {actions} size="normal" />
+		{/if}
 	</div>
 
 	{#if $isNavigationOpen}
