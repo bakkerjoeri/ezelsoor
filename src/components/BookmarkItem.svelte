@@ -111,6 +111,7 @@
 		grid-row: 1;
 		grid-column: 2 / -1;
 		overflow: hidden;
+		margin-bottom: 0;
 		text-overflow: ellipsis;
 		font-size: 17px;
 		font-weight: normal;

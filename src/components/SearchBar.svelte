@@ -1,26 +1,16 @@
 <script lang="ts">
 	import InputText from "./form/InputText.svelte";
+	import ScreenReaderOnly from "./ScreenReaderOnly.svelte";
 
 	export let query: string;
+	export let label = "Search";
+	export let size: "normal" | "small" = "normal";
 </script>
 
-<div class="search">
-	<label class="search__label" for="local-search" aria-label="Search here">
-		🔎
-	</label>
+<ScreenReaderOnly>
+	<label for="local-search">{label}</label>
+</ScreenReaderOnly>
 
-	<InputText bind:value={query} id="local-search" />
-</div>
-
-<style lang="scss">
-	.search {
-		display: flex;
-		align-items: center;
-		margin-bottom: var(--baseline);
-	}
-
-	.search__label {
-		font-size: 26px;
-		width: 40px;
-	}
-</style>
+<InputText bind:value={query} id="local-search" placeholder={label} {size}>
+	<span slot="icon">🔎</span>
+</InputText>

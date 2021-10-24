@@ -1,93 +1,29 @@
 <script lang="ts">
-	import { navigate } from "svelte-routing";
-	import {
-		createNewFilterList,
-		filterBookmarks,
-		filterLists,
-	} from "../store/filters";
-	import { localStore } from "../store/localStore";
+	import { filterLists } from "../store/filters";
 	import { isLoggedIn, logout } from "../store/session";
-	import { doesTagMatchQuery, sortTagCount, tagCount } from "../store/tags";
-	import {
-		entityBeingEdited,
-		showReadLaterCount,
-		showTagCount,
-		tagSortBy,
-	} from "../store/ui";
-	import { sortObjects } from "../utils/sorting";
-	import {
-		activeBookmarks,
-		bookmarks,
-		bookmarksToRead,
-	} from "./../store/bookmarks";
-	import ActionRow from "./ActionRow.svelte";
+	import { tagCount } from "../store/tags";
+	import { showReadLaterCount } from "../store/ui";
+	import { bookmarksToRead } from "./../store/bookmarks";
 	import Button from "./Button.svelte";
-	import InputText from "./form/InputText.svelte";
-	import Select from "./form/Select.svelte";
+	import FilterListNavigation from "./FilterListNavigation.svelte";
+	import ListNavigation from "./ListNavigation.svelte";
 	import NavigationItem from "./NavigationItem.svelte";
 	import NavigationLink from "./NavigationLink.svelte";
-
-	let tagSearchQuery: string = "";
-	let isTagNavigationVisible = localStore("isTagNavigationVisible", true);
-	let isFilterListNavigationVisible = localStore(
-		"isListNavigationVisible",
-		true
-	);
-
-	$: filterListActions = (() => {
-		const actions: Array<{ label: string; callback: () => any }> = [
-			{
-				label: "create",
-				callback: onClickCreateNewFilterList,
-			},
-		];
-
-		if (sortedFilterLists.length > 0) {
-			actions.push({
-				label: $isFilterListNavigationVisible ? "hide" : "show",
-				callback: toggleFilterListNavigationVisibility,
-			});
-		}
-
-		return actions;
-	})();
+	import NavigationSection from "./NavigationSection.svelte";
+	import TagNavigation from "./TagNavigation.svelte";
 
 	$: tags = Object.entries($tagCount);
-	$: filteredTags = tags.filter(([tagName]) => {
-		return doesTagMatchQuery(tagName, tagSearchQuery);
-	});
-	$: sortedAndFilteredTags = sortTagCount(
-		filteredTags,
-		$tagSortBy,
-		$tagSortBy === "name" ? "ascending" : "descending"
-	);
-	$: sortedFilterLists = sortObjects($filterLists, "title", "ascending");
-
-	function toggleTagNavigationVisibility() {
-		$isTagNavigationVisible = !$isTagNavigationVisible;
-	}
-
-	function toggleFilterListNavigationVisibility() {
-		$isFilterListNavigationVisible = !$isFilterListNavigationVisible;
-	}
-
-	function onClickCreateNewFilterList() {
-		const newFilterList = createNewFilterList();
-		filterLists.add(newFilterList);
-		$entityBeingEdited = { type: "filterList", id: newFilterList.id };
-		navigate(`/filter/${newFilterList.id}`);
-	}
 </script>
 
 <nav>
 	{#if !$isLoggedIn}
-		<ul class="navigation__list">
+		<NavigationSection>
 			<NavigationItem on:navigate to="/login">Log in</NavigationItem>
 			<NavigationItem on:navigate to="/signup">Sign up</NavigationItem>
-		</ul>
+		</NavigationSection>
 	{/if}
 
-	<ul class="navigation__list">
+	<NavigationSection>
 		<NavigationItem on:navigate to="/">Home</NavigationItem>
 		<NavigationItem
 			on:navigate
@@ -98,92 +34,12 @@
 		</NavigationItem>
 		<NavigationItem on:navigate to="/favorites">Favorites</NavigationItem>
 		<NavigationItem on:navigate to="/archive">Archive</NavigationItem>
-	</ul>
+	</NavigationSection>
 
-	<header class="navigation__heading">
-		<h2>Filters</h2>
+	<FilterListNavigation filterLists={$filterLists} on:navigate />
 
-		<ActionRow actions={filterListActions} />
-	</header>
-
-	{#if $isFilterListNavigationVisible && sortedFilterLists.length > 0}
-		<ul class="navigation__list">
-			{#each sortedFilterLists as filterList (filterList.id)}
-				<NavigationItem
-					on:navigate
-					to={`/filter/${filterList.id}`}
-					count={filterList.showBookmarkCount
-						? filterBookmarks(
-								filterList.shouldIncludeArchived
-									? $bookmarks
-									: $activeBookmarks,
-								filterList.filters
-						  ).length
-						: undefined}
-				>
-					{#if filterList.title}
-						{filterList.title}
-					{:else}
-						New filter
-					{/if}
-				</NavigationItem>
-			{/each}
-		</ul>
-	{/if}
-
-	{#if tags.length > 0}
-		<header class="navigation__heading">
-			<h2>Tags</h2>
-
-			<ActionRow
-				actions={[
-					{
-						label: $isTagNavigationVisible ? "hide" : "show",
-						callback: toggleTagNavigationVisibility,
-					},
-				]}
-			/>
-		</header>
-	{/if}
-
-	{#if tags.length > 0 && $isTagNavigationVisible}
-		<div class="navigation__search">
-			<InputText
-				bind:value={tagSearchQuery}
-				size="small"
-				placeholder="Filter tags"
-			/>
-		</div>
-
-		<small>
-			<label for="tagSort">sort by</label>
-			<Select
-				id="tagSort"
-				size="small"
-				variant="text"
-				options={[
-					{ text: "name", value: "name" },
-					{ text: "amount", value: "amount" },
-				]}
-				bind:value={$tagSortBy}
-			/>
-		</small>
-	{/if}
-
-	{#if sortedAndFilteredTags.length > 0 && $isTagNavigationVisible}
-		<ul class="navigation__list">
-			{#each sortedAndFilteredTags as [tagName, tagAmount] (tagName)}
-				<NavigationItem
-					on:navigate
-					to={`/tag/${tagName}`}
-					count={$showTagCount ? tagAmount : undefined}
-				>
-					{tagName}
-				</NavigationItem>
-			{/each}
-		</ul>
-	{:else if !!tagSearchQuery}
-		<p>No tags found.</p>
+	{#if tags.length}
+		<TagNavigation {tags} on:navigate />
 	{/if}
 </nav>
 
@@ -204,23 +60,6 @@
 		margin: var(--baseline);
 	}
 
-	.navigation__list {
-		list-style: none;
-
-		&:not(:first-child) {
-			margin-top: var(--baseline);
-		}
-		&:not(:last-child) {
-			margin-bottom: var(--baseline);
-		}
-	}
-
-	.navigation__heading {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-
 	.navigation__footer {
 		display: flex;
 		align-items: center;
@@ -232,9 +71,5 @@
 		padding-right: var(--baseline);
 		border-top: 1px solid var(--border-color-ui-secondary);
 		background-color: var(--background-color-ui-primary);
-	}
-
-	h2 {
-		margin-bottom: 0;
 	}
 </style>
