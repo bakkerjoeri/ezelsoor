@@ -9,10 +9,12 @@
 	:root {
 		--color-text: #000;
 		--color-text-soft: #767676;
+		--color-text-inverse: #eee;
 		--color-highlight: #de0053;
 		--color-link: #0044ab;
 		--background-color-ui-primary: #fff;
 		--background-color-ui-secondary: #fff;
+		--background-color-ui-inverse: #444;
 		--border-color-ui-primary: gray;
 		--border-color-ui-secondary: lightgray;
 	}
@@ -22,10 +24,12 @@
 	:root {
 		--color-text: #eee;
 		--color-text-soft: #aaa;
+		--color-text-inverse: #000;
 		--color-highlight: #f8cb00;
 		--color-link: #81b3ff;
 		--background-color-ui-primary: #222;
 		--background-color-ui-secondary: #333;
+		--background-color-ui-inverse: #eee;
 		--border-color-ui-primary: #aaa;
 		--border-color-ui-secondary: #888;
 	}
@@ -34,10 +38,12 @@
 body.color-scheme-light {
 	--color-text: #000;
 	--color-text-soft: #767676;
+	--color-text-inverse: #eee;
 	--color-highlight: #de0053;
 	--color-link: #0044ab;
 	--background-color-ui-primary: #fff;
 	--background-color-ui-secondary: #fff;
+	--background-color-ui-inverse: #444;
 	--border-color-ui-primary: gray;
 	--border-color-ui-secondary: lightgray;
 }
@@ -45,10 +51,13 @@ body.color-scheme-light {
 body.color-scheme-dark {
 	--color-text: #eee;
 	--color-text-soft: #aaa;
+	--color-text-inverse: #000;
+
 	--color-highlight: #f8cb00;
 	--color-link: #81b3ff;
 	--background-color-ui-primary: #222;
 	--background-color-ui-secondary: #333;
+	--background-color-ui-inverse: #eee;
 	--border-color-ui-primary: #aaa;
 	--border-color-ui-secondary: #888;
 }

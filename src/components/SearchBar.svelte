@@ -11,6 +11,13 @@
 	<label for="local-search">{label}</label>
 </ScreenReaderOnly>
 
-<InputText bind:value={query} id="local-search" placeholder={label} {size}>
+<InputText
+	bind:value={query}
+	id="local-search"
+	placeholder={label}
+	{size}
+	canClear
+	autocomplete="off"
+>
 	<span slot="icon">🔎</span>
 </InputText>

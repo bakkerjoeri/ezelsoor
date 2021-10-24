@@ -156,5 +156,6 @@
 <style lang="scss">
 	ul {
 		list-style: none;
+		margin-top: var(--baseline);
 	}
 </style>

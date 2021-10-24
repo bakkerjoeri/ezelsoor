@@ -11,9 +11,14 @@
 	export let disabled: boolean = false;
 	export let id: string = uuid();
 	export let size: "normal" | "small" = "normal";
+	export let canClear = false;
 
 	function handleInput(event: any) {
 		value = event.target.value;
+	}
+
+	function onClickClear() {
+		value = "";
 	}
 </script>
 
@@ -37,7 +42,14 @@
 		{id}
 		class:has-error={state === false}
 		class:is-valid={state === true}
+		class:can-clear={canClear}
 	/>
+
+	{#if canClear && value.length > 0}
+		<button on:click={onClickClear} aria-label="Clear input">
+			&times;
+		</button>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -51,6 +63,7 @@
 		position: relative;
 		display: flex;
 		align-items: center;
+		width: 100%;
 		font-size: var(--font-size);
 	}
 
@@ -89,12 +102,37 @@
 		.icon + & {
 			padding-left: calc(1em + (2 * var(--horizontal-padding)));
 		}
+
+		&.can-clear {
+			padding-right: calc(1em + (2 * var(--horizontal-padding)));
+		}
 	}
 
 	.icon {
 		position: absolute;
-		margin-left: var(--horizontal-padding);
+		left: var(--horizontal-padding);
 		font-size: 1.25em;
 		pointer-events: none;
+	}
+
+	button {
+		display: block;
+		position: absolute;
+		right: var(--horizontal-padding);
+		font-size: 1em;
+		font-weight: bold;
+		width: 25px;
+		height: 25px;
+		padding-bottom: 1px;
+		background-color: var(--background-color-ui-inverse);
+		color: var(--color-text-inverse);
+		border: 0;
+		border-radius: 25px;
+
+		.size-small & {
+			width: 18px;
+			height: 18px;
+			border-radius: 9px;
+		}
 	}
 </style>
