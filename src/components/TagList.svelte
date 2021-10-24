@@ -2,7 +2,7 @@
 	import { Link } from "svelte-routing";
 
 	export let tags: string[];
-	export let allowNavigation: boolean = false;
+	export let allowNavigation: boolean = true;
 </script>
 
 <ul>
