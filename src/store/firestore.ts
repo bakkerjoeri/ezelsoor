@@ -30,7 +30,7 @@ interface ObjectWithId {
 }
 
 /**
- * A svelte store that's connected to a firestore collection. This store will be able to fetch & persist data with firestore once the user is logged in.
+ * A svelte store that's connected to a firestore collection. This store will be able to fetch & persist data with firestore once the user is logged in. While logged out, the data is only committed to the base store.
  *
  * **This store currently has a fatal flaw that could cause data loss**: It is assumes any snapshot update represents the latest data. Consider this example:
  *
@@ -52,22 +52,50 @@ export function firestoreUserCollection<Item extends ObjectWithId>(
 
 	loggedInState.subscribe(async (state) => {
 		const previousState = get(previousLoggedInState);
+		const authLoadedIntoLoggedIn =
+			state === "loggedIn" && previousState === "loading";
+		const authLoadedIntoLoggedOut =
+			state === "loggedOut" && previousState === "loading";
+		const userLoggedIn =
+			state === "loggedIn" && previousState === "loggedOut";
+		const userLoggedOut =
+			state === "loggedOut" && previousState === "loggedIn";
 
-		if (state === "loggedIn") {
+		if (authLoadedIntoLoggedIn || userLoggedIn) {
 			const reference = collection(
 				database,
 				`users/${get(loggedInUserId)}/${path}`
 			);
 
-			// Merge existing local data onto remote data and persist the differences
-			const localData = get(store);
-			const remoteData = (await getDocs(reference)).docs.map((doc) =>
-				doc.data()
-			) as Item[];
-			const allData = mergeCollections(remoteData, localData);
-			set(allData);
-			currentLocalValue = allData;
-			await persistCollectionChanges(reference, remoteData, allData);
+			/*
+			Whether the user was already logged in during a previous session or they have just logged in is an important factor in deciding what to do with the data currently in the store, hence the split below.
+
+			In the case that authentication loaded into a logged in state (which means the user was previously logged in) only the changes that happened while authentication was loading should be persisted. Anything before that is assumed to be persisted already.
+
+			In the case that the user just now logged in all any work they did while logged out needs to be fully persisted to the server. Any data in the store is assumed to have never been persisted before this moment.
+			*/
+
+			if (authLoadedIntoLoggedIn) {
+				// Persist any changes to the store done while auth was loading.
+				await persistCollectionChanges(reference, get(store), initial);
+				const remoteData = (await getDocs(reference)).docs.map((doc) =>
+					doc.data()
+				) as Item[];
+				set(remoteData);
+				currentLocalValue = remoteData;
+			}
+
+			if (userLoggedIn) {
+				// Merge existing local data onto remote data and persist the differences.
+				const localData = get(store);
+				const remoteData = (await getDocs(reference)).docs.map((doc) =>
+					doc.data()
+				) as Item[];
+				const allData = mergeCollections(remoteData, localData);
+				set(allData);
+				currentLocalValue = allData;
+				await persistCollectionChanges(reference, allData, remoteData);
+			}
 
 			// Subscribe to remote changes so they're reflected locally
 			const snapshotUnsub = onSnapshot(reference, (snapshot) => {
@@ -83,10 +111,10 @@ export function firestoreUserCollection<Item extends ObjectWithId>(
 
 			// Subscribe to local changes to reflect them remotely
 			const storeUnsub = subscribe((newLocalValue) => {
-				persistCollectionChanges<Item>(
+				persistCollectionChanges(
 					reference,
-					currentLocalValue,
-					newLocalValue
+					newLocalValue,
+					currentLocalValue
 				);
 
 				currentLocalValue = newLocalValue;
@@ -100,7 +128,7 @@ export function firestoreUserCollection<Item extends ObjectWithId>(
 			return cleanup;
 		}
 
-		if (state === "loggedOut" && previousState === "loggedIn") {
+		if (userLoggedOut) {
 			if (cleanup) {
 				cleanup();
 				cleanup = null;
@@ -115,8 +143,8 @@ export function firestoreUserCollection<Item extends ObjectWithId>(
 
 async function persistCollectionChanges<Item extends ObjectWithId>(
 	collectionReference: CollectionReference<DocumentData>,
-	oldCollection: Item[],
-	newCollection: Item[]
+	newCollection: Item[],
+	oldCollection: Item[] = []
 ) {
 	if (isSameCollection(oldCollection, newCollection)) {
 		return;
