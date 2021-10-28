@@ -6,23 +6,21 @@
 	import TagList from "./TagList.svelte";
 	import type { Bookmark } from "../store/bookmarks";
 	import FavButton from "./FavButton.svelte";
+	import BookmarkContextMenu from "./BookmarkContextMenu.svelte";
 
 	export let bookmark: Bookmark;
+
+	let isContextMenuOpen: boolean = false;
 
 	$: actions = (() => {
 		const actions = [];
 
-		if (bookmark.isToRead) {
+		if (!isEditing) {
 			actions.push({
-				label: "mark as read",
-				callback: markAsRead,
-			});
-		}
-
-		if ($bookmarkBeingEdited?.id !== bookmark.id) {
-			actions.push({
-				label: "edit",
-				callback: startEditing,
+				label: "options",
+				callback: () => {
+					isContextMenuOpen = true;
+				},
 			});
 		}
 
@@ -30,6 +28,7 @@
 	})();
 
 	$: notesMarkup = micromark(bookmark.notes);
+	$: isEditing = $bookmarkBeingEdited?.id === bookmark.id;
 
 	function startEditing() {
 		$entityBeingEdited = {
@@ -92,6 +91,17 @@
 		<div class="notes">
 			{@html notesMarkup}
 		</div>
+	{/if}
+
+	{#if !isEditing && isContextMenuOpen}
+		<BookmarkContextMenu
+			id={bookmark.id}
+			url={bookmark.url}
+			title={bookmark.title}
+			isToRead={bookmark.isToRead}
+			isFavorite={bookmark.isFavorite}
+			isArchived={bookmark.isArchived}
+		/>
 	{/if}
 </div>
 

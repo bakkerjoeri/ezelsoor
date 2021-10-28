@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ActionRow from "./ActionRow.svelte";
+	import TagList from "./TagList.svelte";
 	import type { Bookmark } from "../store/bookmarks";
 
 	export let bookmark: Bookmark;
