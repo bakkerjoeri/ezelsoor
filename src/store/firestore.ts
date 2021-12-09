@@ -87,11 +87,10 @@ export function firestoreUserCollection<Item extends ObjectWithId>(
 
 			if (userLoggedIn) {
 				// Merge existing local data onto remote data and persist the differences.
-				const localData = get(store);
 				const remoteData = (await getDocs(reference)).docs.map((doc) =>
 					doc.data()
 				) as Item[];
-				const allData = mergeCollections(remoteData, localData);
+				const allData = mergeCollections(remoteData, get(store));
 				set(allData);
 				currentLocalValue = allData;
 				await persistCollectionChanges(reference, allData, remoteData);
