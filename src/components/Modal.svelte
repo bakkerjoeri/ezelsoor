@@ -1,3 +1,35 @@
+<script lang="ts">
+	import { onDestroy, onMount } from "svelte";
+
+	let scrollY: number = null;
+	let previousBodyTop: string = null;
+	let previousBodyPosition: string = null;
+	let previousBodyOverflow: string = null;
+	let previousBodyWidth: string = null;
+
+	onMount(() => {
+		scrollY = window.scrollY;
+		previousBodyPosition = document.body.style.position;
+		previousBodyTop = document.body.style.top;
+		previousBodyOverflow = document.body.style.overflow;
+		previousBodyWidth = document.body.style.width;
+		document.body.style.position = "fixed";
+		document.body.style.top = `-${scrollY}px`;
+		document.body.style.overflow = "hidden";
+		document.body.style.width = "100%";
+	});
+
+	onDestroy(() => {
+		console.log("doei");
+		document.body.style.position = previousBodyPosition || "";
+		document.body.style.top = previousBodyTop || "";
+		document.body.style.overflow = previousBodyOverflow || "";
+		document.body.style.width = previousBodyWidth || "";
+
+		window.scrollTo(0, scrollY);
+	});
+</script>
+
 <div class="modal-mask">
 	<div class="modal">
 		<slot />
