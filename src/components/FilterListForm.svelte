@@ -60,6 +60,13 @@
 
 	<FormItem>
 		<Checkbox
+			bind:checked={showBookmarkCount}
+			label="Show amount of bookmarks in navigation"
+		/>
+	</FormItem>
+
+	<FormItem>
+		<Checkbox
 			bind:checked={shouldIncludeArchived}
 			label="Include archived bookmarks"
 		/>
@@ -91,13 +98,6 @@
 			</FormItem>
 		{/each}
 	{/if}
-
-	<FormItem>
-		<Checkbox
-			bind:checked={showBookmarkCount}
-			label="Show amount of bookmarks in navigation"
-		/>
-	</FormItem>
 
 	<Button type="submit">Save</Button>
 
