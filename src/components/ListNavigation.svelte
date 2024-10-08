@@ -9,6 +9,17 @@
 
 	export let lists: List[] = [];
 
+	let sortedLists = lists.toSorted((a, b) => {
+		if (a.title > b.title) {
+			return 1;
+		}
+
+		if (a.title < b.title) {
+			return -1;
+		}
+
+		return 0;
+	});
 	let isCollapsed = localStore("isListNavigationCollapsed", false);
 	let actions = [
 		{
@@ -33,7 +44,7 @@
 	canCollapse={lists.length > 0}
 	bind:isCollapsed={$isCollapsed}
 >
-	{#each lists as list}
+	{#each sortedLists as list}
 		<NavigationItem
 			to={`/list/${list.id}`}
 			on:navigate
